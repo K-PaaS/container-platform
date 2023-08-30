@@ -1,4 +1,4 @@
-# PaaS-TA 컨테이너 플랫폼
+# K-PaaS 컨테이너 플랫폼
 
 <table>
   <tr>
