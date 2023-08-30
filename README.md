@@ -4,7 +4,7 @@
   <tr>
     <td colspan=2 align=center>플랫폼</td>
     <td colspan=2 align=center><a href="https://github.com/PaaS-TA/paasta-deployment">어플리케이션 플랫폼</a></td>
-    <td colspan=2 align=center><a href="https://github.com/PaaS-TA/paas-ta-container-platform">🚩 컨테이너 플랫폼</a></td>
+    <td colspan=2 align=center><a href="https://github.com/K-PaaS/container-platform">🚩 컨테이너 플랫폼</a></td>
   </tr>
   <tr>
     <td colspan=2 rowspan=2 align=center>포털</td>
