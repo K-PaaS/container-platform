@@ -9,7 +9,7 @@
   <tr>
     <td colspan=2 rowspan=2 align=center>포털</td>
     <td colspan=2 align=center><a href="https://github.com/PaaS-TA/portal-deployment">AP 포털</a></td>
-    <td colspan=2 align=center><a href="https://github.com/PaaS-TA/container-platform-portal-release">CP 포털</a></td>
+    <td colspan=2 align=center><a href="https://github.com/K-PaaS/cp-portal-release">CP 포털</a></td>
   </tr>
   <tr align=center>
     <td colspan=4><a href="https://github.com/PaaS-TA/PaaS-TA-Monitoring">모니터링 대시보드</a></td>
@@ -54,9 +54,9 @@
     <td></td>
   </tr>
   <tr align=center>
-    <td rowspan=1 colspan=2><a href="https://github.com/PaaS-TA/paas-ta-container-platform-deployment">CP 서비스</a></td>
-    <td><a href="https://github.com/PaaS-TA/container-platform-pipeline-release">Pipeline</a></td>
-    <td><a href="https://github.com/PaaS-TA/container-platform-source-control-release">Source Control</a></td>
+    <td rowspan=1 colspan=2><a href="https://github.com/K-PaaS/cp-deployment">CP 서비스</a></td>
+    <td><a href="https://github.com/K-PaaS/cp-pipeline-release">Pipeline</a></td>
+    <td><a href="https://github.com/K-PaaS/cp-source-control-release">Source Control</a></td>
     <td></td>
     <td></td>
   </tr>
@@ -76,47 +76,44 @@
 ### 단독형 배포   
 - 클러스터 설치
   + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install.md)
-  + [설치 및 배포 파일](https://github.com/PaaS-TA/paas-ta-container-platform-deployment/tree/master/standalone)
 - 포털 설치
-  + [포털 설치 가이드](install-guide/container-platform-portal/paas-ta-container-platform-portal-deployment-standalone-guide.md)
-  + [Keycloak TLS 설정 가이드](install-guide/container-platform-portal/paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide.md)
-  + [설치 및 배포 파일](https://github.com/PaaS-TA/container-platform-helm-chart/tree/master)
-  + [릴리즈 파일](https://github.com/PaaS-TA/container-platform-portal-release/tree/master)
+  + [포털 설치 가이드](install-guide/container-platform-portal/cp-portal-deployment-standalone-guide.md)
+  + [Keycloak TLS 설정 가이드](install-guide/container-platform-portal/cp-portal-deployment-keycloak-tls-setting-guide.md)
+  + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
+  + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release)
 - 서비스 설치
-  + [Pipeline 설치 가이드](install-guide/pipeline/paas-ta-container-platform-pipeline-standalone-guide.md)
-  + [SourceControl 설치 가이드](install-guide/source-control/paas-ta-container-platform-source-control-standalone-guide.md)
+  + [Pipeline 설치 가이드](install-guide/pipeline/cp-pipeline-standalone-guide.md)
+  + [SourceControl 설치 가이드](install-guide/source-control/cp-source-control-standalone-guide.md)
 - Kubeflow 튜토리얼
-  + [Kubeflow 파이프라인 튜토리얼 가이드](install-guide/standalone/paas-ta-container-platform-kubeflow-sample-guide.md)
+  + [Kubeflow 파이프라인 튜토리얼 가이드](install-guide/standalone/cp-kubeflow-sample-guide.md)
 
 ### 서비스형 배포 
 - 클러스터 설치
   + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install.md)
-  + [설치 및 배포 파일](https://github.com/PaaS-TA/paas-ta-container-platform-deployment/tree/master/standalone)
 - 포털 설치
-  + [포털 설치 가이드](install-guide/container-platform-portal/paas-ta-container-platform-portal-deployment-service-guide.md)
-  + [Keycloak TLS 설정 가이드](install-guide/container-platform-portal/paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide.md)
-  + [설치 및 배포 파일](https://github.com/PaaS-TA/container-platform-helm-chart/tree/master)
-  + [릴리즈 파일](https://github.com/PaaS-TA/container-platform-portal-release/tree/master)
+  + [포털 설치 가이드](install-guide/container-platform-portal/cp-portal-deployment-service-guide.md)
+  + [Keycloak TLS 설정 가이드](install-guide/container-platform-portal/cp-portal-deployment-keycloak-tls-setting-guide.md)
+  + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart/tree/master)
+  + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release/tree/master)
 - 서비스 설치
-  + [Pipeline 설치 가이드](install-guide/pipeline/paas-ta-container-platform-pipeline-service-guide.md)
-  + [SourceControl 설치 가이드](install-guide/source-control/paas-ta-container-platform-source-control-service-guide.md)
+  + [Pipeline 설치 가이드](install-guide/pipeline/cp-pipeline-service-guide.md)
+  + [SourceControl 설치 가이드](install-guide/source-control/cp-source-control-service-guide.md)
 - Kubeflow 튜토리얼
-  + [Kubeflow 파이프라인 튜토리얼 가이드](install-guide/standalone/paas-ta-container-platform-kubeflow-sample-guide.md)
+  + [Kubeflow 파이프라인 튜토리얼 가이드](install-guide/standalone/cp-kubeflow-sample-guide.md)
 
 ### Edge 배포
 - Edge 설치
   + [Edge 설치 가이드](install-guide/edge/cp-edge-install.md)
-  + [설치 및 배포 파일](https://github.com/PaaS-TA/paas-ta-container-platform-deployment/tree/master/edge)
 - 포털 설치
-  + [포털 설치 가이드](install-guide/container-platform-portal/paas-ta-container-platform-portal-deployment-standalone-guide.md)
-  + [Keycloak TLS 설정 가이드](install-guide/container-platform-portal/paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide.md)
-  + [설치 및 배포 파일](https://github.com/PaaS-TA/container-platform-helm-chart/tree/master)
-  + [릴리즈 파일](https://github.com/PaaS-TA/container-platform-portal-release/tree/master)
+  + [포털 설치 가이드](install-guide/container-platform-portal/cp-portal-deployment-standalone-guide.md)
+  + [Keycloak TLS 설정 가이드](install-guide/container-platform-portal/cp-portal-deployment-keycloak-tls-setting-guide.md)
+  + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart/tree/master)
+  + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release/tree/master)
 - 서비스 설치
-  + [Pipeline 설치 가이드](install-guide/pipeline/paas-ta-container-platform-pipeline-standalone-guide.md)
-  + [SourceControl 설치 가이드](install-guide/source-control/paas-ta-container-platform-source-control-standalone-guide.md)
+  + [Pipeline 설치 가이드](install-guide/pipeline/cp-pipeline-standalone-guide.md)
+  + [SourceControl 설치 가이드](install-guide/source-control/cp-source-control-standalone-guide.md)
 - 샘플 모델
-  + [웹 카운팅 / 실시간 온도수집](install-guide/edge/paas-ta-container-platform-edge-sample-guide.md)
+  + [웹 카운팅 / 실시간 온도수집](install-guide/edge/cp-edge-sample-guide.md)
 
 
 <br>
@@ -125,13 +122,13 @@
 
 ### 포털 이용 가이드
   + [포털 사용 가이드](use-guide/portal/container-platform-portal-guide.md)
-  + [Terraman IaC 스크립트 가이드](check-guide/paas-ta-container-terraman-check-guide.md)
+  + [Terraman IaC 스크립트 가이드](check-guide/cp-terraman-check-guide.md)
   
 ### 서비스 이용 가이드
 - Pipeline 서비스
-  + [Pipeline 서비스 사용 가이드](use-guide/pipeline/paas-ta-container-platform-pipeline-use-guide.md)
+  + [Pipeline 서비스 사용 가이드](use-guide/pipeline/cp-pipeline-use-guide.md)
 - Source Control 서비스
-  + [Source Control 서비스 사용 가이드](use-guide/source-control/paas-ta-container-platform-source-control-use-guide.md)
+  + [Source Control 서비스 사용 가이드](use-guide/source-control/cp-source-control-use-guide.md)
 
 
 <br>
@@ -139,27 +136,12 @@
 ## Project
 
 ### 포털 프로젝트 
-- [container-platform-portal-api](https://github.com/PaaS-TA/container-platform-portal-api)
-- [container-platform-portal-common-api](https://github.com/PaaS-TA/container-platform-portal-common-api)
-- [container-platform-portal-ui](https://github.com/PaaS-TA/container-platform-portal-ui)
-- [container-platform-portal-service-broker](https://github.com/PaaS-TA/container-platform-portal-service-broker)
-- [container-platform-metrics-api](https://github.com/PaaS-TA/container-platform-metrics-api)
-- [container-platform-terraman](https://github.com/PaaS-TA/container-platform-terraman)
-
-### 서비스 프로젝트
-
-#### Pipeline
-- [container-platform-pipeline-api](https://github.com/PaaS-TA/container-platform-pipeline-api)
-- [container-platform-pipeline-common-api](https://github.com/PaaS-TA/container-platform-pipeline-common-api)
-- [container-platform-pipeline-inspection-api](https://github.com/PaaS-TA/container-platform-pipeline-inspection-api)
-- [container-platform-pipeline-ui](https://github.com/PaaS-TA/container-platform-pipeline-ui)
-- [container-platform-pipeline-broker](https://github.com/PaaS-TA/container-platform-pipeline-broker)
-
-#### Source Control
-- [container-platform-source-control-api](https://github.com/PaaS-TA/container-platform-source-control-api)
-- [container-platform-source-control-ui](https://github.com/PaaS-TA/container-platform-source-control-ui)
-- [container-platform-source-control-broker](https://github.com/PaaS-TA/container-platform-source-control-broker)
-
+- [container-platform-portal-api](https://github.com/K-PaaS/cp-portal-api)
+- [container-platform-portal-common-api](https://github.com/K-PaaS/cp-portal-common-api)
+- [container-platform-portal-ui](https://github.com/K-PaaS/cp-portal-ui)
+- [container-platform-portal-service-broker](https://github.com/K-PaaS/cp-portal-service-broker)
+- [container-platform-metrics-api](https://github.com/K-PaaS/cp-metrics-api)
+- [container-platform-terraman](https://github.com/K-PaaS/cp-terraman)
 
 <br>
 
