@@ -63,9 +63,9 @@ KubeEdge 설치에 필요한 주요 소프트웨어 및 패키지 Version 정보
 |---|---|
 |KubeEdge|v1.12.0|
 |EdgeMesh|v1.12.0|
-|Kubernetes Native|v1.24.6|
+|Kubernetes Native|v1.25.6|
 |Kubernetes Native (Edge Node)|v1.22.6|
-|CRI-O|v1.24.0|
+|CRI-O|v1.25.0|
 |CRI-O (Edge Node)|v1.22.0|
 
 본 가이드 문서에서는 Container Platform 배포 시 다음을 권고하고 있다.
@@ -219,10 +219,10 @@ Kubernetes Node 및 kube-system Namespace의 Pod를 확인하여 KubeEdge 설치
 # kubectl get nodes
 NAME                 STATUS   ROLES                  AGE     VERSION
 paasta-cp-edge       Ready    agent,edge             5m40s   v1.22.6-kubeedge-v1.12.0
-paasta-cp-master     Ready    control-plane,master   39m     v1.24.6
-paasta-cp-worker-1   Ready    <none>                 38m     v1.24.6
-paasta-cp-worker-2   Ready    <none>                 38m     v1.24.6
-paasta-cp-worker-3   Ready    <none>                 38m     v1.24.6
+paasta-cp-master     Ready    control-plane,master   39m     v1.25.6
+paasta-cp-worker-1   Ready    <none>                 38m     v1.25.6
+paasta-cp-worker-2   Ready    <none>                 38m     v1.25.6
+paasta-cp-worker-3   Ready    <none>                 38m     v1.25.6
 
 # kubectl get pods -n kube-system
 NAME                                       READY   STATUS    RESTARTS   AGE
