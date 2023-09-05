@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > 클러스터 설치 가이드 (HA)
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > 클러스터 설치 가이드 (HA)
 
 <br>
 
@@ -10,16 +10,16 @@
   1.3. [시스템 구성도](#1.3)  
   1.4. [참고자료](#1.4)  
 
-2. [Kubespray HA 설치](#2)  
+2. [Container Platform Cluster HA 설치](#2)  
   2.1. [Prerequisite](#2.1)  
   2.2. [LoadBalancer 구성](#2.2)  
   2.3. [SSH Key 생성 및 배포](#2.3)  
-  2.4. [Kubespray 다운로드](#2.4)  
-  2.5. [Kubespray 설치 준비](#2.5)  
-  2.6. [Kubespray 설치](#2.6)  
-  2.7. [Kubespray 설치 확인](#2.7)  
+  2.4. [Container Platform Cluster 다운로드](#2.4)  
+  2.5. [Container Platform Cluster 설치 준비](#2.5)  
+  2.6. [Container Platform Cluster 설치](#2.6)  
+  2.7. [Container Platform Cluster 설치 확인](#2.7)  
 
-3. [Kubespray 삭제 (참고)](#3)  
+3. [Container Platform Cluster 삭제 (참고)](#3)  
 
 4. [Resource 생성 시 주의사항](#4)  
 
@@ -28,21 +28,19 @@
 ## <div id='1'> 1. 문서 개요
 
 ### <div id='1.1'> 1.1. 목적
-본 문서 (Kubespray HA 설치 가이드) 는 개방형 PaaS 플랫폼 고도화 및 개발자 지원 환경 기반의 Open PaaS에 배포되는 컨테이터 플랫폼을 설치하기 위한 Kubernetes Native를 Kubespray를 이용하여 설치하는 방법을 기술하였다.
-
-PaaS-TA 5.5 버전부터는 Kubespray 기반으로 단독 배포를 지원한다. 기존 Container 서비스 기반으로 설치를 원할 경우에는 PaaS-TA 5.0 이하 버전의 문서를 참고한다.
+본 문서 (Container Platform Cluster HA 설치 가이드) 는 개방형 PaaS 플랫폼 고도화 및 개발자 지원 환경 기반의 Open PaaS에 배포되는 컨테이터 플랫폼을 설치하기 위한 Kubernetes Native를 Container Platform Cluster Deployment를 이용하여 설치하는 방법을 기술하였다.
 
 <br>
 
 ### <div id='1.2'> 1.2. 범위
-설치 범위는 Kubernetes Native를 검증하기 위한 Kubespray HA 설치를 기준으로 작성하였다.
+설치 범위는 Kubernetes Native를 검증하기 위한 Container Platform Cluster HA 설치를 기준으로 작성하였다.
 
 <br>
 
 ### <div id='1.3'> 1.3. 시스템 구성도
 시스템 구성은 IaaS 환경에 따라 구성 차이가 있으며 External ETCD, Stacked ETCD 방식에 따라 구성에 차이가 있다.<br>
 
-시스템 구성은 LoadBalancer, Kubernetes Cluster 환경으로 구성되어 있으며 이중화된 LoadBalancer 구성 후 Kubespary를 통해 Kubernetes Cluster를 설치하고 Pod를 통해 Database, Private registry 등 미들웨어 환경을 제공하여 Container Image로 Kubernetes Cluster에 Container Platform 포털 환경을 배포한다.<br>
+시스템 구성은 LoadBalancer, Kubernetes Cluster 환경으로 구성되어 있으며 이중화된 LoadBalancer 구성 후 Container Platform Cluster Deployment를 통해 Kubernetes Cluster를 설치하고 Pod를 통해 Database, Private registry 등 미들웨어 환경을 제공하여 Container Image로 Kubernetes Cluster에 Container Platform 포털 환경을 배포한다.<br>
 
 **OpenStack, vSphere External ETCD** 기준 총 필요한 VM 환경으로는 **LoadBalancer VM: 2개, Master VM: 3개, External ETCD VM: 3개, Worker VM: 3개 이상**이 필요하다.<br>
 
@@ -75,30 +73,30 @@ PaaS-TA 5.5 버전부터는 Kubespray 기반으로 단독 배포를 지원한다
 
 <br>
 
-## <div id='2'> 2. Kubespray HA 설치
+## <div id='2'> 2. Container Platform Cluster HA 설치
 
 ### <div id='2.1'> 2.1. Prerequisite
-본 설치 가이드는 **Ubuntu 20.04** 환경에서 설치하는 것을 기준으로 하였다. Kubespray HA 설치를 위해서는 Ansible v5.7 +, Jinja 2.11+ 및 python-netaddr이 Ansible 명령을 실행할 시스템에 설치되어 있어야 하며 설치 가이드에 따라 순차적으로 설치가 진행된다.
+본 설치 가이드는 **Ubuntu 20.04** 환경에서 설치하는 것을 기준으로 하였다. Container Platform Cluster HA 설치를 위해서는 Ansible v5.7 +, Jinja 3.1+ 및 python-netaddr이 Ansible 명령을 실행할 시스템에 설치되어 있어야 하며 설치 가이드에 따라 순차적으로 설치가 진행된다.
 
-Kubespray 설치에 필요한 주요 소프트웨어 및 패키지 Version 정보는 다음과 같다.
+Container Platform Cluster 설치에 필요한 주요 소프트웨어 및 패키지 Version 정보는 다음과 같다.
 
 |주요 소프트웨어|Version|Python Package|Version
 |---|---|---|---|
-|Kubespray|v2.21.0|ansible|5.7.1|
-|Kubernetes Native|v1.25.6|ansible-core|2.12.5|
-|CRI-O|v1.25.1|cryptography|3.4.8|
-|Helm|v3.10.3|jinja2|2.11.3|
-|Istio|1.11.4|netaddr|0.7.19|
-|Podman|3.4.2|pbr|5.4.4|
-|Terraform|1.3.4|jmespath|0.9.5|
-|NFS Common||ruamel.yaml|0.16.10|
+|Kubespray|v2.22.1|ansible|5.7.1|
+|Kubernetes Native|v1.26.5|ansible-core|2.12.5|
+|CRI-O|v1.26.0|cryptography|3.4.8|
+|Helm|v3.12.0|jinja2|3.1.2|
+|Istio|1.16.0|netaddr|0.8.0|
+|Podman|3.4.2|pbr|5.11.1|
+|Terraform|1.3.4|jmespath|1.0.1|
+|NFS Common||ruamel.yaml|0.17.21|
 |Rook Ceph|1.10.3|ruamel.yaml.clib|0.2.7|
-|Kubeflow|1.7.0|MarkupSafe|1.1.1|
+|Kubeflow|1.7.0|MarkupSafe|2.1.2|
 |Vault|1.11.3|
 
 본 가이드 문서에서는 Container Platform 배포 시 다음을 권고하고 있다.
 
-- deb / rpm 호환 Linux OS를 실행하는 하나 이상의 머신 (Ubuntu 또는 CentOS)
+- deb / rpm 호환 Linux OS를 실행하는 하나 이상의 머신 (Ubuntu)
 - 머신 당 8G (최소사양) or 16G (권장사양) 이상의 RAM
 - control-plane 노드로 사용하는 머신에 2 개 (최소사양) or 4 개 (권장사양) 이상의 CPU
 - 클러스터의 모든 시스템 간의 완전한 네트워크 연결
@@ -269,7 +267,7 @@ listen kubernetes-apiserver-https
 <br>
 
 ### <div id='2.3'> 2.3. SSH Key 생성 및 배포
-Kubespray 설치를 위해서는 SSH Key가 인벤토리의 모든 서버들에 복사되어야 한다. 본 설치 가이드에서는 RSA 공개키를 이용하여 SSH 접속 설정을 진행한다.  
+Container Platform Cluster 설치를 위해서는 SSH Key가 인벤토리의 모든 서버들에 복사되어야 한다. 본 설치 가이드에서는 RSA 공개키를 이용하여 SSH 접속 설정을 진행한다.  
 
 SSH Key 생성 및 배포 이후의 모든 설치과정은 **1번 Master Node**에서 진행한다.
 
@@ -283,7 +281,7 @@ Enter same passphrase again: [엔터키 입력]
 Your identification has been saved in /home/ubuntu/.ssh/id_rsa.
 Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub.
 The key fingerprint is:
-SHA256:pIG4/G309Dof305mWjdNz1OORx9nQgQ3b8yUP5DzC3w ubuntu@paasta-cp-master
+SHA256:pIG4/G309Dof305mWjdNz1OORx9nQgQ3b8yUP5DzC3w ubuntu@cp-master
 The key's randomart image is:
 +---[RSA 2048]----+
 |            ..= o|
@@ -303,7 +301,7 @@ The key's randomart image is:
 ## 출력된 공개키 복사
 
 $ cat ~/.ssh/id_rsa.pub
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmAYEo3CcFGhRhzLcVz3rKb+C25mOne+MaQGynZFpZk4muEAUdkpieoo+B6r2eJHjBLopn5quWJ561H7EZb/GlfC5ThjHFF+hTf5trF4boW1iZRvUM56KAwXiYosLLRBXeNlub4SKfApe8ojQh4RRzFBZP/wNbOKr+Fo6g4RQCWrr5xQCZMK3ugBzTHM+zh9Ra7tG0oCySRcFTAXXoyXnJm+PFhdR6jbkerDlUYP9RD/87p/YKS1wSXExpBkEglpbTUPMCj+t1kXXEJ68JkMrVMpeznuuopgjHYWWD2FgjFFNkp ubuntu@paasta-cp-master
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmAYEo3CcFGhRhzLcVz3rKb+C25mOne+MaQGynZFpZk4muEAUdkpieoo+B6r2eJHjBLopn5quWJ561H7EZb/GlfC5ThjHFF+hTf5trF4boW1iZRvUM56KAwXiYosLLRBXeNlub4SKfApe8ojQh4RRzFBZP/wNbOKr+Fo6g4RQCWrr5xQCZMK3ugBzTHM+zh9Ra7tG0oCySRcFTAXXoyXnJm+PFhdR6jbkerDlUYP9RD/87p/YKS1wSXExpBkEglpbTUPMCj+t1kXXEJ68JkMrVMpeznuuopgjHYWWD2FgjFFNkp ubuntu@cp-master
 ```
 
 - 사용할 **모든 Master, ETCD, Worker Node**의 authorized_keys 파일 본문의 마지막 부분(기존 본문 내용 아래 추가)에 공개키를 복사한다.
@@ -312,33 +310,33 @@ $ vi .ssh/authorized_keys
 
 ex)
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDRueywSiuwyfmCSecHu7iwyi3xYS1xigAnhR/RMg/Ws3yOuwbKfeDFUprQR24BoMaD360uyuRaPpfqSL3LS9oRFrj0BSaQfmLcMM1+dWv+NbH/vvq7QWhIszVCLzwTqlHrhgNsh0+EMhqc15KEo5kHm7d7vLc0fB5tZkmovsUFzp01Ceo9+Qye6+j+UM6ssxdTmatoMP3ZZKZzUPF0EZwTcGG6+8rVK2G8GhTqwGLj9E+As3GB1YdOvr/fsTAi2PoxxFsypNR4NX8ZTDvRdAUzIxz8wv2VV4mADStSjFpE7HWrzr4tZUjvvVFptU4LbyON9YY4brMzjxA7kTuf/e3j Generated-by-Nova
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmAYEo3CcFGhRhzLcVz3rKb+C25mOne+MaQGynZFpZk4muEAUdkpieoo+B6r2eJHjBLopn5quWJ561H7EZb/GlfC5ThjHFF+hTf5trF4boW1iZRvUM56KAwXiYosLLRBXeNlub4SKfApe8ojQh4RRzFBZP/wNbOKr+Fo6g4RQCWrr5xQCZMK3ugBzTHM+zh9Ra7tG0oCySRcFTAXXoyXnJm+PFhdR6jbkerDlUYP9RD/87p/YKS1wSXExpBkEglpbTUPMCj+t1kXXEJ68JkMrVMpeznuuopgjHYWWD2FgjFFNkp ubuntu@paasta-cp-master
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmAYEo3CcFGhRhzLcVz3rKb+C25mOne+MaQGynZFpZk4muEAUdkpieoo+B6r2eJHjBLopn5quWJ561H7EZb/GlfC5ThjHFF+hTf5trF4boW1iZRvUM56KAwXiYosLLRBXeNlub4SKfApe8ojQh4RRzFBZP/wNbOKr+Fo6g4RQCWrr5xQCZMK3ugBzTHM+zh9Ra7tG0oCySRcFTAXXoyXnJm+PFhdR6jbkerDlUYP9RD/87p/YKS1wSXExpBkEglpbTUPMCj+t1kXXEJ68JkMrVMpeznuuopgjHYWWD2FgjFFNkp ubuntu@cp-master
 ```
 
 <br>
 
-### <div id='2.4'> 2.4. Kubespray 다운로드
+### <div id='2.4'> 2.4. Container Platform Cluster Deployment 다운로드
 2.4.부터는 **1번 Master Node**에서만 진행을 하면 된다.(나머지 Node에는 더 이상 추가 작업이 없음)
-Kubespray 설치에 필요한 Source File을 Download 받아 Kubespray 설치 작업 경로로 위치시킨다.
+Container Platform Cluster 설치에 필요한 Source File을 Download 받아 Container Platform Cluster 설치 작업 경로로 위치시킨다.
 
-- Kubespray Download URL : https://github.com/PaaS-TA/paas-ta-container-platform-deployment
+- Container Platform Cluster Deployment Download URL : https://github.com/k-paas/cp-deployment
 
-- git clone 명령을 통해 다음 경로에서 Kubespray 다운로드를 진행한다. 본 설치 가이드에서의 Kubespray 버전은 v2.21.0 이다.
+- git clone 명령을 통해 다음 경로에서 Container Platform Cluster Deployment 다운로드를 진행한다.
 ```
-$ git clone https://github.com/PaaS-TA/paas-ta-container-platform-deployment.git
+$ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.4.x
 ```
 
 <br>
 
-### <div id='2.5'> 2.5. Kubespray 설치 준비
-Kubespray 설치에 필요한 환경변수를 사전 정의 후 쉘 스크립트를 통해 설치를 진행한다.
+### <div id='2.5'> 2.5. Container Platform Cluster 설치 준비
+Container Platform Cluster 설치에 필요한 환경변수를 사전 정의 후 쉘 스크립트를 통해 설치를 진행한다.
 
-- Kubespray 설치경로 이동한다.
+- Container Platform Cluster 설치경로 이동한다.
 ```
-$ cd paas-ta-container-platform-deployment/standalone/ha_control_plane
+$ cd cp-deployment/standalone/ha_control_plane
 ```
 
-- Kubespray 설치에 필요한 환경변수를 정의한다.
+- Container Platform Cluster 설치에 필요한 환경변수를 정의한다.
 ```
 ## External ETCD 구성의 경우
 $ vi external-cp-cluster-vars.sh
@@ -430,8 +428,8 @@ export NFS_SERVER_PRIVATE_IP={Storage Type nfs 설정 시 NFS Server의 Private 
 
 <br>
 
-### <div id='2.6'> 2.6. Kubespray 설치
-쉘 스크립트를 통해 필요 패키지 설치, Node 구성정보 설정, Kubespray 설치정보 설정, Ansible playbook을 통한 Kubespray 설치를 일괄적으로 진행한다.
+### <div id='2.6'> 2.6. Container Platform Cluster 설치
+쉘 스크립트를 통해 필요 패키지 설치, Node 구성정보 설정, Container Platform Cluster 설치정보 설정, Ansible playbook을 통한 Container Platform Cluster 설치를 일괄적으로 진행한다.
 
 - 쉘 스크립트를 통해 설치를 진행한다.
 ```
@@ -444,18 +442,18 @@ $ source deploy-stacked-cp-cluster.sh
 
 <br>
 
-### <div id='2.7'> 2.7. Kubespray 설치 확인
-Kubernetes Node 및 kube-system Namespace의 Pod를 확인하여 Kubespray 설치를 확인한다.
+### <div id='2.7'> 2.7. Container Platform Cluster 설치 확인
+Kubernetes Node 및 kube-system Namespace의 Pod를 확인하여 Container Platform Cluster 설치를 확인한다.
 
 ```
 $ kubectl get nodes
 NAME                 STATUS   ROLES                  AGE   VERSION
-paasta-cp-master-1   Ready    control-plane          12m   v1.25.6
-paasta-cp-master-2   Ready    control-plane          12m   v1.25.6
-paasta-cp-master-3   Ready    control-plane          12m   v1.25.6
-paasta-cp-worker-1   Ready    <none>                 10m   v1.25.6
-paasta-cp-worker-2   Ready    <none>                 10m   v1.25.6
-paasta-cp-worker-3   Ready    <none>                 10m   v1.25.6
+cp-master-1          Ready    control-plane          12m   v1.26.5
+cp-master-2          Ready    control-plane          12m   v1.26.5
+cp-master-3          Ready    control-plane          12m   v1.26.5
+cp-worker-1          Ready    <none>                 10m   v1.26.5
+cp-worker-2          Ready    <none>                 10m   v1.26.5
+cp-worker-3          Ready    <none>                 10m   v1.26.5
 
 $ kubectl get pods -n kube-system
 NAME                                                           READY   STATUS    RESTARTS   AGE
@@ -468,21 +466,21 @@ calico-node-stjlh                                              1/1     Running  
 coredns-657959df74-99gz9                                       1/1     Running   0          15h
 coredns-657959df74-lqhvf                                       1/1     Running   0          15h
 dns-autoscaler-b5c786945-hxnr9                                 1/1     Running   0          15h
-kube-apiserver-paasta-cp-master-1                              1/1     Running   0          15h
-kube-apiserver-paasta-cp-master-2                              1/1     Running   0          15h
-kube-apiserver-paasta-cp-master-3                              1/1     Running   0          15h
-kube-controller-manager-paasta-cp-master-1                     1/1     Running   0          15h
-kube-controller-manager-paasta-cp-master-2                     1/1     Running   0          15h
-kube-controller-manager-paasta-cp-master-3                     1/1     Running   0          15h
+kube-apiserver-cp-master-1                                     1/1     Running   0          15h
+kube-apiserver-cp-master-2                                     1/1     Running   0          15h
+kube-apiserver-cp-master-3                                     1/1     Running   0          15h
+kube-controller-manager-cp-master-1                            1/1     Running   0          15h
+kube-controller-manager-cp-master-2                            1/1     Running   0          15h
+kube-controller-manager-cp-master-3                            1/1     Running   0          15h
 kube-proxy-clskg                                               1/1     Running   0          15h
 kube-proxy-lwjzg                                               1/1     Running   0          15h
 kube-proxy-p8kcq                                               1/1     Running   0          15h
 kube-proxy-q9wxp                                               1/1     Running   0          15h
 kube-proxy-qbv9j                                               1/1     Running   0          15h
 kube-proxy-zlkpv                                               1/1     Running   0          15h
-kube-scheduler-paasta-cp-master-1                              1/1     Running   0          15h
-kube-scheduler-paasta-cp-master-2                              1/1     Running   0          15h
-kube-scheduler-paasta-cp-master-3                              1/1     Running   0          15h
+kube-scheduler-cp-master-1                                     1/1     Running   0          15h
+kube-scheduler-cp-master-2                                     1/1     Running   0          15h
+kube-scheduler-cp-master-3                                     1/1     Running   0          15h
 metrics-server-876f9ff55-tntqz                                 2/2     Running   0          15h
 nodelocaldns-7b5kp                                             1/1     Running   0          15h
 nodelocaldns-9hc28                                             1/1     Running   0          15h
@@ -494,8 +492,8 @@ nodelocaldns-t7xg9                                             1/1     Running  
 
 <br>
 
-## <div id='3'> 3. Kubespray 삭제 (참고)
-Ansible playbook을 이용하여 Kubespray 삭제를 진행한다.
+## <div id='3'> 3. Container Platform Cluster 삭제 (참고)
+Ansible playbook을 이용하여 Container Platform Cluster 삭제를 진행한다.
 
 ```
 $ source reset-cp-cluster.sh
@@ -528,4 +526,4 @@ $ source reset-cp-cluster.sh
 [image 001]:images/stanalone-ha-external-etcd-v1.2.png
 [image 002]:images/stanalone-ha-stacked-etcd-v1.2.png
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > 클러스터 설치 가이드 (HA)
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > 클러스터 설치 가이드 (HA)

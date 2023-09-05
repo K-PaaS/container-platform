@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > Edge 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > Edge 설치 가이드
 
 <br>
 
@@ -28,8 +28,6 @@
 ### <div id='1.1'> 1.1. 목적
 본 문서 (KubeEdge 설치 가이드) 는 개방형 PaaS 플랫폼 고도화 및 개발자 지원 환경 기반의 Open PaaS에 배포되는 컨테이터 플랫폼을 설치하기 위한 KubeEdge를 설치하는 방법을 기술하였다.
 
-PaaS-TA 5.5 버전부터는 KubeEdge 기반으로 단독 배포를 지원한다. 기존 Container 서비스 기반으로 설치를 원할 경우에는 PaaS-TA 5.0 이하 버전의 문서를 참고한다.
-
 <br>
 
 ### <div id='1.2'> 1.2. 범위
@@ -39,7 +37,7 @@ PaaS-TA 5.5 버전부터는 KubeEdge 기반으로 단독 배포를 지원한다.
 
 ### <div id='1.3'> 1.3. 시스템 구성도
 시스템 구성은 Kubernetes Cluster(Master, Worker, Edge) 환경으로 구성되어 있다. <br>
-Kubespray를 통해 Kubernetes Cluster(Master, Worker)를 설치하고 Kubernetes Cluster와 Edge 환경에 KubeEdge를 설치한다. Pod를 통해서는 Database, Private registry 등 미들웨어 환경을 제공하여 Container Image로 Kubernetes Cluster에 Container Platform 포털 환경을 배포한다. <br>
+Container Platform Cluster Deployment 통해 Kubernetes Cluster(Master, Worker)를 설치하고 Kubernetes Cluster와 Edge 환경에 KubeEdge를 설치한다. Pod를 통해서는 Database, Private registry 등 미들웨어 환경을 제공하여 Container Image로 Kubernetes Cluster에 Container Platform 포털 환경을 배포한다. <br>
 총 필요한 VM 환경으로는 **단독배포 또는 HA배포 클러스터, Edge VM: 1개 이상** 이 필요하며,  본 문서는 Kubernetes Cluster 환경에 Edge Node를 구성하기 위한 Edge VM 설치 내용이다.
 
 ![image 001]
@@ -63,14 +61,14 @@ KubeEdge 설치에 필요한 주요 소프트웨어 및 패키지 Version 정보
 |---|---|
 |KubeEdge|v1.12.0|
 |EdgeMesh|v1.12.0|
-|Kubernetes Native|v1.25.6|
+|Kubernetes Native|v1.26.5|
 |Kubernetes Native (Edge Node)|v1.22.6|
-|CRI-O|v1.25.0|
+|CRI-O|v1.26.0|
 |CRI-O (Edge Node)|v1.22.0|
 
 본 가이드 문서에서는 Container Platform 배포 시 다음을 권고하고 있다.
 
-- deb / rpm 호환 Linux OS를 실행하는 하나 이상의 머신 (Ubuntu 또는 CentOS)
+- deb / rpm 호환 Linux OS를 실행하는 하나 이상의 머신 (Ubuntu)
 - 머신 당 8G (최소사양) or 16G (권장사양) 이상의 RAM
 - control-plane 노드로 사용하는 머신에 2 개 (최소사양) or 4 개 (권장사양) 이상의 CPU
 - 클러스터의 모든 시스템 간의 완전한 네트워크 연결
@@ -133,11 +131,11 @@ KubeEdge 설치에 필요한 주요 소프트웨어 및 패키지 Version 정보
 ### <div id='2.2'> 2.2. Kubernetes Native Cluster 배포
 KubeEdge 설치를 위해서는 Cloud 영역에 Kubernetes Cluster가 배포되어있어야 하며, 배포 이후 Edge 영역에 Edge Node를 배포하여야 한다.
 
-- Cloud 영역에 Kubespray를 통해 Kubernetes Cluster 배포를 진행한다.
+- Cloud 영역에 Container Platform Cluster Deployment 통해 Kubernetes Cluster 배포를 진행한다.
 
-> https://github.com/PaaS-TA/paas-ta-container-platform/blob/master/install-guide/standalone/cp-cluster-install.md (단독배포)
+> https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install.md (단독배포)
 
-> https://github.com/PaaS-TA/paas-ta-container-platform/blob/master/install-guide/standalone/cp-cluster-ha-install.md (HA배포)
+> https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-ha-install.md (HA배포)
 
 <br>
 
@@ -156,13 +154,13 @@ KubeEdge 설치에 필요한 환경변수를 사전 정의 후 쉘 스크립트�
 # reboot
 ```
 
-- Kubespray 설치경로 이동한다. 이후 부터는 **Master Node**에서만 진행을 하면 된다.
+- Container Platform Cluster 설치경로 이동한다. 이후 부터는 **Master Node**에서만 진행을 하면 된다.
 ```
 ## 단독배포 Cluster의 경우
-$ cd paas-ta-container-platform-deployment/standalone/single_control_plane
+$ cd cp-deployment/standalone/single_control_plane
 
 ## HA배포 Cluster의 경우
-$ cd paas-ta-container-platform-deployment/standalone/ha_control_plane
+$ cd cp-deployment/standalone/ha_control_plane
 ```
 
 - KubeEdge 설치에 필요한 환경변수를 정의한다. HostName, IP 정보는 다음을 통해 확인할 수 있다.
@@ -218,11 +216,11 @@ Kubernetes Node 및 kube-system Namespace의 Pod를 확인하여 KubeEdge 설치
 ```
 # kubectl get nodes
 NAME                 STATUS   ROLES                  AGE     VERSION
-paasta-cp-edge       Ready    agent,edge             5m40s   v1.22.6-kubeedge-v1.12.0
-paasta-cp-master     Ready    control-plane,master   39m     v1.25.6
-paasta-cp-worker-1   Ready    <none>                 38m     v1.25.6
-paasta-cp-worker-2   Ready    <none>                 38m     v1.25.6
-paasta-cp-worker-3   Ready    <none>                 38m     v1.25.6
+cp-edge              Ready    agent,edge             5m40s   v1.22.6-kubeedge-v1.12.0
+cp-master            Ready    control-plane,master   39m     v1.26.5
+cp-worker-1          Ready    <none>                 38m     v1.26.5
+cp-worker-2          Ready    <none>                 38m     v1.26.5
+cp-worker-3          Ready    <none>                 38m     v1.26.5
 
 # kubectl get pods -n kube-system
 NAME                                       READY   STATUS    RESTARTS   AGE
@@ -233,18 +231,18 @@ calico-node-xc55c                          1/1     Running   0          4m53s
 coredns-657959df74-grflz                   1/1     Running   0          37m
 coredns-657959df74-wbdl6                   1/1     Running   0          37m
 dns-autoscaler-b5c786945-cbcv9             1/1     Running   0          37m
-kube-apiserver-paasta-cp-master            1/1     Running   0          36m
-kube-controller-manager-paasta-cp-master   1/1     Running   1          39m
+kube-apiserver-cp-master                   1/1     Running   0          36m
+kube-controller-manager-cp-master          1/1     Running   1          39m
 kube-proxy-2ckfd                           1/1     Running   0          38m
 kube-proxy-hb8p2                           1/1     Running   0          38m
 kube-proxy-nnh6d                           1/1     Running   0          38m
 kube-proxy-p9srm                           1/1     Running   0          6m4s
 kube-proxy-zmp95                           1/1     Running   0          38m
-kube-scheduler-paasta-cp-master            1/1     Running   1          39m
+kube-scheduler-cp-master                   1/1     Running   1          39m
 metrics-server-5cd75b7749-57sc2            2/2     Running   0          37m
-nginx-proxy-paasta-cp-worker-1             1/1     Running   0          38m
-nginx-proxy-paasta-cp-worker-2             1/1     Running   0          38m
-nginx-proxy-paasta-cp-worker-3             1/1     Running   0          38m
+nginx-proxy-cp-worker-1                    1/1     Running   0          38m
+nginx-proxy-cp-worker-2                    1/1     Running   0          38m
+nginx-proxy-cp-worker-3                    1/1     Running   0          38m
 nodelocaldns-24vq4                         1/1     Running   0          6m4s
 nodelocaldns-jjrjj                         1/1     Running   0          37m
 nodelocaldns-kgzxb                         1/1     Running   0          37m
@@ -286,4 +284,4 @@ $ source reset-cp-edge.sh
 
 [image 001]:images/edge-v1.2.png
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > Edge 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > Edge 설치 가이드
