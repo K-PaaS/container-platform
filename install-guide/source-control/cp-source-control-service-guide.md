@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > SourceControl 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > SourceControl 설치 가이드
 
 <br>
 
@@ -58,9 +58,9 @@ Kubespray를 통해 설치된 Kubernetes Cluster 환경에 컨테이너 플랫�
     
 ### <div id='2.1'>2.1. 컨테이너 플랫폼 포털 설치
 컨테이너 플랫폼 소스 컨트롤에서 사용할 인프라로 인증서버 **KeyCloak Server**, 데이터베이스 **MariaDB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
-파스타 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치한다.
+K-PaaS 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치한다.
 컨테이너 플랫폼 포털 설치는 아래 가이드를 참조한다.
-> [파스타 컨테이너 플랫폼 포털 배포](../container-platform-portal/paas-ta-container-platform-portal-deployment-service-guide.md)     
+> [K-PaaS 컨테이너 플랫폼 포털 배포](../container-platform-portal/cp-portal-deployment-service-guide.md)     
 
 <br>
   
@@ -126,7 +126,7 @@ PROVIDER_TYPE="service"
 <br>    
 
 :bulb: Keycloak 기본 배포 방식은 **HTTP**이며 인증서를 통한 **HTTPS**를 설정되어 있는 경우
-> [Keycloak TLS 설정](../container-platform-portal/paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide.md)
+> [Keycloak TLS 설정](../container-platform-portal/cp-portal-deployment-keycloak-tls-setting-guide.md)
 
 컨테이너 플랫폼 소스 컨트롤 변수 파일 내 아래 내용을 수정한다.
 ```
@@ -213,19 +213,19 @@ namespace "cp-source-control" deleted
 <br>
   
 ## <div id='4'>4. 컨테이너 플랫폼 소스 컨트롤 서비스 브로커
-컨테이너 플랫폼 PaaS-TA 서비스 형 소스 컨트롤으로 설치하는 경우 CF와 Kubernetes에 배포된 컨테이너 플랫폼 소스 컨트롤 서비스 연동을 위해서 브로커를 등록해 주어야 한다.
-PaaS-TA 운영자 포털을 통해 서비스를 등록하고 공개하면, PaaS-TA 사용자 포털을 통해 서비스를 신청하여 사용할 수 있다.
+컨테이너 플랫폼 K-PaaS 서비스 형 소스 컨트롤으로 설치하는 경우 CF와 Kubernetes에 배포된 컨테이너 플랫폼 소스 컨트롤 서비스 연동을 위해서 브로커를 등록해 주어야 한다.
+K-PaaS 운영자 포털을 통해 서비스를 등록하고 공개하면, K-PaaS 사용자 포털을 통해 서비스를 신청하여 사용할 수 있다.
   
 ### <div id='4.1'>4.1. 컨테이너 플랫폼 소스 컨트롤 사용자 인증 서비스 구성
 컨테이너 플랫폼 소스 컨트롤을 서비스로 사용하기 위해서는 **사용자 인증 서비스** 구성이 사전에 진행되어야 한다.<br>
 사용자 인증 서비스 구성은 아래 가이드를 참조한다.
-> [사용자 인증 서비스 구성](../container-platform-portal/paas-ta-container-platform-portal-deployment-service-guide.md#4)      
+> [사용자 인증 서비스 구성](../container-platform-portal/cp-portal-deployment-service-guide.md#4)      
 컨테이너 플랫폼 포털 사용자 인증 서비스 구성 시, 소스 컨트롤에도 적용된다.
 
 <br>
 
 ### <div id='4.2'>4.2. 컨테이너 플랫폼 소스 컨트롤 서비스 브로커 등록
-:bulb: 해당 내용은 PaaS-TA 포털이 설치된 **BOSH Inception**에서 진행한다.
+:bulb: 해당 내용은 K-PaaS 포털이 설치된 **BOSH Inception**에서 진행한다.
 서비스 브로커 등록 시 개방형 클라우드 플랫폼에서 서비스 브로커를 등록할 수 있는 사용자로 로그인이 되어있어야 한다.
 
 ##### 서비스 브로커 목록을 확인한다.
@@ -304,9 +304,9 @@ broker: cp-source-control-service-broker
 <br>
     
 ### <div id='4.3'>4.3. 컨테이너 플랫폼 소스 컨트롤 서비스 조회 설정
-해당 설정은 PaaS-TA 포털에서 컨테이너 플랫폼 소스 컨트롤 서비스를 조회하고 신청할 수 있도록 하기 위한 설정이다.
+해당 설정은 K-PaaS 포털에서 컨테이너 플랫폼 소스 컨트롤 서비스를 조회하고 신청할 수 있도록 하기 위한 설정이다.
 
-##### PaaS-TA 운영자 포털에 접속한다.
+##### K-PaaS 운영자 포털에 접속한다.
 
 
 ##### 메뉴 [운영관리]-[카탈로그] 에서 앱서비스 탭 안에 Container Platform Source Control 서비스를 선택하여 설정을 변경한다.
@@ -319,7 +319,7 @@ broker: cp-source-control-service-broker
 ![image](https://user-images.githubusercontent.com/80228983/146360677-bd0878f4-85ac-48fc-9e30-6bc49a74381f.png)
 
 
-##### PaaS-TA 사용자 포털에 접속한다.
+##### K-PaaS 사용자 포털에 접속한다.
 
 ##### 메뉴 [카탈로그]-[서비스] 에서 서비스 탭 안에 Container Platform Source Control 서비스를 선택하여 서비스를 생성한다.
 ![image](https://user-images.githubusercontent.com/80228983/146360859-7388527a-e570-4985-b4bc-e5b4b3f19c55.png)
@@ -329,8 +329,8 @@ broker: cp-source-control-service-broker
     
 ### <div id='4.4'/>4.4. 컨테이너 플랫폼 소스 컨트롤 사용 가이드
 - 컨테이너 플랫폼 소스 컨트롤 사용방법은 아래 사용가이드를 참고한다.  
-  + [컨테이너 플랫폼 소스 컨트롤 사용 가이드](../../use-guide/source-control/paas-ta-container-platform-source-control-use-guide.md)   
+  + [컨테이너 플랫폼 소스 컨트롤 사용 가이드](../../use-guide/source-control/cp-source-control-use-guide.md)   
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > SourceControl 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > SourceControl 설치 가이드
