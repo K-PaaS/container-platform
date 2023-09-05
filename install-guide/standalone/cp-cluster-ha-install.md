@@ -509,15 +509,15 @@ $ source reset-cp-cluster.sh
 |전체 Resource|kube*|
 |Namespace|all|
 ||kubernetes-dashboard|
-||paas-ta-container-platform-temp-namespace|
-|Role|paas-ta-container-platform-init-role|
-||paas-ta-container-platform-admin-role|
-|ResourceQuota|paas-ta-container-platform-low-rq|
-||paas-ta-container-platform-medium-rq|
-||paas-ta-container-platform-high-rq|
-|LimitRanges|paas-ta-container-platform-low-limit-range|
-||paas-ta-container-platform-medium-limit-range|
-||paas-ta-container-platform-high-limit-range|
+||cp-portal-temp-namespace|
+|Role|cp-init-role|
+||cp-admin-role|
+|ResourceQuota|cp-low-resourcequota|
+||cp-medium-resourcequota|
+||cp-high-resourcequota|
+|LimitRanges|cp-low-limitrange|
+||cp-medium-limitrange|
+||cp-high-limitrange|
 |Pod|nodes|
 ||resources|
 
