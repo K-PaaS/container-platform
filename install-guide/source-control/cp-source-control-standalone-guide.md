@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > SourceControl 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > SourceControl 설치 가이드
 
 <br>
 
@@ -57,9 +57,9 @@ Kubespray를 통해 설치된 Kubernetes Cluster 환경에 컨테이너 플랫�
     
 ### <div id='2.1'>2.1. 컨테이너 플랫폼 포털 설치
 컨테이너 플랫폼 소스 컨트롤에서 사용할 인프라로 인증서버 **KeyCloak Server**, 데이터베이스 **MariaDB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
-파스타 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치한다.
+K-PaaS 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치한다.
 컨테이너 플랫폼 인프라 설치는 아래 가이드를 참조한다.
-> [파스타 컨테이너 플랫폼 포털 배포](../container-platform-portal/paas-ta-container-platform-portal-deployment-standalone-guide.md)     
+> [K-PaaS 컨테이너 플랫폼 포털 배포](../container-platform-portal/cp-portal-deployment-standalone-guide.md)     
 
 <br>
     
@@ -125,7 +125,7 @@ PROVIDER_TYPE="standalone"
 <br>    
 
 :bulb: Keycloak 기본 배포 방식은 **HTTP**이며 인증서를 통한 **HTTPS**를 설정되어 있는 경우
- > [Keycloak TLS 설정](../container-platform-portal/paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide.md)
+ > [Keycloak TLS 설정](../container-platform-portal/cp-portal-deployment-keycloak-tls-setting-guide.md)
 
 컨테이너 플랫폼 소스 컨트롤 변수 파일 내 아래 내용을 수정한다.
 ```
@@ -265,8 +265,8 @@ $ kubectl get configmap -n cp-portal cp-portal-configmap -o yaml | grep KEYCLOAK
 
 ### <div id='4.3'/>4.3. 컨테이너 플랫폼 소스 컨트롤 사용 가이드
 - 컨테이너 플랫폼 소스컨트롤 사용 방법은 아래 사용가이드를 참고한다.  
-  + [컨테이너 플랫폼 소스 컨트롤 사용 가이드](../../use-guide/source-control/paas-ta-container-platform-source-control-use-guide.md)   
+  + [컨테이너 플랫폼 소스 컨트롤 사용 가이드](../../use-guide/source-control/cp-source-control-use-guide.md)   
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > SourceControl 설치 가이드 
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > SourceControl 설치 가이드 
