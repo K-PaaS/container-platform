@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 서비스형 배포 포털 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 서비스형 배포 포털 설치 가이드
 
 <br>
 
@@ -135,7 +135,7 @@ $ tar -xvf cp-portal-deployment-v1.4.0.tar.gz
 컨테이너 플랫폼 포털을 배포하기 전 변수 값 정의가 필요하다. 배포에 필요한 정보를 확인하여 변수를 설정한다.
 
 :bulb: Keycloak 기본 배포 방식은 **HTTP**이며 인증서를 통한 **HTTPS**를 설정하고자 하는 경우 아래 가이드를 참조하여 선처리한다.
-> [Keycloak TLS 설정](paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide.md#2-keycloak-tls-설정)       
+> [Keycloak TLS 설정](cp-portal-deployment-keycloak-tls-setting-guide.md#2-keycloak-tls-설정)
 
 <br>
 
@@ -344,12 +344,12 @@ Uninstalled plugin: cm-push
   
 
 ## <div id='4'>4. 컨테이너 플랫폼 포털 사용자 인증 서비스 구성
-컨테이너 플랫폼 포털 사용자 인증은 Keycloak 서비스를 통해 관리된다. PaaS-TA 포털의 사용자 인증 서비스 UAA의 사용자 계정으로 컨테이너 플랫폼 포털 접속을 위해
+컨테이너 플랫폼 포털 사용자 인증은 Keycloak 서비스를 통해 관리된다. K-PaaS 포털의 사용자 인증 서비스 UAA의 사용자 계정으로 컨테이너 플랫폼 포털 접속을 위해
 UAA 서비스를 ID 제공자(Identity Provider)로, Keycloak 서비스를 서비스 제공자(Service Provider)로 구성하는 단계가 필요하다.
 
 #### <div id='4.1'>4.1. 컨테이너 플랫폼 포털 사용자 인증 구성 Deployment 다운로드
 UAA 서비스와 Keycloak 서비스 인증 구성을 위한 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
-:bulb: 해당 내용은 PaaS-TA 포털이 설치된 **BOSH Inception**에서 진행한다.
+:bulb: 해당 내용은 K-PaaS 포털이 설치된 **BOSH Inception**에서 진행한다.
 
 + 컨테이너 플랫폼 포털 사용자 인증 구성 Deployment 다운로드 :  
    [cp-saml-deployment-v1.4.0.tar.gz](https://nextcloud.paas-ta.org/index.php/s/MajerbG3ZHQZQJ8/download)  
@@ -375,7 +375,7 @@ UAA 서비스와 Keycloak 서비스 인증 구성을 위한 변수 값 정의가
 
 :bulb: **Keycloak TLS HTTPS** 설정이 적용된 경우, Keycloak URL 변수 값 변경이 필요하다. <br>
 아래 가이드를 참조하여 변수 값을 변경한다.
-> [(서비스형 배포) 사용자 인증 서비스 구성 변경](paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide.md#3-서비스형-배포-사용자-인증-서비스-구성-변경)       
+> [(서비스형 배포) 사용자 인증 서비스 구성 변경](cp-portal-deployment-keycloak-tls-setting-guide.md#3-서비스형-배포-사용자-인증-서비스-구성-변경)       
 
 <br>
 
@@ -493,8 +493,8 @@ DELETE https://uaa.xx.xxx.xxx.xx.nip.io/saml/service-providers/c86dd09a-2d47-400
 <br>
 
 ## <div id='5'>5. 컨테이너 플랫폼 포털 서비스 브로커
-컨테이너 플랫폼 PaaS-TA 서비스 형 포털로 설치하는 경우 CF와 Kubernetes에 배포된 컨테이너 플랫폼 포털 서비스 연동을 위해서 브로커를 등록해 주어야 한다.
-PaaS-TA 운영자 포털을 통해 서비스를 등록하고 공개하면, PaaS-TA 사용자 포털을 통해 서비스를 신청하여 사용할 수 있다.
+컨테이너 플랫폼 K-PaaS 서비스 형 포털로 설치하는 경우 CF와 Kubernetes에 배포된 컨테이너 플랫폼 포털 서비스 연동을 위해서 브로커를 등록해 주어야 한다.
+K-PaaS 운영자 포털을 통해 서비스를 등록하고 공개하면, K-PaaS 사용자 포털을 통해 서비스를 신청하여 사용할 수 있다.
 
 ### <div id='5.1'>5.1. 컨테이너 플랫폼 포털 서비스 브로커 등록
 서비스 브로커 등록 시 개방형 클라우드 플랫폼에서 서비스 브로커를 등록할 수 있는 사용자로 로그인이 되어있어야 한다.
@@ -561,9 +561,9 @@ broker: cp-portal-service-broker
 <br>
 
 ### <div id='5.2'>5.2. 컨테이너 플랫폼 포털 서비스 조회 설정
-해당 설정은 PaaS-TA 포털에서 컨테이너 플랫폼 포털 서비스를 조회하고 신청할 수 있도록 하기 위한 설정이다.
+해당 설정은 K-PaaS 포털에서 컨테이너 플랫폼 포털 서비스를 조회하고 신청할 수 있도록 하기 위한 설정이다.
 
-##### PaaS-TA 운영자 포털에 접속한다.
+##### K-PaaS 운영자 포털에 접속한다.
 ![image 007]
 
 
@@ -576,7 +576,7 @@ broker: cp-portal-service-broker
     
 ![image 009]
 
-##### PaaS-TA 사용자 포털에 접속하여 컨테이너 플랫폼 포털 서비스를 생성한다.
+##### K-PaaS 사용자 포털에 접속하여 컨테이너 플랫폼 포털 서비스를 생성한다.
 ![image 010]
 
 <br>
@@ -612,7 +612,7 @@ broker: cp-portal-service-broker
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 서비스형 배포 포털 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 서비스형 배포 포털 설치 가이드
 
 [image 001]:images/cp-001.png
 [image 002]:images/cp-002.png

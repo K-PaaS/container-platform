@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 단독형 배포 포털 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 단독형 배포 포털 설치 가이드
 
 <br>
 
@@ -36,6 +36,7 @@
 
 ### <div id='1.2'>1.2. 범위
 설치 범위는 Kubernetes Cluster 배포를 기준으로 작성하였다.
+
 
 <br>
 
@@ -127,7 +128,7 @@ $ tar -xvf cp-portal-deployment-v1.4.0.tar.gz
 컨테이너 플랫폼 포털을 배포하기 전 변수 값 정의가 필요하다. 배포에 필요한 정보를 확인하여 변수를 설정한다.
 
 :bulb: Keycloak 기본 배포 방식은 **HTTP**이며 인증서를 통한 **HTTPS**를 설정하고자 하는 경우 아래 가이드를 참조하여 선처리한다.
-> [Keycloak TLS 설정](paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide.md#2-keycloak-tls-설정)       
+> [Keycloak TLS 설정](cp-portal-deployment-keycloak-tls-setting-guide.md#2-keycloak-tls-설정)   
 
 <br>
 
@@ -399,7 +400,7 @@ Namespace와 Role 할당은 [[4.3. 컨테이너 플랫폼 사용자/운영자 �
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 단독형 배포 포털 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 단독형 배포 포털 설치 가이드
 
 [image 001]:images/cp-001.png
 [image 002]:images/cp-002.png
