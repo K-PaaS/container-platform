@@ -33,7 +33,7 @@
 ### <div id='1.1'> 1.1. 목적
 본 문서 (Kubespray 설치 가이드) 는 개방형 PaaS 플랫폼 고도화 및 개발자 지원 환경 기반의 Open PaaS에 배포되는 컨테이터 플랫폼을 설치하기 위한 Kubernetes Native를 Kubespray를 이용하여 설치하는 방법을 기술하였다.
 
-PaaS-TA 5.5 버전부터는 Kubespray 기반으로 단독 배포를 지원한다. 기존 Container 서비스 기반으로 설치를 원할 경우에는 PaaS-TA 5.0 이하 버전의 문서를 참고한다.
+K-PaaS 5.5 버전부터는 Kubespray 기반으로 단독 배포를 지원한다. 기존 Container 서비스 기반으로 설치를 원할 경우에는 K-PaaS 5.0 이하 버전의 문서를 참고한다.
 
 <br>
 
@@ -167,11 +167,11 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 2.3.부터는 **Master Node**에서만 진행을 하면 된다.(Worker Node에는 더 이상 추가 작업이 없음)
 Kubespray 설치에 필요한 Source File을 Download 받아 Kubespray 설치 작업 경로로 위치시킨다.
 
-- Kubespray Download URL : https://github.com/PaaS-TA/paas-ta-container-platform-deployment
+- Kubespray Download URL : https://github.com/K-PaaS/cp-deployment
 
 - git clone 명령을 통해 다음 경로에서 Kubespray 다운로드를 진행한다. 본 설치 가이드에서의 Kubespray 버전은 v2.16.0 이다.
 ```
-$ git clone https://github.com/PaaS-TA/paas-ta-container-platform-deployment.git
+$ git clone https://github.com/K-PaaS/cp-deployment.git
 ```
 
 <br>
@@ -376,4 +376,4 @@ $ kubectl describe secret {SECRET_NAME} -n {NAMESPACE} | grep -E '^token' | cut 
 
 [image 001]:images/standalone-v1.2.png
 
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > 클러스터 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 클러스터 설치 가이드

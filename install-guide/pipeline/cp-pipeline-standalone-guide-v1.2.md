@@ -63,9 +63,9 @@ NFS Storage Server 설치는 아래 가이드를 참조한다.
     
 ### <div id='2.2'>2.2. 컨테이너 플랫폼 포탈 설치
 컨테이너 플랫폼 파이프라인에서 사용할 인프라로 인증서버 **KeyCloak Server**, 데이터베이스 **Maria DB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
-파스타 컨테이너 플랫폼 포탈 배포 시 해당 인프라를 모두 설치한다.
+K-PaaS 컨테이너 플랫폼 포탈 배포 시 해당 인프라를 모두 설치한다.
 컨테이너 플랫폼 인프라 설치는 아래 가이드를 참조한다.
-> [파스타 컨테이너 플랫폼 포탈 배포](../container-platform-portal/paas-ta-container-platform-portal-deployment-standalone-guide-v1.2.md)     
+> [K-PaaS 컨테이너 플랫폼 포탈 배포](../container-platform-portal/cp-portal-deployment-standalone-guide-v1.2.md)     
 
 
 ### <div id='2.3'>2.3. Cluster 환경
@@ -100,7 +100,7 @@ data-paas-ta-container-platform-postgresql-postgresql-0   Bound    pvc-327312f3-
 컨테이너 플랫폼 포탈을 통해 배포된 Private Repository(Harbor)에 컨테이너 플랫폼 파이프라인 관련 이미지 및 패키지 파일 업로드한다. 
 
 Private Repository 배포에 필요한 CRI-O insecure-registry 설정은 아래 가이드를 참조한다.
-> [CRI-O insecure-registry 설정](../container-platform-portal/paas-ta-container-platform-portal-deployment-standalone-guide-v1.2.md#3.1)      
+> [CRI-O insecure-registry 설정](../container-platform-portal/cp-container-platform-portal-deployment-standalone-guide-v1.2.md#3.1)      
 
 ### <div id='3.2'>3.2. 컨테이너 플랫폼 파이프라인 배포
     
@@ -109,7 +109,7 @@ Private Repository 배포에 필요한 CRI-O insecure-registry 설정은 아래 
 :bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
 
 + 컨테이너 플랫폼 파이프라인 Deployment 파일 다운로드 :  
-   [paas-ta-container-platform-pipeline-deployment-1.2.4.tar.gz](https://nextcloud.k-paas.org/index.php/s/iLABHBrpjMQkjoq/download)  
+   [cp-pipeline-deployment-1.2.4.tar.gz](https://nextcloud.k-paas.org/index.php/s/iLABHBrpjMQkjoq/download)  
 
 ```
 # Deployment 파일 다운로드 경로 생성
@@ -141,7 +141,7 @@ $ tar xvfz paas-ta-container-platform-pipeline-deployment-1.2.4.tar.gz
 컨테이너 플랫폼 파이프라인을 배포하기 전 변수 값 정의가 필요하다. 배포에 필요한 정보를 확인하여 변수를 설정한다.
 
 ```
-$ cd ~/workspace/container-platform/paas-ta-container-platform-pipeline-deployment/script
+$ cd ~/workspace/container-platform/cp-pipeline-deployment/script
 $ vi container-platform-pipeline-vars.sh
 ```
 
@@ -149,7 +149,7 @@ $ vi container-platform-pipeline-vars.sh
 # COMMON VARIABLE
 K8S_MASTER_NODE_IP="{k8s master node public ip}"                 # Kubernetes master node public ip
 PROVIDER_TYPE="{container platform pipeline provider type}"        # Container platform pipeline provider type (Please enter 'standalone' or 'service')
-CF_API_URL="https:\/\/{paas-ta-api-domain}"                      # e.g) https:\/\/api.10.0.0.120.nip.io, PaaS-TA API Domain, PROVIDER_TYPE=service 인 경우 입력
+CF_API_URL="https:\/\/{k-paas-api-domain}"                      # e.g) https:\/\/api.10.0.0.120.nip.io, K-PaaS API Domain, PROVIDER_TYPE=service 인 경우 입력
 ....    
 ```
 ```    
@@ -166,7 +166,7 @@ PROVIDER_TYPE="standalone"
 <br>
 
 :bulb: Keycloak 기본 배포 방식은 **HTTP**이며 인증서를 통한 **HTTPS**를 설정되어 있는 경우
-> [Keycloak TLS 설정](../container-platform-portal/paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide-v1.2.md)
+> [Keycloak TLS 설정](../container-platform-portal/cp-portal-deployment-keycloak-tls-setting-guide-v1.2.md)
 
 컨테이너 플랫폼 파이프라인 변수 파일 내 아래 내용을 수정한다.
 ```
@@ -222,7 +222,7 @@ NOTES:
 
 ```
 # 파이프라인 리소스 확인
-$ kubectl get all -n paas-ta-container-platform-pipeline
+$ kubectl get all -n cp-pipeline
 ```
 
 ```
@@ -354,8 +354,8 @@ namespace "paas-ta-container-platform-pipeline" deleted
 
 ### <div id='4.3'/>4.3. 컨테이너 플랫폼 파이프라인 사용 가이드
 - 컨테이너 플랫폼 파이프라인 사용방법은 아래 사용가이드를 참고한다.  
-  + [컨테이너 플랫폼 파이프라인 사용 가이드](../../use-guide/pipeline/paas-ta-container-platform-pipeline-use-guide.md)    
+  + [컨테이너 플랫폼 파이프라인 사용 가이드](../../use-guide/pipeline/cp-pipeline-use-guide.md)    
 
 <br>
 
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > Pipeline 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > Pipeline 설치 가이드

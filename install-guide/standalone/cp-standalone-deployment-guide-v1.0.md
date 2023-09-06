@@ -31,7 +31,7 @@
 ### <div id='1.1'> 1.1. 목적
 본 문서 (Kubespray 설치 가이드) 는 개방형 PaaS 플랫폼 고도화 및 개발자 지원 환경 기반의 Open PaaS에 배포되는 컨테이터 플랫폼을 설치하기 위한 Kubernetes Native를 Kubespray를 이용하여 설치하는 방법을 기술하였다.
 
-PaaS-TA 5.5 버전부터는 Kubespray 기반으로 단독 배포를 지원한다. 기존 Container 서비스 기반으로 설치를 원할 경우에는 PaaS-TA 5.0 이하 버전의 문서를 참고한다.
+K-PaaS 5.5 버전부터는 Kubespray 기반으로 단독 배포를 지원한다. 기존 Container 서비스 기반으로 설치를 원할 경우에는 K-PaaS 5.0 이하 버전의 문서를 참고한다.
 
 <br>
 
@@ -162,11 +162,11 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAdc4dIUh1AbmMrMQtLH6nTNt6WZA9K5BzyNAEsDbb
 2.3.부터는 **Master Node**에서만 진행을 하면 된다.(Worker Node에는 더 이상 추가 작업이 없음)
 Kubespray 설치에 필요한 Source File을 Download 받아 Kubespray 설치 작업 경로로 위치시킨다.
 
-- Kubespray Download URL : https://github.com/PaaS-TA/paas-ta-container-platform-deployment
+- Kubespray Download URL : https://github.com/K-PaaS/cp-deployment
 
 - git clone 명령을 통해 다음 경로에서 Kubespray 다운로드를 진행한다. 본 설치 가이드에서의 Kubespray 버전은 v2.14.2 이다.
 ```
-$ git clone https://github.com/PaaS-TA/paas-ta-container-platform-deployment.git -b v1.0.4
+$ git clone https://github.com/K-PaaS/cp-deployment.git -b v1.0.4
 ```
 
 <br>
@@ -211,7 +211,7 @@ Kubespray inventory 파일에는 배포할 Master, Worker Node의 구성을 정�
 - mycluster 디렉토리의 inventory.ini 파일을 설정한다.
 ```
 $ vi inventory/mycluster/inventory.ini
-````
+```
 
 ```
 ## *_HOST_NAME = 각 호스트의 쉘에서 hostname 명령어 입력
