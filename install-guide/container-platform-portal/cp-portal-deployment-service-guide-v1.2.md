@@ -2,10 +2,6 @@
 
 <br>
 
->v1.2 (Current)
-
->[v1.3](/install-guide/container-platform-portal/paas-ta-container-platform-portal-deployment-service-guide.md)
-
 ## Table of Contents
 
 1. [문서 개요](#1)  
@@ -199,7 +195,7 @@ $ tar -xvf paas-ta-container-platform-portal-deployment_v1.2.3.tar.gz
 컨테이너 플랫폼 포털을 배포하기 전 변수 값 정의가 필요하다. 배포에 필요한 정보를 확인하여 변수를 설정한다.
 
 :bulb: Keycloak 기본 배포 방식은 **HTTP**이며 인증서를 통한 **HTTPS**를 설정하고자 하는 경우 아래 가이드를 참조하여 선처리한다.
-> [Keycloak TLS 설정](paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide-v1.2.md#2-keycloak-tls-설정)       
+> [Keycloak TLS 설정](cp-portal-deployment-keycloak-tls-setting-guide.md#2-keycloak-tls-설정)       
 
 <br>
 
@@ -454,7 +450,7 @@ UAA 서비스와 Keycloak 서비스 인증 구성을 위한 변수 값 정의가
 
 :bulb: **Keycloak TLS HTTPS** 설정이 적용된 경우, Keycloak URL 변수 값 변경이 필요하다. <br>
 아래 가이드를 참조하여 변수 값을 변경한다.
-> [(서비스형 배포) 사용자 인증 서비스 구성 변경](paas-ta-container-platform-portal-deployment-keycloak-tls-setting-guide-v1.2.md#3-서비스형-배포-사용자-인증-서비스-구성-변경)       
+> [(서비스형 배포) 사용자 인증 서비스 구성 변경](cp-portal-deployment-keycloak-tls-setting-guide.md#3-서비스형-배포-사용자-인증-서비스-구성-변경)       
 
 <br>
     
@@ -729,8 +725,8 @@ broker: container-platform-user-portal-service-broker
     
 ### <div id='5.3'/>5.3. 컨테이너 플랫폼 사용자/운영자 포털 사용 가이드
 - 컨테이너 플랫폼 포털 사용방법은 아래 사용가이드를 참고한다.  
-  + [컨테이너 플랫폼 운영자 포털 사용 가이드](../../use-guide/portal/container-platform-admin-portal-guide.md)    
-  + [컨테이너 플랫폼 사용자 포털 사용 가이드](../../use-guide/portal/container-platform-user-portal-guide.md)
+  + [컨테이너 플랫폼 운영자 포털 사용 가이드](https://github.com/K-PaaS/container-platform/blob/branch/1.2/use-guide/portal/container-platform-admin-portal-guide.md)    
+  + [컨테이너 플랫폼 사용자 포털 사용 가이드](https://github.com/K-PaaS/container-platform/blob/branch/1.2/use-guide/portal/container-platform-user-portal-guide.md)
 
 
 <br>
@@ -784,15 +780,15 @@ $ kubectl describe secret {SECRET_NAME} -n kube-system | grep -E '^token' | cut 
 |전체 Resource|kube*|
 |Namespace|all|
 ||kubernetes-dashboard|
-||paas-ta-container-platform-temp-namespace|
-|Role|paas-ta-container-platform-init-role|
-||paas-ta-container-platform-admin-role|
-|ResourceQuota|paas-ta-container-platform-low-rq|
-||paas-ta-container-platform-medium-rq|
-||paas-ta-container-platform-high-rq|
-|LimitRanges|paas-ta-container-platform-low-limit-range|
-||paas-ta-container-platform-medium-limit-range|
-||paas-ta-container-platform-high-limit-range|
+||cp-portal-temp-namespace|
+|Role|cp-init-role|
+||cp-admin-role|
+|ResourceQuota|cp-low-resourcequota|
+||cp-medium-resourcequota|
+||cp-high-resourcequota|
+|LimitRanges|cp-low-limitrange|
+||cp-medium-limitrange|
+||cp-high-limitrange|
 |Pod|nodes|
 ||resources|
 

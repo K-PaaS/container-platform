@@ -68,10 +68,10 @@ Kubespary를 통해 Kubernetes Cluster를 설치하고 BOSH 릴리즈로 Databas
 ## <div id='2'>2. 컨테이너 서비스 설치
 ### <div id='2.1'>2.1. Prerequisite
 본 설치 가이드는 **Ubuntu 18.04** 환경에서 설치하는 것을 기준으로 작성하였다. 서비스 설치를 위해서는 BOSH 2.0과 K-PaaS 5.5, K-PaaS 포털 API, K-PaaS 포털 UI가 설치 되어 있어야 한다.
-> [BOSH 2.0 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/bosh/PAAS-TA_BOSH2_INSTALL_GUIDE_V5.0.md) <br>
-> [K-PaaS 5.5 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md) <br>
-> [K-PaaS 포털 API 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/portal/PAAS-TA_PORTAL_API_SERVICE_INSTALL_GUIDE_V1.0.md) <br>
-> [K-PaaS 포털 UI 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/portal/PAAS-TA_PORTAL_UI_SERVICE_INSTALL_GUIDE_V1.0.md) <br>
+> [BOSH 2.0 설치 가이드](https://github.com/PaaS-TA/application-platform-guide/blob/master/install/application_platform/bosh.md) <br>
+> [K-PaaS 5.5 설치 가이드](https://github.com/PaaS-TA/application-platform-guide/blob/master/install/application_platform/paasta_ap.md) <br>
+> [K-PaaS 포털 API 설치 가이드](https://github.com/PaaS-TA/application-platform-guide/blob/master/install/portal/vm_type_api.md) <br>
+> [K-PaaS 포털 UI 설치 가이드](https://github.com/PaaS-TA/application-platform-guide/blob/master/install/portal/vm_type_ui.md) <br>
 
 #### 방화벽 정보
 IaaS Security Group의 열어줘야할 Port를 설정한다.
@@ -103,7 +103,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 
 ### <div id='2.2'>2.2. Stemcell 확인
 Stemcell 목록을 확인하여 서비스 설치에 필요한 Stemcell이 업로드 되어 있는 것을 확인한다. (K-PaaS 5.5 와 동일 Stemcell 사용)
-- Stemcell 업로드 및 Cloud Config, Runtime Config 설정 부분은 [K-PaaS 5.5 설치가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)를 참고 한다.  
+- Stemcell 업로드 및 Cloud Config, Runtime Config 설정 부분은 [K-PaaS 5.5 설치가이드](https://github.com/PaaS-TA/application-platform-guide/blob/master/install/application_platform/paasta_ap.md)를 참고 한다.  
 
 ```
 $ bosh -e micro-bosh stemcells
@@ -386,7 +386,7 @@ Succeeded
 
 ### <div id='2.8'>2.8. CVE/CCE 진단항목 적용
 배포된 Kubernetes Cluster, BOSH Inception 환경에 아래 가이드를 참고하여 해당 CVE/CCE 진단항목을 필수적으로 적용시켜야 한다.  
-- [CVE/CCE 진단 가이드](https://github.com/PaaS-TA/paas-ta-container-platform/blob/master/check-guide/paas-ta-container-platform-check-guide.md)
+- [CVE/CCE 진단 가이드](/check-guide/cp-check-guide.md)
 
 <br>
 

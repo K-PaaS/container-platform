@@ -140,8 +140,7 @@ KubeEdge 설치를 위해서는 Cloud 영역에 Kubernetes Cluster가 배포되�
 
 - Cloud 영역에 Kubespray를 통해 Kubernetes Cluster 배포를 진행한다.
 
-> https://github.com/PaaS-TA/paas-ta-container-platform/blob/master/install-guide/standalone/paas-ta-container-platform-standalone-deployment-guide.md
-
+> https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install.md
 <br>
 
 ### <div id='2.3'> 2.3. KubeEdge keadm 설치
@@ -570,15 +569,15 @@ $ kubectl describe secret {SECRET_NAME} -n {NAMESPACE} | grep -E '^token' | cut 
 |전체 Resource|kube*|
 |Namespace|all|
 ||kubernetes-dashboard|
-||paas-ta-container-platform-temp-namespace|
-|Role|paas-ta-container-platform-init-role|
-||paas-ta-container-platform-admin-role|
-|ResourceQuota|paas-ta-container-platform-low-rq|
-||paas-ta-container-platform-medium-rq|
-||paas-ta-container-platform-high-rq|
-|LimitRanges|paas-ta-container-platform-low-limit-range|
-||paas-ta-container-platform-medium-limit-range|
-||paas-ta-container-platform-high-limit-range|
+||cp-portal-temp-namespace|
+|Role|cp-init-role|
+||cp-admin-role|
+|ResourceQuota|cp-low-resourcequota|
+||cp-medium-resourcequota|
+||cp-high-resourcequota|
+|LimitRanges|cp-low-limitrange|
+||cp-medium-limitrange|
+||cp-high-limitrange|
 |Pod|nodes|
 ||resources|
 

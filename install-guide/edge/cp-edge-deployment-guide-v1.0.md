@@ -110,7 +110,7 @@ KubeEdge 설치를 위해서는 Cloud 영역에 Kubernetes Cluster가 배포되�
 
 - Cloud 영역에 Kubernetes Cluster 배포를 진행한다. Cluster 배포는 Kubespray를 통해 진행하며, 배포과정에서 Edge Node에 CNI를 배포하기 위해 아래와 같이 Kubespray 일부 설정 변경이 필요하다.
 
-> https://github.com/PaaS-TA/paas-ta-container-platform/blob/dev/install-guide/standalone/paas-ta-container-platform-standalone-deployment-guide-v1.0.md
+> https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-standalone-deployment-guide-v1.0.md
 
 - CNI Plugin을 calico에서 flannel로 변경한다.
 ```
@@ -604,15 +604,15 @@ $ kubectl describe secret {SECRET_NAME} -n {NAMESPACE} | grep -E '^token' | cut 
 |전체 Resource|kube*|
 |Namespace|all|
 ||kubernetes-dashboard|
-||paas-ta-container-platform-temp-namespace|
-|Role|paas-ta-container-platform-init-role|
-||paas-ta-container-platform-admin-role|
-|ResourceQuota|paas-ta-container-platform-low-rq|
-||paas-ta-container-platform-medium-rq|
-||paas-ta-container-platform-high-rq|
-|LimitRanges|paas-ta-container-platform-low-limit-range|
-||paas-ta-container-platform-medium-limit-range|
-||paas-ta-container-platform-high-limit-range|
+||cp-portal-temp-namespace|
+|Role|cp-init-role|
+||cp-admin-role|
+|ResourceQuota|cp-low-resourcequota|
+||cp-medium-resourcequota|
+||cp-high-resourcequota|
+|LimitRanges|cp-low-limitrange|
+||cp-medium-limitrange|
+||cp-high-limitrange|
 |Pod|nodes|
 ||resources|
 
