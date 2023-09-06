@@ -1,8 +1,8 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Use](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/use-guide/Readme.md) > Pipeline 서비스 사용 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > Pipeline 서비스 사용 가이드
 
 <br>
 
-# [PaaS-TA Container Platform 파이프라인 사용자 가이드]
+# [K-PaaS Container Platform 파이프라인 사용자 가이드]
 
 ## 목차
 1. [문서 개요](#1)
@@ -117,7 +117,7 @@
 # <div id='2'/> 2. 컨테이너 플랫폼 파이프라인 접속
 
 ## <div id='2-1'/> 2.1 서비스형 컨테이너 플랫폼 파이프라인 접속
-1. PaaS-TA 포탈의 스페이스 페이지에서 신청된 배포 파이프라인의 “대시보드” 버튼을 클릭하여 접속을 진행한다.
+1. K-PaaS 포탈의 스페이스 페이지에서 신청된 배포 파이프라인의 “대시보드” 버튼을 클릭하여 접속을 진행한다.
 
 2. 컨테이너 플랫폼 파이프라인 접속을 확인한다.
 ![image](https://user-images.githubusercontent.com/80228983/146734921-c3bb22aa-40b2-4d1a-91ad-4b6361d9e379.png)
@@ -673,7 +673,7 @@ $ kubectl get configmap -n cp-portal cp-portal-configmap -o yaml | grep KEYCLOAK
 2.	로그 조회 페이지로 이동한다. 실시간으로 로그가 보이고 있는 것을 확인한다.
 3.	배포 Job 실행이 완료된 것을 확인하고, 히스토리를 확인한다.
 ![image](https://user-images.githubusercontent.com/80228983/146859513-36f03f0d-aeaa-428b-8ff7-5414488f7959.png)
-4.	PaaS-TA 컨테이너 플랫폼 포탈로 조회한 결과 디플로이먼트 부분에 ‘spring-music-test’라는 애플리케이션이 배포되었음을 확인할 수 있다.
+4.	K-PaaS 컨테이너 플랫폼 포탈로 조회한 결과 디플로이먼트 부분에 ‘spring-music-test’라는 애플리케이션이 배포되었음을 확인할 수 있다.
 ![image](https://user-images.githubusercontent.com/80228983/146859752-60cc0195-164d-4681-96a7-ee57c948bac8.png)
 
 ***※	배포 Job 로그/히스토리는 관리자와 모든 파이프라인 참여자가 조회 가능하나 실행 및 정지 버튼은 생성권한과 실행 권한을 가진 참여자만 가능하다.***
@@ -916,4 +916,4 @@ $ kubectl get configmap -n cp-portal cp-portal-configmap -o yaml | grep KEYCLOAK
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Use](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/use-guide/Readme.md) > Pipeline 서비스 사용 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > Pipeline 서비스 사용 가이드

@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Use](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/use-guide/Readme.md) > Source Control 서비스 사용 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > Source Control 서비스 사용 가이드
 
 <br>
 
@@ -47,7 +47,7 @@
 # <div id='2'/> 2. 컨테이너 플랫폼 소스컨트롤 접속
 
 ### <div id='2.1'/> 2.1. 서비스형 컨테이너 플랫폼 소스컨트롤 접속
-1. PaaS-TA 포탈의 스페이스 페이지에서 신청된 소스컨트롤의 “대시보드” 버튼을 클릭하여 접속을 진행한다.
+1. K-PaaS 포탈의 스페이스 페이지에서 신청된 소스컨트롤의 “대시보드” 버튼을 클릭하여 접속을 진행한다.
 
 <br>
 
@@ -136,7 +136,7 @@ $ kubectl get configmap -n cp-portal cp-portal-configmap -o yaml | grep KEYCLOAK
 
 
 ***※변경된 비밀번호는 소스 컨트롤 repository를 접근할 때 사용되는 비밀번호로, 
-<br>로그인 정보(단독 배포의 경우 Keycloak 비밀번호, 서비스 배포의 경우 PaaS-TA 비밀번호)와 무관하다.*** <br>
+<br>로그인 정보(단독 배포의 경우 Keycloak 비밀번호, 서비스 배포의 경우 K-PaaS 비밀번호)와 무관하다.*** <br>
 ***※최초 계정 로그인 시 비밀번호를 반드시 변경해야 repository pull, push 등의 접근이 가능하다.*** <br>
 <br>
 
@@ -310,4 +310,4 @@ $ kubectl get configmap -n cp-portal cp-portal-configmap -o yaml | grep KEYCLOAK
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Use](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/use-guide/Readme.md) > Source Control 서비스 사용 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > Source Control 서비스 사용 가이드
