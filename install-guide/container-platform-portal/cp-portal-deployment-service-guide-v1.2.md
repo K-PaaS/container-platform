@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 서비스형 배포 포털 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 서비스형 배포 포털 설치 가이드
 
 <br>
 
@@ -167,7 +167,7 @@ $ sudo systemctl restart podman
 :bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
 
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-   [paas-ta-container-platform-portal-deployment_v1.2.3.tar.gz](https://nextcloud.paas-ta.org/index.php/s/2WxffSnLTp4eLxL/download)
+   [paas-ta-container-platform-portal-deployment_v1.2.3.tar.gz](https://nextcloud.k-paas.org/index.php/s/2WxffSnLTp4eLxL/download)
 
 ```
 # Deployment 파일 다운로드 경로 생성
@@ -175,7 +175,7 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/2WxffSnLTp4eLxL/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/2WxffSnLTp4eLxL/download
 
 $ ls ~/workspace/container-platform
   paas-ta-container-platform-portal-deployment_v1.2.3.tar.gz
@@ -431,7 +431,7 @@ UAA 서비스와 Keycloak 서비스 인증 구성을 위한 Deployment 파일을
 :bulb: 해당 내용은 PaaS-TA 포털이 설치된 **BOSH Inception**에서 진행한다.
 
 + 컨테이너 플랫폼 포털 사용자 인증 구성 Deployment 다운로드 :  
-   [paas-ta-container-platform-saml-deployment_v1.2.3.tar.gz](https://nextcloud.paas-ta.org/index.php/s/Q25F4g7wZiTZG4E/download)  
+   [paas-ta-container-platform-saml-deployment_v1.2.3.tar.gz](https://nextcloud.k-paas.org/index.php/s/Q25F4g7wZiTZG4E/download)  
 
 ```
 # Deployment 파일 다운로드 경로 생성
@@ -439,7 +439,7 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/Q25F4g7wZiTZG4E/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/Q25F4g7wZiTZG4E/download
 
 $ ls ~/workspace/container-platform
   paas-ta-container-platform-saml-deployment_v1.2.3.tar.gz
@@ -798,7 +798,7 @@ $ kubectl describe secret {SECRET_NAME} -n kube-system | grep -E '^token' | cut 
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 서비스형 배포 포털 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 서비스형 배포 포털 설치 가이드
 
 [image 001]:images-v1.2/cp-001.png
 [image 002]:images-v1.2/cp-002.png

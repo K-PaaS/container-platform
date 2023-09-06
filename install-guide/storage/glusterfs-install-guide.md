@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide) > GlusterFS 서버 설치
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > GlusterFS 서버 설치
 
 
 # GlusterFS 서버 설치
@@ -408,4 +408,4 @@ persistentvolumeclaim/pvc-gluster-1   Bound    pvc-a6bd0246-22bb-4cc7-94ba-fe879
 ```
 
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide) > > GlusterFS 서버 설치
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide) > > GlusterFS 서버 설치

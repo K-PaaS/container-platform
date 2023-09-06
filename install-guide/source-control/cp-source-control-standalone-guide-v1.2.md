@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > SourceControl 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > SourceControl 설치 가이드
 
 <br>
 
@@ -85,7 +85,7 @@ Private Repository 배포에 필요한 CRI-O insecure-registry 설정은 아래 
 :bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
 
 + 컨테이너 플랫폼 소스 컨트롤 Deployment 파일 다운로드 :  
-   [paas-ta-container-platform-source-control-deployment-1.2.4.tar.gz](https://nextcloud.paas-ta.org/index.php/s/Hfp8XTJggBQsdmc/download)  
+   [paas-ta-container-platform-source-control-deployment-1.2.4.tar.gz](https://nextcloud.k-paas.org/index.php/s/Hfp8XTJggBQsdmc/download)  
 
 ```
 # Deployment 파일 다운로드 경로 생성
@@ -93,7 +93,7 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/Hfp8XTJggBQsdmc/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/Hfp8XTJggBQsdmc/download
 
 $ ls ~/workspace/container-platform
   ...
@@ -296,4 +296,4 @@ namespace "paas-ta-container-platform-source-control" deleted
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > SourceControl 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > SourceControl 설치 가이드

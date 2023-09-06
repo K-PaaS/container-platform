@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide) > Rook Ceph 설치
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > Rook Ceph 설치
 
 
 # Rook Ceph 설치
@@ -185,4 +185,4 @@ $ kubectl get secret rook-ceph-dashboard-password -o yaml -n rook-ceph | grep "p
 ![image](https://user-images.githubusercontent.com/67575226/204476235-3c3ed360-1576-4451-b090-3cfcc4e6ba44.png)
 
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide) > > Rook ceph 설치
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide) > > Rook ceph 설치

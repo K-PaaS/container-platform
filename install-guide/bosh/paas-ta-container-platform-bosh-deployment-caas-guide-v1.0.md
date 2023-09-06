@@ -26,12 +26,12 @@
 4. [컨테이너 서비스 브로커](#4)  
  4.1. [컨테이너 서비스 브로커 등록](#4.1)  
  4.2. [컨테이너 서비스 UAA Client 등록](#4.2)   
- 4.3. [PaaS-TA 포털에서 컨테이너 서비스 조회 설정](#4.3)      
+ 4.3. [K-PaaS 포털에서 컨테이너 서비스 조회 설정](#4.3)      
 
 5. [Jenkins 서비스 브로커(Optional)](#5)   
  5.1. [Jenkins 서비스 브로커 배포](#5.1)   
  5.2. [Jenkins 서비스 브로커 등록](#5.2)  
- 5.3. [PaaS-TA 포털에서 Jenkins 서비스 조회 설정](#5.3)   
+ 5.3. [K-PaaS 포털에서 Jenkins 서비스 조회 설정](#5.3)   
 
 6. [참고](#6)  
  6.1. [Cluster Role 사용자 생성 및 Token 획득](#6.1)   
@@ -42,7 +42,7 @@
 ### <div id='1.1'>1.1. 목적
 본 문서(컨테이너 서비스 설치 가이드)는 Kubernetes를 사용하기 위해 Bosh 기반 릴리즈의 설치 및 서비스 등록 방법을 기술하였다.
 
-PaaS-TA 3.5 버전부터는 Bosh 2.0 기반으로 배포(deploy)를 진행한다.
+K-PaaS 3.5 버전부터는 Bosh 2.0 기반으로 배포(deploy)를 진행한다.
 
 ### <div id='1.2'>1.2. 범위
 설치 범위는 Kubernetes 서비스 배포를 기준으로 작성하였다.
@@ -62,11 +62,11 @@ Kubespary를 통해 Kubernetes Cluster를 설치하고 BOSH 릴리즈로 Databas
 
 ## <div id='2'>2. 컨테이너 서비스 설치
 ### <div id='2.1'>2.1. Prerequisite
-본 설치 가이드는 **Ubuntu 18.04** 환경에서 설치하는 것을 기준으로 작성하였다. 서비스 설치를 위해서는 BOSH 2.0과 PaaS-TA 5.5, PaaS-TA 포털 API, PaaS-TA 포털 UI가 설치 되어 있어야 한다.
+본 설치 가이드는 **Ubuntu 18.04** 환경에서 설치하는 것을 기준으로 작성하였다. 서비스 설치를 위해서는 BOSH 2.0과 K-PaaS 5.5, K-PaaS 포털 API, K-PaaS 포털 UI가 설치 되어 있어야 한다.
 - [BOSH 2.0 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/bosh/PAAS-TA_BOSH2_INSTALL_GUIDE_V5.0.md)
-- [PaaS-TA 5.5 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)
-- [PaaS-TA 포털 API 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/portal/PAAS-TA_PORTAL_API_SERVICE_INSTALL_GUIDE_V1.0.md)
-- [PaaS-TA 포털 UI 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/portal/PAAS-TA_PORTAL_UI_SERVICE_INSTALL_GUIDE_V1.0.md)
+- [K-PaaS 5.5 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)
+- [K-PaaS 포털 API 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/portal/PAAS-TA_PORTAL_API_SERVICE_INSTALL_GUIDE_V1.0.md)
+- [K-PaaS 포털 UI 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/portal/PAAS-TA_PORTAL_UI_SERVICE_INSTALL_GUIDE_V1.0.md)
 
 #### 방화벽 정보
 IaaS Security Group의 열어줘야할 Port를 설정한다.
@@ -100,8 +100,8 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 <br>
 
 ### <div id='2.2'>2.2. Stemcell 확인
-Stemcell 목록을 확인하여 서비스 설치에 필요한 Stemcell이 업로드 되어 있는 것을 확인한다. (PaaS-TA 5.5 와 동일 Stemcell 사용)
-- Stemcell 업로드 및 Cloud Config, Runtime Config 설정 부분은 [PaaS-TA 5.5 설치가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)를 참고 한다.  
+Stemcell 목록을 확인하여 서비스 설치에 필요한 Stemcell이 업로드 되어 있는 것을 확인한다. (K-PaaS 5.5 와 동일 Stemcell 사용)
+- Stemcell 업로드 및 Cloud Config, Runtime Config 설정 부분은 [K-PaaS 5.5 설치가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)를 참고 한다.  
 > $ bosh -e micro-bosh stemcells
 ```
 Using environment '10.0.1.6' as client 'admin'
@@ -295,7 +295,7 @@ $ ./deploy-{IAAS}.sh
 
 - 서비스 설치에 필요한 릴리즈 파일을 다운로드 받아 Local machine의 서비스 설치 작업 경로로 위치시킨다.  
   + 설치 릴리즈 파일 다운로드 :  
-  [paasta-container-platform-1.0.tgz](https://nextcloud.paas-ta.org/index.php/s/ggdZyEKejPSszFj/download)  
+  [paasta-container-platform-1.0.tgz](https://nextcloud.k-paas.org/index.php/s/ggdZyEKejPSszFj/download)  
 
 ```
 # 릴리즈 다운로드 파일 위치 경로 생성
@@ -303,7 +303,7 @@ $ mkdir -p ~/workspace/paasta-5.5.1/release/service
 $ cd ~/workspace/paasta-5.5.1/release/service
 
 # 릴리즈 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/ggdZyEKejPSszFj/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/ggdZyEKejPSszFj/download
 $ ls ~/workspace/paasta-5.5.1/release/service
   paasta-container-platform-1.0.tgz  
 ```
@@ -388,7 +388,7 @@ Private Repository에 이미지 업로드를 위해 컨테이너 서비스 이�
 해당 내용은 Kubernetes **Master Node**에서 실행한다.
 
 + 컨테이너 서비스 이미지 파일 다운로드 :  
-   [container-service-image.tar](https://nextcloud.paas-ta.org/index.php/s/sePzP9PzYWNwgJy/download)  
+   [container-service-image.tar](https://nextcloud.k-paas.org/index.php/s/sePzP9PzYWNwgJy/download)  
 
 ```
 # 이미지 파일 다운로드 경로 생성
@@ -396,7 +396,7 @@ $ mkdir -p ~/workspace/paasta-5.5.1
 $ cd ~/workspace/paasta-5.5.1
 
 # 이미지 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/sePzP9PzYWNwgJy/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/sePzP9PzYWNwgJy/download
 
 $ ls ~/workspace/paasta-5.5.1
   container-service-image.tar
@@ -552,7 +552,7 @@ replicaset.apps/service-dashboard-deployment-974c87585    1         1         1 
 <br>
 
 ## <div id='4'>4. 컨테이너 서비스 브로커
-컨테이너 서비스 형태로 설치하는 경우에 CF와 배포된 Kubernetes와의 연동을 위해서는 Bosh Inception 환경에서 컨테이너 서비스 브로커를 등록해 주어야 한다.<br>PaaS-TA 운영자 포털을 통해 서비스를 등록하고 공개하면, PaaS-TA 사용자 포털을 통해 서비스를 신청하여 사용할 수 있다.
+컨테이너 서비스 형태로 설치하는 경우에 CF와 배포된 Kubernetes와의 연동을 위해서는 Bosh Inception 환경에서 컨테이너 서비스 브로커를 등록해 주어야 한다.<br>K-PaaS 운영자 포털을 통해 서비스를 등록하고 공개하면, K-PaaS 사용자 포털을 통해 서비스를 신청하여 사용할 수 있다.
 
 ### <div id='4.1'>4.1. 컨테이너 서비스 브로커 등록
 
@@ -685,11 +685,11 @@ $ uaac client update caasclient --redirect_uri "http://xxx.xxx.xxx.xxx:32091, ht
 ```
 
 
-### <div id='4.3'>4.3. PaaS-TA 포털에서 컨테이너 서비스 조회 설정
+### <div id='4.3'>4.3. K-PaaS 포털에서 컨테이너 서비스 조회 설정
 
-해당 설정은 PaaS-TA 포털에 컨테이너 서비스 상의 자원들을 간략하게 조회하기 위한 설정이다.
+해당 설정은 K-PaaS 포털에 컨테이너 서비스 상의 자원들을 간략하게 조회하기 위한 설정이다.
 
-1.PaaS-TA Admin 포털에 접속한다.
+1.K-PaaS Admin 포털에 접속한다.
 ![image 002]
 
 2.왼쪽 네비게이션 바에서 [설정]-[설정정보] 페이지를 접속, 인프라 설정을 클릭 후 CaaS서비스 정보를 입력한다.
@@ -833,9 +833,9 @@ broker: jenkins-service-broker
    container-jenkins-service   jenkins_20GB   all
 ```
 
-### <div id='5.3'>5.3. PaaS-TA 포털에서 Jenkins 서비스 조회 설정
+### <div id='5.3'>5.3. K-PaaS 포털에서 Jenkins 서비스 조회 설정
 
-1.PaaS-TA Admin 포털에 접속한다.
+1.K-PaaS Admin 포털에 접속한다.
 ![image 002]
 
 2.[운영관리]-[카탈로그] 메뉴에서 앱서비스 탭 안에 CaaS Jenkins 서비스를 선택한다.

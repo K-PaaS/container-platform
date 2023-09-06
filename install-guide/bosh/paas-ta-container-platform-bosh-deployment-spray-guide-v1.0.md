@@ -42,7 +42,7 @@
 ### <div id='1.1'>1.1. 목적
 본 문서(컨테이너 플랫폼 설치 가이드)는 단독배포된 Kubernetes를 사용하기 위해 Bosh 기반 릴리즈 설치 방법을 기술하였다.
 
-PaaS-TA 3.5 버전부터는 Bosh 2.0 기반으로 배포(deploy)를 진행한다.
+K-PaaS 3.5 버전부터는 Bosh 2.0 기반으로 배포(deploy)를 진행한다.
 
 ### <div id='1.2'>1.2. 범위
 설치 범위는 Kubernetes 단독 배포를 기준으로 작성하였다.
@@ -62,9 +62,9 @@ Kubespary를 통해 Kubernetes Cluster를 설치하고 BOSH 릴리즈로 Databas
 
 ## <div id='2'>2. 컨테이너 플랫폼 설치
 ### <div id='2.1'>2.1. Prerequisite
-본 설치 가이드는 **Ubuntu 18.04** 환경에서 설치하는 것을 기준으로 작성하였다. 단독 배포를 위해서는 Inception 환경이 구축 되어야 하므로 BOSH 2.0 설치와 PaaS-TA 5.5 가이드의 Stemcell 업로드, Cloud Config 설정, Runtime Config 설정이 사전에 진행이 되어야 한다.
+본 설치 가이드는 **Ubuntu 18.04** 환경에서 설치하는 것을 기준으로 작성하였다. 단독 배포를 위해서는 Inception 환경이 구축 되어야 하므로 BOSH 2.0 설치와 K-PaaS 5.5 가이드의 Stemcell 업로드, Cloud Config 설정, Runtime Config 설정이 사전에 진행이 되어야 한다.
 - [BOSH 2.0 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/bosh/PAAS-TA_BOSH2_INSTALL_GUIDE_V5.0.md)
-- [PaaS-TA 5.5 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)
+- [K-PaaS 5.5 설치 가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)
 
 #### 방화벽 정보
 IaaS Security Group의 열어줘야할 Port를 설정한다.
@@ -98,8 +98,8 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 <br>
 
 ### <div id='2.2'>2.2. Stemcell 확인
-Stemcell 목록을 확인하여 서비스 설치에 필요한 Stemcell이 업로드 되어 있는 것을 확인한다. (PaaS-TA 5.5 와 동일 Stemcell 사용)
-- Stemcell 업로드 및 Cloud Config, Runtime Config 설정 부분은 [PaaS-TA 5.5 설치가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)를 참고 한다.
+Stemcell 목록을 확인하여 서비스 설치에 필요한 Stemcell이 업로드 되어 있는 것을 확인한다. (K-PaaS 5.5 와 동일 Stemcell 사용)
+- Stemcell 업로드 및 Cloud Config, Runtime Config 설정 부분은 [K-PaaS 5.5 설치가이드](https://github.com/PaaS-TA/Guide/blob/master/install-guide/paasta/PAAS-TA_CORE_INSTALL_GUIDE_V5.0.md)를 참고 한다.
 > $ bosh -e micro-bosh stemcells
 ```
 Using environment '10.0.1.6' as client 'admin'
@@ -295,14 +295,14 @@ $ ./deploy-{IAAS}.sh
 ### <div id='2.6'>2.6. 릴리즈 설치 - 다운로드 된 릴리즈 파일 이용 방식
 - 릴리즈 설치에 필요한 릴리즈 파일을 다운로드 받아 Local machine의 릴리즈 설치 작업 경로로 위치시킨다.  
   + 설치 릴리즈 파일 다운로드 :  
-   [paasta-container-platform-1.0.tgz](https://nextcloud.paas-ta.org/index.php/s/ggdZyEKejPSszFj/download)     
+   [paasta-container-platform-1.0.tgz](https://nextcloud.k-paas.org/index.php/s/ggdZyEKejPSszFj/download)     
 ```
 # 릴리즈 다운로드 파일 위치 경로 생성
 $ mkdir -p ~/workspace/paasta-5.5.1/release/service
 $ cd ~/workspace/paasta-5.5.1/release/service
 
 # 릴리즈 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/ggdZyEKejPSszFj/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/ggdZyEKejPSszFj/download
 $ ls ~/workspace/paasta-5.5.1/release/service
   paasta-container-platform-1.0.tgz
 ```
@@ -362,7 +362,7 @@ Succeeded
 <br>
 
 ## <div id='3'>3. 컨테이너 플랫폼 배포
-해당 항목부터는 배포된 Kubernetes Cluster 환경의 **Master Node**에서 진행한다. kubernetes에 PaaS-TA용 컨테이너 플랫폼을 배포하기 위해서는 Bosh 릴리즈를 통해 배포된 Private Repository에 이미지를 업로드하는 작업이 필요하다.
+해당 항목부터는 배포된 Kubernetes Cluster 환경의 **Master Node**에서 진행한다. kubernetes에 K-PaaS용 컨테이너 플랫폼을 배포하기 위해서는 Bosh 릴리즈를 통해 배포된 Private Repository에 이미지를 업로드하는 작업이 필요하다.
 
 ### <div id='3.1'>3.1. Docker insecure-registry 설정
 Kubernetes **Master Node, Worker Node** 내 docker daemon.json 파일에 'insecure-registries' 설정을 추가한다. <br>
@@ -384,7 +384,7 @@ Private Repository에 이미지 업로드를 위해 컨테이너 플랫폼 이�
 해당 내용은 Kubernetes **Master Node**에서 실행한다.
 
 + 컨테이너 플랫폼 이미지 파일 다운로드 :  
-   [container-platform-standalone-image.tar](https://nextcloud.paas-ta.org/index.php/s/PPCttKyiNcqYnJ9/download)  
+   [container-platform-standalone-image.tar](https://nextcloud.k-paas.org/index.php/s/PPCttKyiNcqYnJ9/download)  
 
 ```
 # 이미지 파일 다운로드 경로 생성
@@ -392,7 +392,7 @@ $ mkdir -p ~/workspace/paasta-5.5.1
 $ cd ~/workspace/paasta-5.5.1
 
 # 이미지 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/PPCttKyiNcqYnJ9/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/PPCttKyiNcqYnJ9/download
 
 $ ls ~/workspace/paasta-5.5.1
   container-platform-standalone-image.tar

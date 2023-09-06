@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > Terraman IaC 스크립트 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/tree/master/install-guide#readme) > Terraman IaC 스크립트 가이드
 
 <br>
 
@@ -447,4 +447,4 @@ resource "aws_nat_gateway" "aws-nat" {
 
 <!-- [image 001]:images/standalone-v1.2.png -->
 
-<!-- ### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > 클러스터 설치 가이드 -->
+<!-- ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/tree/master/install-guide#readme) > 클러스터 설치 가이드 -->

@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > Kubeflow 파이프라인 튜토리얼 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > Kubeflow 파이프라인 튜토리얼 가이드
 
 <br>
 
@@ -152,4 +152,4 @@ file-passing-pipelines-xnnp6-595339866                              0/2     Comp
 [image 010]:images/kubeflow-pipelines-python-003.png
 
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > Kubeflow 파이프라인 튜토리얼 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/PaaS-TA/paas-ta-container-platform/tree/master/install-guide/Readme.md) > Kubeflow 파이프라인 튜토리얼 가이드
