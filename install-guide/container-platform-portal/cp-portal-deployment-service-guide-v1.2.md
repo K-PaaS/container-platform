@@ -780,7 +780,7 @@ $ kubectl describe secret {SECRET_NAME} -n kube-system | grep -E '^token' | cut 
 |전체 Resource|kube*|
 |Namespace|all|
 ||kubernetes-dashboard|
-||cp-portal-temp-namespace|
+||cp-temp-namespace|
 |Role|cp-init-role|
 ||cp-admin-role|
 |ResourceQuota|cp-low-resourcequota|
