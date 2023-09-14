@@ -64,7 +64,7 @@ ex) OpenStack API (8000, 8774, 5000, 9292, 9876, 9696, 8004, 8780, 8776)
 - **Master Node**에서 RSA 공개키를 생성한다. 
 <br>**(cluster 접속을 위한 key 생성 - 반드시 RSA 공개키 생성 필요!! OPENSSH는 접속이 되지 않는다. 3.주의사항 참조)**
 ```
-$ ssh-keygen -t rsa -m PEM -f /home/ubuntu/.ssh/master-key
+$ ssh-keygen -t rsa -m PEM -f /home/ubuntu/.ssh/{{ clusterName }}
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/ubuntu/.ssh/id_rsa): [엔터키 입력]
 Enter passphrase (empty for no passphrase): [엔터키 입력]
@@ -92,7 +92,7 @@ The key's randomart image is:
 - 백업해 놓은 **Master Node 개인키**와 생성된 **Cluster 접속을 위한 개인키**를 Terraman Pod에 복사한다.
 ```
 ## 개인키 복사
-$ kubectl cp /home/ubuntu/.ssh/{{백업해 놓은 Master Node 개인키 명}} {{Terraman Pod 명}}:/home/1000/.ssh/paasta-master-key -n cp-portal  (Master Node 접속용 개인키)
+$ kubectl cp /home/ubuntu/.ssh/{{백업해 놓은 Master Node 개인키 명}} {{Terraman Pod 명}}:/home/1000/.ssh/master-key -n cp-portal  (Master Node 접속용 개인키)
 ( ex. kubectl cp /home/ubuntu/.ssh/master-host-node-key terraman-pod:/home/1000/.ssh/paasta-master-key -n cp-portal )
 
 $ kubectl cp /home/ubuntu/.ssh/{{Cluster 접속을 위한 개인키 명}} {{Terraman Pod 명}}:/home/1000/.ssh/{{ clusterName }}-key -n cp-portal  (Cluster 접속용 개인키)
