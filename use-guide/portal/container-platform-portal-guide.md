@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Use](/use-guide/Readme.md) >  포털 사용 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](../Readme.md) >  포털 사용 가이드
 
 <br>
 
@@ -68,7 +68,7 @@
 ## <div id='2-1'>2.1. Terraman IaC 설정
 컨테이너 플랫폼 포털을 통해 서브 클러스터를 생성하기 위해서는 대상 클라우드(IaaS)의 추가 설정이 필요하다. <br>
 아래 가이드를 참조하여 설정 완료 후 서브 클러스터 생성을 진행한다.
-> [Terraman IaC 스크립트 가이드](../../check-guide/paas-ta-container-terraman-check-guide.md)
+> [Terraman IaC 스크립트 가이드](../../check-guide/cp-terraman-check-guide.md)
 
 <br>
 
@@ -910,7 +910,7 @@ Instance Code Template은 IaC를 통해 자동화된 VM 배포를 수행하는 �
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Use](/use-guide/Readme.md) >  포털 사용 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](../Readme.md) >  포털 사용 가이드
 
 ----
 [IMG_1_1]:../images/portal/IMG_1_1.png

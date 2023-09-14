@@ -2,7 +2,7 @@
 
 <br>
 
-# [PaaS-TA Container Platform 소스컨트롤 서비스 사용자 가이드]
+# [K-PaaS Container Platform 소스컨트롤 서비스 사용자 가이드]
 
 <br>
 
