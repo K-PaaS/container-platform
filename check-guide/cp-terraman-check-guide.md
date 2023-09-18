@@ -93,7 +93,7 @@ The key's randomart image is:
 ```
 ## 개인키 복사
 $ kubectl cp /home/ubuntu/.ssh/{{백업해 놓은 Master Node 개인키 명}} {{Terraman Pod 명}}:/home/1000/.ssh/master-key -n cp-portal  (Master Node 접속용 개인키)
-( ex. kubectl cp /home/ubuntu/.ssh/master-host-node-key terraman-pod:/home/1000/.ssh/paasta-master-key -n cp-portal )
+( ex. kubectl cp /home/ubuntu/.ssh/master-host-node-key terraman-pod:/home/1000/.ssh/master-key -n cp-portal )
 
 $ kubectl cp /home/ubuntu/.ssh/{{Cluster 접속을 위한 개인키 명}} {{Terraman Pod 명}}:/home/1000/.ssh/{{ clusterName }}-key -n cp-portal  (Cluster 접속용 개인키)
 ( ex. kubectl cp /home/ubuntu/.ssh/cluster-name-key terraman-pod:/home/1000/.ssh/cluster-name-key -n cp-portal )
