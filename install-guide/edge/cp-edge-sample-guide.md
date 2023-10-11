@@ -71,7 +71,7 @@ $ sudo apt-get -y install podman
 
 - **Master Node**와 **Edge Node**에서 Sample 배포에 필요한 파일을 다운로드한다.
 ```
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/acaatJ77zgYsEYb/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/acaatJ77zgYsEYb/download
 
 $ tar zxvf kubeedge-sample-v1.4.tar.gz
 ```
@@ -173,7 +173,7 @@ $ mosquitto_sub -h 127.0.0.1 -t '$hw/events/device/counter/twin/update' -p 1883
 
 - **Master Node**와 **Edge Node**에서 Sample 배포에 필요한 파일을 다운로드한다.
 ```
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/acaatJ77zgYsEYb/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/acaatJ77zgYsEYb/download
 
 $ tar zxvf kubeedge-sample-v1.4.tar.gz
 ```

@@ -96,7 +96,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 :bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
 
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-   [cp-portal-deployment-v1.4.0.tar.gz](https://nextcloud.paas-ta.org/index.php/s/WtNQn2agk6epFHC/download)
+   [cp-portal-deployment-v1.4.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/WtNQn2agk6epFHC/download)
 
 ```
 # Deployment 파일 다운로드 경로 생성
@@ -104,7 +104,7 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.paas-ta.org/index.php/s/WtNQn2agk6epFHC/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/WtNQn2agk6epFHC/download
 
 $ ls ~/workspace/container-platform
   cp-portal-deployment-v1.4.0.tar.gz
