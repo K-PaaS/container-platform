@@ -114,7 +114,7 @@ $ ls ~/workspace/container-platform
   ...
   
 # Deployment 파일 압축 해제
-$ tar xvfz cp-pipeline-deployment-v1.4.0.tar.gz
+$ tar -xvf cp-pipeline-deployment-v1.4.0.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성
