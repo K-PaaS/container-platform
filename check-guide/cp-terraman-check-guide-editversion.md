@@ -13,24 +13,24 @@
 	3.2 [SSH Key 구성](#3.2)</br>
 	3.3 [SSH Key 복사](#3.3)</br>
 5. [Template 생성](#4)</br>
-   	4.1 [Openstack](#4.1)
+   	4.1 [Openstack](#4.1)</br>
 	4.2 [AWS](#4.2)
 
-## 1. 문서 개요
+##<div id='1'> 1. 문서 개요
 
-### 1.1. 목적
+###<div id='1.1'> 1.1. 목적
  Terraman IaC 스크립트 가이드는 Terraform을 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 스크립트를 작성하는 데 도움을 주기 위한 목적으로 제작되었다.
-### 1.2. 범위
+###<div id='1.2'> 1.2. 범위
 Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
-### 1.3. 참고자료
+###<div id='1.3'> 1.3. 참고자료
 - Terraform OpenStack
 > https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs  
 - Terraform AWS
 > https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 
-## 2. Prerequisite
+##<div id='2'> 2. Prerequisite
 - Terraman을 실행하기 전 필요한 사전 작업에 대한 설명이다.
-#### 2.1 방화벽 정보
+####<div id='2.1'> 2.1 방화벽 정보
 - Master Node
 
 |프로토콜|포트|비고|
@@ -41,12 +41,12 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
     (예: OpenStack API - 8000, 8774, 5000, 9292, 9876, 9696, 8004, 8780, 8776)
 - 각 IaaS에서 생성되는 Instance는 원격 접속을 위한 포트가 열려 있어야 한다.
 
-## 3. SSH Key 설정
+##<div id='3'> 3. SSH Key 설정
 #### 들어가기 전
 - **Host Cluster**: Terraform을 생성하는 데 사용되는 클러스터
 - **Sub Cluster**: Terraman을 통해 배포되는 클러스터
-###  3.1. SSH Key 생성
-##### 2.2.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성
+###<div id='3.1'>  3.1. SSH Key 생성
+##### 3.1.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성
 ```bash
 $ ssh-keygen -t rsa -m PEM -f /home/ubuntu/.ssh/{TERRAMAN_MASTER_NODE_NAME}-key
 ```
@@ -74,7 +74,7 @@ The key's randomart image is:
 |                 |
 +----[SHA256]-----+
 ```
-##### 2.2.2 #### 생성된 공개키는 해당 IaaS에 keypair로 등록
+##### 3.1.2 #### 생성된 공개키는 해당 IaaS에 keypair로 등록
 - 공개키 복사
 ```bash
 $ cat /home/ubuntu/.ssh/terraman-master-key.pub
@@ -84,12 +84,12 @@ ssh-rsa AAAAB3NzaC1yc2EAAA......ADAQABAAABgQCRfg1qOsA12PRCVE2GFNrsMyF+wA5J3H4eKp
 ![[Pasted image 20231109170626.png]]
 - 공개 키 가져오기
 ![[Pasted image 20231109170742.png]]
-### 3.2 SSH Key 구성
+###<div id='3.2'> 3.2 SSH Key 구성
 - **id_rsa**, **id_rsa.pub**
 	- Host Cluster 구성 시 생성된 RSA Key
 - **{MASTER_NODE_NAME}-key**, **{MASTER_NODE_NAME}-key.pub**
 	- Sub Cluster 구성을 위해 생성된 RSA Key
-### 3.3 SSH Key 복사
+###<div id='3.3'>3.3 SSH Key 복사
 - SSH Key 목적
 	- Terraman 실행 중에 Host Cluster 및 Sub Cluster의 각 Master 노드에 액세스하기 위함이다.
 - 각 공개키를 Terraman이 실행되는 Terraman Pod로 복사한다.
@@ -118,8 +118,8 @@ $ kubectl cp /home/ubuntu/.ssh/id_rsa.pub cp-portal-terraman-deployment-689585bc
 $ kubectl cp /home/ubuntu/.ssh/terraman-master-key cp-portal-terraman-deployment-689585bc94-pq4bt:/home/1000/.ssh/terraman-master-key -n cp-portal
 ```
 
-## 4. Template 생성
-##### 4.1 OpenStack
+##<div id='4'> 4. Template 생성
+#####<div id='4.1'> 4.1 OpenStack
 - 이 Template는 Terraman을 사용하여 OpenStack에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
 
 ```
@@ -243,7 +243,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 }
 ```
 
-##### 4.2 AWS
+<div id='4.2'>##### 4.2 AWS
 - 이 템플릿은 Terraman을 사용하여 AWS에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 키페어 및 이미지 리소스를 활용하는 데 초점을 맞추고 있다. 그러므로 키페어 및 이미지 리소스는 사전에 생성되어 있어야 한다.
 
 ```
