@@ -47,7 +47,7 @@ $ sudo apt-get update
 - NFS 서버를 위한 패키지를 설치
 
 ```
-$ sudo apt-get install nfs-common nfs-kernel-server portmap
+$ sudo apt-get install -y nfs-common nfs-kernel-server portmap
 ```
 
 - NFS에서 사용될 디렉토리 생성 및 권한 부여
