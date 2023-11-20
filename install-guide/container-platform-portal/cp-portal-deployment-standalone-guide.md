@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 싱글 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
+### [Index](https://github.com/K-PAAS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 싱글 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
 
 <br>
 
@@ -473,7 +473,7 @@ Keycloak Admin Console에 접속 후 조회한 Keycloak Admin 계정으로 로�
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 싱글 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
+### [Index](https://github.com/K-PAAS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 싱글 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
 
 [image 001]:images/cp-001.png
 [image 002]:images/cp-002.png
