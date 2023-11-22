@@ -85,7 +85,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAA......ADAQABAAABgQCRfg1qOsA12PRCVE2GFNrsMyF+wA5J3H4eKp
 - 공개 키 가져오기
 ![[Pasted image 20231109170742.png]]
 ### <div id='3.2'> 3.2 SSH Key 구성
-- **id_rsa**, **id_rsa**
+- **id_rsa**, **id_rsa.pub**
 	- Host Cluster 구성 시 생성된 RSA Key
 - **{MASTER_NODE_NAME}-key**, **{MASTER_NODE_NAME}-key.pub**
 	- Sub Cluster 구성을 위해 생성된 RSA Key
