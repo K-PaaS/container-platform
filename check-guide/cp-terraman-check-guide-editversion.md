@@ -85,7 +85,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAA......ADAQABAAABgQCRfg1qOsA12PRCVE2GFNrsMyF+wA5J3H4eKp
 - 공개 키 가져오기
 ![[Pasted image 20231109170742.png]]
 ### <div id='3.2'> 3.2 SSH Key 구성
-- **id_rsa**, **id_rsa.pub**
+- **id_rsa**, **id_rsa**
 	- Host Cluster 구성 시 생성된 RSA Key
 - **{MASTER_NODE_NAME}-key**, **{MASTER_NODE_NAME}-key.pub**
 	- Sub Cluster 구성을 위해 생성된 RSA Key
@@ -96,7 +96,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAA......ADAQABAAABgQCRfg1qOsA12PRCVE2GFNrsMyF+wA5J3H4eKp
 	- Host Cluster의 Master 키 이름은 *반드시 'paasta-master-key'* 로 복사 되어야 한다.
 ```bash
 ## Host Cluster Key
-$ kubectl cp /home/ubuntu/.ssh/id_rsa.pub {TERRAMAN_PDO_NAME}:/home/1000/.ssh/paasta-master-key -n cp-portal
+$ kubectl cp /home/ubuntu/.ssh/id_rsa {TERRAMAN_PDO_NAME}:/home/1000/.ssh/paasta-master-key -n cp-portal
 ## Sub Cluster Key
 $ kubectl cp /home/ubuntu/.ssh/{TERRAMAN_MASTER_NODE_NAME}-key {TERRAMAN_PDO_NAME}:/home/1000/.ssh/{TERRAMAN_MASTER_NODE_NAME}-key -n cp-portal
 ```
@@ -111,8 +111,8 @@ cp-portal-metric-api-deployment-757b98d55c-v4psb   1/1     Running   3 (9d ago) 
 cp-portal-terraman-deployment-689585bc94-pq4bt     1/1     Running   0            9d
 cp-portal-ui-deployment-74d744cff4-qh7g2           1/1     Running   0            9d
 
-## Host Cluster Key Name: id_rsa.pub
-$ kubectl cp /home/ubuntu/.ssh/id_rsa.pub cp-portal-terraman-deployment-689585bc94-pq4bt:/home/1000/.ssh/paasta-master-key -n cp-portal
+## Host Cluster Key Name: id_rsa
+$ kubectl cp /home/ubuntu/.ssh/id_rsa cp-portal-terraman-deployment-689585bc94-pq4bt:/home/1000/.ssh/paasta-master-key -n cp-portal
 
 ## Sub Cluster Key Name: terraman-master-key
 $ kubectl cp /home/ubuntu/.ssh/terraman-master-key cp-portal-terraman-deployment-689585bc94-pq4bt:/home/1000/.ssh/terraman-master-key -n cp-portal
