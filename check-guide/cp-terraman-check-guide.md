@@ -72,7 +72,7 @@ Enter same passphrase again: [엔터키 입력]
 Your identification has been saved in /home/ubuntu/.ssh/id_rsa.
 Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub.
 The key fingerprint is:
-SHA256:pIG4/G309Dof305mWjdNz1OORx9nQgQ3b8yUP5DzC3w ubuntu@paasta-cp-master
+SHA256:pIG4/G309Dof305mWjdNz1OORx9nQgQ3b8yUP5DzC3w ubuntu@cp-master
 The key's randomart image is:
 +---[RSA 2048]----+
 |            ..= o|
@@ -125,28 +125,28 @@ data "openstack_images_image_v2" "ubuntu" {
 }
 
 # 사용 가능한 OpenStack keyPair
-data "openstack_compute_keypair_v2" "paasta-cp-keypair" {
+data "openstack_compute_keypair_v2" "cp-keypair" {
   name = "passta-cp-terraform-keypair"	                    # keyPair 명
 }
 
 # 사용 가능한 OpenStack floating_ip 주소 ( instance 별 각각 필요하다. )
-data "openstack_networking_floatingip_v2" "paasta-cp-floatingip-master" {
+data "openstack_networking_floatingip_v2" "cp-floatingip-master" {
   address = "203.255.255.115"			                    # 유동 IP 주소
 }
 
 # 사용 가능한 OpenStack floating_ip 주소 ( instance 별 각각 필요하다. )
-data "openstack_networking_floatingip_v2" "paasta-cp-floatingip-worker" {
+data "openstack_networking_floatingip_v2" "cp-floatingip-worker" {
   address = "203.255.255.118"			                    # 유동 IP 주소
 }
 
 # 사용 가능한 OpenStack network
-data "openstack_networking_network_v2" "paasta-cp-network" {
-  name = "paasta-cp-network"			                    # network 명
+data "openstack_networking_network_v2" "cp-network" {
+  name = "cp-network"			                    # network 명
 }
 
 # 사용 가능한 OpenStack subnet
-data "openstack_networking_subnet_v2" "paasta-cp-subnet" {
-  name = "paasta-cp-subnet"				                    # subnet 명
+data "openstack_networking_subnet_v2" "cp-subnet" {
+  name = "cp-subnet"				                    # subnet 명
 }
 
 # 사용 가능한 OpenStack router
@@ -155,22 +155,22 @@ data "openstack_networking_router_v2" "ext_route" {
 }
 
 # 사용 가능한 OpenStack security_group
-data "openstack_networking_secgroup_v2" "paasta-cp-secgroup" {
-  name = "paasta-cp-secgroup"			                    # security group 명
+data "openstack_networking_secgroup_v2" "cp-secgroup" {
+  name = "cp-secgroup"			                    # security group 명
 }
 
 # OpenStack 내에서 V2 라우터 인터페이스 리소스를 관리한다.
-resource "openstack_networking_router_interface_v2" "paasta-cp-router-interface" {
+resource "openstack_networking_router_interface_v2" "cp-router-interface" {
   router_id = data.openstack_networking_router_v2.ext_route.id				            # 이 인터페이스가 속한 라우터의 ID
-  subnet_id = data.openstack_networking_subnet_v2.paasta-cp-subnet.id		            # 이 인터페이스가 연결되는 서브넷의 ID
+  subnet_id = data.openstack_networking_subnet_v2.cp-subnet.id		            # 이 인터페이스가 연결되는 서브넷의 ID
 }
 
 # OpenStack 내에서 V2 VM 인스턴스 리소스를 관리
-resource "openstack_compute_instance_v2" "paasta-terraform-master-node" {
-  name              = "paasta-terraform-master-node"				                    # 리소스의 고유한 이름
+resource "openstack_compute_instance_v2" "terraform-master-node" {
+  name              = "terraform-master-node"				                    # 리소스의 고유한 이름
   flavor_id         = "m1.large"														# 서버에 대해 원하는 플레이버의 플레이버 ID
-  key_pair          = data.openstack_compute_keypair_v2.paasta-cp-keypair.id			# 서버에 넣을 키 쌍의 이름
-  security_groups   = [data.openstack_networking_secgroup_v2.paasta-cp-secgroup.id]		# 서버와 연결할 하나 이상의 보안 그룹 이름 배열
+  key_pair          = data.openstack_compute_keypair_v2.cp-keypair.id			# 서버에 넣을 키 쌍의 이름
+  security_groups   = [data.openstack_networking_secgroup_v2.cp-secgroup.id]		# 서버와 연결할 하나 이상의 보안 그룹 이름 배열
   availability_zone = "octavia"															# 서버를 생성할 가용성 영역
   region            = "RegionOne"														# 서버 인스턴스를 생성할 지역
 
@@ -186,15 +186,15 @@ resource "openstack_compute_instance_v2" "paasta-terraform-master-node" {
 
   # network 영역
   network {
-    uuid = data.openstack_networking_network_v2.paasta-cp-network.id			        # 서버에 연결할 네트워크 UUID
+    uuid = data.openstack_networking_network_v2.cp-network.id			        # 서버에 연결할 네트워크 UUID
   }
 }
 
-resource "openstack_compute_instance_v2" "paasta-terraform-worker-node" {
-  name              = "paasta-terraform-worker-node"
+resource "openstack_compute_instance_v2" "terraform-worker-node" {
+  name              = "terraform-worker-node"
   flavor_id         = "m1.large"
-  key_pair          = data.openstack_compute_keypair_v2.paasta-cp-keypair.id
-  security_groups   = [data.openstack_networking_secgroup_v2.paasta-cp-secgroup.id]
+  key_pair          = data.openstack_compute_keypair_v2.cp-keypair.id
+  security_groups   = [data.openstack_networking_secgroup_v2.cp-secgroup.id]
   availability_zone = "octavia"
   region            = "RegionOne"
 
@@ -208,20 +208,20 @@ resource "openstack_compute_instance_v2" "paasta-terraform-worker-node" {
   }
 
   network {
-    uuid = data.openstack_networking_network_v2.paasta-cp-network.id
+    uuid = data.openstack_networking_network_v2.cp-network.id
   }
 }
 
 # floating IP 영역
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
-  floating_ip = data.openstack_networking_floatingip_v2.paasta-cp-floatingip-master.address		# 연결할 유동 IP
-  instance_id = "${openstack_compute_instance_v2.paasta-terraform-master-node.id}"				# 유동 IP를 연결할 인스턴스
+  floating_ip = data.openstack_networking_floatingip_v2.cp-floatingip-master.address		# 연결할 유동 IP
+  instance_id = "${openstack_compute_instance_v2.terraform-master-node.id}"				# 유동 IP를 연결할 인스턴스
   wait_until_associated = true					                                                # OpenStack 환경이 연결이 완료될 때까지 자동으로 기다리지 않는 경우 유동 IP가 연결될 때까지 Terraform이 인스턴스를 폴링하도록 이 옵션을 설정, 기본값 false
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_2" {
-  floating_ip = data.openstack_networking_floatingip_v2.paasta-cp-floatingip-worker.address
-  instance_id = "${openstack_compute_instance_v2.paasta-terraform-worker-node.id}"
+  floating_ip = data.openstack_networking_floatingip_v2.cp-floatingip-worker.address
+  instance_id = "${openstack_compute_instance_v2.terraform-worker-node.id}"
   wait_until_associated = true
 }
 ```
@@ -246,7 +246,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 # 2. resource로 시작되는 영역은 자원 생성 및 보관에 관여하며 data로 선언한 값을 사용 할 수 있다.
 # 3. variable로 시작되는 영역은 변수 선언영역이다.
 #   ex)	variable "route_table_name" {
-#			default = "paasta-cp-routing-public"
+#			default = "cp-routing-public"
 #		}
 #		...
 #		filter {
@@ -274,31 +274,31 @@ data "aws_ami" "ubuntu" {
 }
 
 # VPC 리소스 영역
-resource "aws_vpc" "paasta-cp-terraform-vpc" {
+resource "aws_vpc" "cp-terraform-vpc" {
 	cidr_block = "172.10.0.0/20"					   # VPC에 대한 IPv4 CIDR 블록
-	tags = { Name = "paasta-cp-terraform-vpc" }		   # 리소스에 할당할 태그 맵
+	tags = { Name = "cp-terraform-vpc" }		   # 리소스에 할당할 태그 맵
 }
 
 # VPC 서브넷 리소스 영역
-resource "aws_subnet" "paasta-cp-terraform-subnet01" {
+resource "aws_subnet" "cp-terraform-subnet01" {
   vpc_id = "${aws_vpc.aws-vpc.id}"					   # VPC ID
   cidr_block = "172.10.0.0/24"						   # 서브넷의 IPv4 CIDR 블록
   availability_zone = "ap-northeast-2a"				   # 서브넷의 AZ
-  tags = { Name = "paasta-cp-terraform-subnet01" }	   # 리소스에 할당할 태그 맵
+  tags = { Name = "cp-terraform-subnet01" }	   # 리소스에 할당할 태그 맵
 }
 
-resource "aws_subnet" "paasta-cp-terraform-subnet02" {
+resource "aws_subnet" "cp-terraform-subnet02" {
   vpc_id = "${aws_vpc.aws-vpc.id}"
   cidr_block = "172.10.1.0/24"
   availability_zone = "ap-northeast-2a"
   tags = {
-    Name = "paasta-cp-terraform-subnet02"
+    Name = "cp-terraform-subnet02"
   }
 }
 
 # 보안 그룹 리소스 영역
-resource "aws_security_group" "paasta-cp-terraform-sg-all" {
-  name = "paasta-cp-terraform-sg-all"					# 보안 그룹의 이름
+resource "aws_security_group" "cp-terraform-sg-all" {
+  name = "cp-terraform-sg-all"					# 보안 그룹의 이름
   description = "Allow all inbound traffic"			    # 보안 그룹 설명
   vpc_id = "${aws_vpc.aws-vpc.id}"	# VPC ID
 
@@ -322,13 +322,13 @@ resource "aws_instance" "master" {
   ami = "${data.aws_ami.ubuntu.id}"									# 인스턴스에 사용할 AMI
   instance_type = "t3.medium"										# 인스턴스에 사용할 인스턴스 유형
   key_name = data.aws_key_pair.default_key.key_name					# 인스턴스에 사용할 키 쌍의 키 이름
-  subnet_id = "${aws_subnet.paasta-cp-terraform-subnet01.id}"		# 시작할 VPC 서브넷 ID
+  subnet_id = "${aws_subnet.cp-terraform-subnet01.id}"		# 시작할 VPC 서브넷 ID
   vpc_security_group_ids = [										# 연결할 보안 그룹 ID
-	"${aws_security_group.paasta-cp-terraform-sg-all.id}"
+	"${aws_security_group.cp-terraform-sg-all.id}"
   ]
   associate_public_ip_address = true			                    # 퍼블릭 IP 주소를 VPC의 인스턴스와 연결할지 여부
   tags = {													        # 리소스에 할당할 태그의 맵
-	Name = "paasta-cp-terraform-m"
+	Name = "cp-terraform-m"
   }
   provisioner "remote-exec" {				                        # Terraform으로 리소스를 생성하거나 제거할 때 로컬이나 원격에서 스크립트를 실행할 수 있는 기능
 	connection {							                        # 연결 블록
@@ -348,14 +348,14 @@ resource "aws_instance" "worker" {
   ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t3.medium"
   key_name = data.aws_key_pair.default_key.key_name
-  subnet_id = "${aws_subnet.paasta-cp-terraform-subnet01.id}"
+  subnet_id = "${aws_subnet.cp-terraform-subnet01.id}"
   vpc_security_group_ids = [
-    "${aws_security_group.paasta-cp-terraform-sg-all.id}"
+    "${aws_security_group.cp-terraform-sg-all.id}"
     #data.aws_security_group.default.id
   ]
   associate_public_ip_address = true
   tags = {
-    Name = "paasta-cp-terraform-w"
+    Name = "cp-terraform-w"
   }
   provisioner "remote-exec" {
     connection {
@@ -385,12 +385,12 @@ resource "aws_route_table" "nc-private" {
 
 # 라우팅 테이블과 서브넷 또는 라우팅 테이블과 인터넷 게이트웨이 또는 가상 프라이빗 게이트웨이 간의 연결을 생성하기 위한 리소스 영역
 resource "aws_route_table_association" "aws_public_2a" {
-  subnet_id = "${aws_subnet.paasta-cp-terraform-subnet01.id}"		    # 연결을 생성하기 위한 서브넷 ID
+  subnet_id = "${aws_subnet.cp-terraform-subnet01.id}"		    # 연결을 생성하기 위한 서브넷 ID
   route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"		    # 연결할 라우팅 테이블의 ID
 }
 
 resource "aws_route_table_association" "aws_private_2a" {
-  subnet_id = "${aws_subnet.paasta-cp-terraform-subnet02.id}"
+  subnet_id = "${aws_subnet.cp-terraform-subnet02.id}"
   route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"
 }
 
@@ -421,7 +421,7 @@ resource "aws_eip" "aws_nat" {
 # VPC NAT 게이트웨이를 생성하기 위한 리소스 영역
 resource "aws_nat_gateway" "aws-nat" {
   allocation_id = "${aws_eip.aws_nat.id}"								# 게이트웨이에 대한 탄력적 IP 주소의 할당 ID
-  subnet_id     = "${aws_subnet.paasta-cp-terraform-subnet01.id}"		# 게이트웨이를 배치할 서브넷의 서브넷 ID
+  subnet_id     = "${aws_subnet.cp-terraform-subnet01.id}"		# 게이트웨이를 배치할 서브넷의 서브넷 ID
 }
 ```
 
