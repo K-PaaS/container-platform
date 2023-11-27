@@ -53,32 +53,38 @@ K-PaaS 컨테이너 플랫폼 클러스터에 필요한 인스턴스 환경으�
 
 각 배포 유형 별 시스템 구성도는 다음과 같다.
 
-단일 Control Plane, NFS 스토리지 구성<br>
+단일 Control Plane, NFS 스토리지 구성
+
 ![image 001]
 
 <br>
 
-단일 Control Plane, Rook-Ceph 스토리지 구성<br>
+단일 Control Plane, Rook-Ceph 스토리지 구성
+
 ![image 002]
 
 <br>
 
-HA Control Plane, ETCD Stacked, NFS 스토리지 구성<br>
+HA Control Plane, ETCD Stacked, NFS 스토리지 구성
+
 ![image 003]
 
 <br>
 
-HA Control Plane, ETCD External, NFS 스토리지 구성<br>
+HA Control Plane, ETCD External, NFS 스토리지 구성
+
 ![image 004]
 
 <br>
 
-HA Control Plane, ETCD Stacked, Rook-Ceph 스토리지 구성<br>
+HA Control Plane, ETCD Stacked, Rook-Ceph 스토리지 구성
+
 ![image 005]
 
 <br>
 
-HA Control Plane, ETCD External, Rook-Ceph 스토리지 구성<br>
+HA Control Plane, ETCD External, Rook-Ceph 스토리지 구성
+
 ![image 006]
 
 <br>
@@ -103,10 +109,8 @@ HA Control Plane, ETCD External, Rook-Ceph 스토리지 구성<br>
 
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위한 전제조건은 아래 기술하였다.
 
-<br>
-
 #### OS
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보는 다음과 같다. (<span style="color:red">필수 확인</span>)
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보는 다음과 같다. (***필수 확인***)
 
 |지원 OS|OS 버전|
 |---|---|
@@ -153,7 +157,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 <br>
 
 #### 방화벽
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 방화벽 정보는 다음과 같다. (<span style="color:red">필수 설정</span>)
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 방화벽 정보는 다음과 같다. (***필수 설정***)
 
 Control Plane 노드
 
@@ -185,7 +189,7 @@ Worker 노드
 <br>
 
 #### 스토리지
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 스토리지 정보는 다음과 같다. (<span style="color:red">필수 설정</span>)
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 스토리지 정보는 다음과 같다. (***필수 설정***)
 
 NFS 스토리지 구성 시<br>
 [NFS Server 설치 가이드](../nfs-server-install-guide.md)
@@ -196,29 +200,25 @@ Root Volume 이외에 추가 Volume을 각 Worker 노드에 사전에 할당해�
 <br>
 
 #### 로드밸런서
-K-PaaS 컨테이너 플랫폼 클러스터를 HA Control Plane으로 구성할 경우 필요한 로드밸런서 정보는 다음과 같다. (<span style="color:orange">HA 구성 시 필수 설정</span>)
-
-<br>
+K-PaaS 컨테이너 플랫폼 클러스터를 HA Control Plane으로 구성할 경우 필요한 로드밸런서 정보는 다음과 같다. (***HA Control Plane 구성 시 필수 설정***)
 
 Public 클라우드 환경의 경우 각 CSP에서 제공하는 로드밸런서를 생성한다.
 
 NHN Cloud 환경 로드밸런서 생성 (예시)
 
-Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.<br>
+Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.
+
 ![image 008]
 
 <br>
 
 로드밸런서 정보를 입력한 후 생성을 진행한다.
 
-|설정 항목|설명|비고|
+|항목|설명|비고|
 |---|---|---|
 |이름|로드밸런서 이름 입력||
 |VPC|사용할 VPC 선택||
 |서브넷|사용할 서브넷 선택||
-
-|리스너 항목|설명|비고|
-|---|---|---|
 |프로토콜|TCP 선택||
 |로드밸런서 포트|6443 입력||
 |인스턴스 포트|6443 입력||
@@ -226,16 +226,20 @@ Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.<br>
 |상태 확인 포트|선택된 인스턴스 상태 확인에 사용할 포트 입력||
 |선택된 인스턴스|Control Plane 인스턴스 선택||
 
+<br>
+
 ![image 009]
 
 <br>
 
-생성된 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.<br>
+생성된 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
+
 ![image 010]
 
 <br>
 
-플로팅 IP 연결을 진행한다.<br>
+플로팅 IP 연결을 진행한다.
+
 ![image 011]
 
 <br>
@@ -253,9 +257,9 @@ Private 클라우드 환경의 로드밸런서 구성은 아래 절차를 참고
 
 로드밸런서 HA 구성의 경우 다음과 같이 VIP를 구성한다.
 
-1. 인터페이스 생성
-2. 인터페이스에 Public IP 할당
-3. 로드밸런서 인스턴스에 인터페이스 할당
+- 신규 인터페이스 생성
+- 신규 생성한 인터페이스에 Public IP 할당
+- 로드밸런서 인스턴스에 신규 생성한 인터페이스 할당
 
 <br>
 
@@ -272,6 +276,8 @@ $ sudo su -
 # sysctl -p
 ```
 
+<br>
+
 Keepalived 설정을 진행한다.
 ```
 # vi /etc/keepalived/keepalived.conf
@@ -281,7 +287,7 @@ Keepalived 설정을 진행한다.
 |---|---|---|
 |STATE|1번 로드밸런서에는 "MASTER", 2번 로드밸런서에는 "BACKUP"을 입력|단일 로드밸런서 인스턴스 구성의 경우 MASTER만 설정|
 |INTERFACE_NAME|각 호스트의 쉘에서 ifconfig 입력 후 확인||
-|VIP|로드밸런서 VM에 할당한 인터페이스의 Private IP|테스트 환경의 경우 로드밸런서 VM의 Private IP 지정|
+|VIP|로드밸런서 인스턴스에 할당한 인터페이스의 Private IP|테스트 환경의 경우 로드밸런서 인스턴스의 Private IP 지정|
 
 ```
 vrrp_instance VI_1 {
@@ -300,16 +306,22 @@ vrrp_instance VI_1 {
 }
 ```
 
+<br>
+
 Keepalived 서비스를 시작한다.
 ```
 # systemctl start keepalived
 # systemctl enable keepalived
 ```
 
+<br>
+
 로드밸런서 VM에 다음과 같이 HAProxy 설치를 진행한다. (HA 구성의 경우 2개 로드밸런서 인스턴스에 설치)
 ```
 # apt-get install -y haproxy
 ```
+
+<br>
 
 HAProxy 설정을 진행한다. haproxy.cfg 파일 최하단에 다음 내용을 추가한다.
 ```
@@ -334,6 +346,8 @@ listen kubernetes-apiserver-https
   server master3 {{MASTER_NODE_IP3}}:6443 check check-ssl verify none inter 10000
   balance roundrobin
 ```
+
+<br>
 
 HAProxy 서비스를 재시작한다.
 ```
@@ -373,6 +387,8 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
+<br>
+
 사용할 **Install, Control Plane, Worker 노드**에 공개키를 복사한다.
 ```
 ## 출력된 공개키 복사
@@ -380,6 +396,8 @@ The key's randomart image is:
 $ cat ~/.ssh/id_rsa.pub
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmAYEo3CcFGhRhzLcVz3rKb+C25mOne+MaQGynZFpZk4muEAUdkpieoo+B6r2eJHjBLopn5quWJ561H7EZb/GlfC5ThjHFF+hTf5trF4boW1iZRvUM56KAwXiYosLLRBXeNlub4SKfApe8ojQh4RRzFBZP/wNbOKr+Fo6g4RQCWrr5xQCZMK3ugBzTHM+zh9Ra7tG0oCySRcFTAXXoyXnJm+PFhdR6jbkerDlUYP9RD/87p/YKS1wSXExpBkEglpbTUPMCj+t1kXXEJ68JkMrVMpeznuuopgjHYWWD2FgjFFNkp ubuntu@cp-master
 ```
+
+<br>
 
 사용할 **Install, Control Plane, Worker 노드**의 authorized_keys 파일 본문의 마지막 부분(기존 본문 내용 아래 추가)에 공개키를 복사한다.
 ```
@@ -396,9 +414,13 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 
 > 2.3.부터는 **Install 인스턴스 또는 1번 Control Plane 노드**에서만 진행.
 
+<br>
+
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 Deployment를 다운로드 후 설치 작업 경로로 이동하여 설치를 진행한다.
 
 > K-PaaS 컨테이너 플랫폼 클러스터 Deployment Download URL : https://github.com/k-paas/cp-deployment
+
+<br>
 
 git clone 명령을 통해 HOME 디렉토리 경로에서 K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드를 진행한다.
 ```
@@ -415,10 +437,14 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치경로 이동한다.
 $ cd ~/cp-deployment/single
 ```
 
+<br>
+
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수를 정의한다.
 ```
 $ vi cp-cluster-vars.sh
 ```
+
+<br>
 
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 정보를 입력한다.
 
