@@ -263,7 +263,11 @@ Private 클라우드 환경의 로드밸런서 구성은 아래 절차를 참고
 
 <br>
 
-로드밸런서 인스턴스에 다음과 같이 Keepalived 설치를 진행한다. (HA 구성의 경우 2개 로드밸런서 인스턴스에 설치)
+로드밸런서 HA 구성의 경우 2개 로드밸런서 인스턴스에서 Keepalived, HAProxy 설치 과정을 각각 진행한다.
+
+<br>
+
+로드밸런서 인스턴스에 다음과 같이 Keepalived 설치를 진행한다.
 ```
 $ sudo su -
 
@@ -285,9 +289,9 @@ Keepalived 설정을 진행한다.
 
 |환경변수|설명|비고|
 |---|---|---|
-|STATE|1번 로드밸런서에는 "MASTER", 2번 로드밸런서에는 "BACKUP"을 입력|단일 로드밸런서 인스턴스 구성의 경우 MASTER만 설정|
-|INTERFACE_NAME|각 호스트의 쉘에서 ifconfig 입력 후 확인||
-|VIP|로드밸런서 인스턴스에 할당한 인터페이스의 Private IP|테스트 환경의 경우 로드밸런서 인스턴스의 Private IP 지정|
+|STATE|1번 로드밸런서 인스턴스에는 "MASTER", 2번 로드밸런서 인스턴스에는 "BACKUP"을 입력|단일 로드밸런서 인스턴스 구성의 경우 MASTER만 설정|
+|INTERFACE_NAME|각 인스턴스의 쉘에서 ifconfig 입력 후 확인||
+|VIP|로드밸런서 인스턴스에 할당한 인터페이스의 Private IP|테스트 환경의 경우 로드밸런서 인스턴스의 Private IP 지정<br>운영 환경의 경우 별도 구성한 VIP 지정|
 
 ```
 vrrp_instance VI_1 {
@@ -316,7 +320,7 @@ Keepalived 서비스를 시작한다.
 
 <br>
 
-로드밸런서 VM에 다음과 같이 HAProxy 설치를 진행한다. (HA 구성의 경우 2개 로드밸런서 인스턴스에 설치)
+로드밸런서 인스턴스에 다음과 같이 HAProxy 설치를 진행한다.
 ```
 # apt-get install -y haproxy
 ```
@@ -330,8 +334,8 @@ HAProxy 설정을 진행한다. haproxy.cfg 파일 최하단에 다음 내용을
 
 |환경변수|설명|비고|
 |---|---|---|
-|VIP|로드밸런서 인스턴스에 할당한 인터페이스의 Private IP|테스트 환경의 경우 로드밸런서 인스턴스의 Private IP 지정|
-|MASTER_NODE_IP{n}|각 Control Plane 노드의 Private IP|아래 예시는 3개의 Control Plane 노드 구성 시<br>Control Plane 노드 구성에 따라 추가|
+|VIP|로드밸런서 인스턴스에 할당한 인터페이스의 Private IP|테스트 환경의 경우 로드밸런서 인스턴스의 Private IP 지정<br>운영 환경의 경우 별도 구성한 VIP 지정|
+|MASTER_NODE_IP{n}|각 Control Plane 노드의 Private IP|아래 예시는 3개의 Control Plane 노드 구성 시 이며 Control Plane 노드 구성에 따라 추가|
 
 ```
 ...
@@ -353,6 +357,17 @@ HAProxy 서비스를 재시작한다.
 ```
 # systemctl restart haproxy
 ```
+
+<br>
+
+#### 쿠버네티스 로드밸런서 타입 서비스 External IP
+K-PaaS 컨테이너 플랫폼 클러스터 서비스에 필요한 External IP 설정 정보는 다음과 같다. (***필수 설정***)
+
+Ingress Nginx Controller 서비스의 External IP는 다음과 같이 설정한다.<br>
+- 신규 인터페이스 생성
+- 신규 생성한 인터페이스에 Public IP 할당
+- 1번 Control Plane 노드에 신규 생성한 인터페이스 할당
+- 아래 과정에서 설정할 환경변수 "INGRESS_NGINX_PRIVATE_IP"에 신규 생성한 인터페이스 Private IP 설정
 
 <br>
 
@@ -455,10 +470,10 @@ Control Plane
 |KUBE_CONTROL_HOSTS|Control Plane 노드의 갯수||
 |ETCD_TYPE|ETCD 배포 방식<br>external : 별도의 노드에 ETCD 구성<br>stacked : Control Plane 노드에 ETCD 구성|Control Plane 노드의 갯수가 1개 이상일 경우 설정|
 |LOADBALANCER_DOMAIN|사전에 구성한 로드밸런서의 IP 또는 Domain 정보|Control Plane 노드의 갯수가 1개 이상일 경우 설정|
-|ETCD1_NODE_HOSTNAME|ETCD 1번 노드의 호스트명|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우|
-|ETCD1_NODE_PRIVATE_IP|ETCD 1번 노드의 Private IP|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우|
-|ETCD{n}_NODE_HOSTNAME|ETCD n번 노드의 호스트명|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우<br>KUBE_CONTROL_HOSTS 갯수만큼 설정|
-|ETCD{n}_NODE_PRIVATE_IP|ETCD n번 노드의 Private IP|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우<br>KUBE_CONTROL_HOSTS 갯수만큼 설정|
+|ETCD1_NODE_HOSTNAME|ETCD 1번 노드의 호스트명|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우 설정|
+|ETCD1_NODE_PRIVATE_IP|ETCD 1번 노드의 Private IP|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우 설정|
+|ETCD{n}_NODE_HOSTNAME|ETCD n번 노드의 호스트명|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우 설정<br>KUBE_CONTROL_HOSTS 갯수만큼 설정|
+|ETCD{n}_NODE_PRIVATE_IP|ETCD n번 노드의 Private IP|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우 설정<br>KUBE_CONTROL_HOSTS 갯수만큼 설정|
 |MASTER1_NODE_HOSTNAME|Control Plane 1번 노드의 호스트명||
 |MASTER1_NODE_PUBLIC_IP|Control Plane 1번 노드의 Public IP|Control Plane 1번 노드만 Public IP 정보 필요|
 |MASTER1_NODE_PRIVATE_IP|Control Plane 1번 노드의 Private IP||
@@ -484,7 +499,7 @@ Storage
 |환경변수|설명|비고|
 |---|---|---|
 |STORAGE_TYPE|Storage 정보<br>nfs : NFS 스토리지<br>rook-ceph : Rook Ceph 스토리지||
-|NFS_SERVER_PRIVATE_IP|NFS Server의 Private IP|STORAGE nfs 일 경우|
+|NFS_SERVER_PRIVATE_IP|NFS Server 인스턴스의 Private IP|STORAGE_TYPE 값 nfs 일 경우 설정|
 
 <br>
 
