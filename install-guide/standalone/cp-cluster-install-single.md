@@ -12,6 +12,15 @@
 
 2. [K-PaaS 컨테이너 플랫폼 클러스터 설치](#2)<br>
   2.1. [Prerequisite](#2.1)<br>
+  2.1.1. [OS](#2.1.1)<br>
+  2.1.2. [Python 패키지](#2.1.2)<br>
+  2.1.3. [주요 소프트웨어](#2.1.3)<br>
+  2.1.4. [방화벽](#2.1.4)<br>
+  2.1.5. [스토리지](#2.1.5)<br>
+  2.1.6. [쿠버네티스 서비스 External IP](#2.1.6)<br>
+  2.1.7. [로드밸런서](#2.1.7)<br>
+  2.1.7.1. [Public 클라우드](#2.1.7.1)<br>
+  2.1.7.2. [Private 클라우드](#2.1.7.2)<br>
   2.2. [SSH Key 생성 및 배포](#2.2)<br>
   2.3. [K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드](#2.3)<br>
   2.4. [K-PaaS 컨테이너 플랫폼 클러스터 설치 준비](#2.4)<br>
@@ -32,14 +41,14 @@
 <br>
 
 ### <div id='1.2'> 1.2. 범위
-설치 범위는 K-PaaS 컨테이너 플랫폼 환경의 기반이 되는 클러스터 설치를 단일 클라우드 환경 기준으로 작성하였다.
+설치 범위는 K-PaaS 컨테이너 플랫폼 환경의 기반이 되는 클러스터 설치를 `단일 클라우드` 환경 기준으로 작성하였다.
 
 <br>
 
 ### <div id='1.3'> 1.3. 시스템 구성도
-시스템 구성은 쿠버네티스 단일 클러스터 (Control Plane, Worker) 환경으로 구성되어 있다.
+시스템 구성은 쿠버네티스 `단일 클러스터` (Control Plane, Worker) 환경으로 구성되어 있다.
 
-K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 단일 클러스터를 구성하고 각 리소스를 통해 K-PaaS 컨테이너 플랫폼 포털 환경을 배포하여 대시보드, 데이터베이스, 레파지토리 등의 환경을 제공한다.
+K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 `단일 클러스터`를 구성하고 각 리소스를 통해 K-PaaS 컨테이너 플랫폼 포털 환경을 배포하여 대시보드, 데이터베이스, 레파지토리 등의 환경을 제공한다.
 
 K-PaaS 컨테이너 플랫폼 클러스터에 필요한 인스턴스 환경으로는 아래 구성을 참고한다.
 
@@ -55,37 +64,37 @@ K-PaaS 컨테이너 플랫폼 클러스터에 필요한 인스턴스 환경으�
 
 각 배포 유형 별 시스템 구성도는 다음과 같다.
 
-단일 Control Plane, NFS 스토리지 구성
+***[ 단일 Control Plane, NFS 스토리지 구성 ]***
 
 ![image 001]
 
 <br>
 
-단일 Control Plane, Rook-Ceph 스토리지 구성
+***[ 단일 Control Plane, Rook-Ceph 스토리지 구성 ]***
 
 ![image 002]
 
 <br>
 
-HA Control Plane, ETCD Stacked, NFS 스토리지 구성
+***[ HA Control Plane, ETCD Stacked, NFS 스토리지 구성 ]***
 
 ![image 003]
 
 <br>
 
-HA Control Plane, ETCD External, NFS 스토리지 구성
+***[ HA Control Plane, ETCD External, NFS 스토리지 구성 ]***
 
 ![image 004]
 
 <br>
 
-HA Control Plane, ETCD Stacked, Rook-Ceph 스토리지 구성
+***[ HA Control Plane, ETCD Stacked, Rook-Ceph 스토리지 구성 ]***
 
 ![image 005]
 
 <br>
 
-HA Control Plane, ETCD External, Rook-Ceph 스토리지 구성
+***[ HA Control Plane, ETCD External, Rook-Ceph 스토리지 구성 ]***
 
 ![image 006]
 
@@ -111,8 +120,10 @@ HA Control Plane, ETCD External, Rook-Ceph 스토리지 구성
 
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위한 전제조건은 아래 기술하였다.
 
-#### OS
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보는 다음과 같다. (***필수 확인***)
+<br>
+
+### <div id='2.1.1'> 2.1.1. OS (***필수 확인***)
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보는 다음과 같다.
 
 |지원 OS|버전|
 |---|---|
@@ -120,8 +131,8 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보�
 
 <br>
 
-#### Python 패키지
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패키지 정보는 다음과 같다. (참고)
+### <div id='2.1.2'> 2.1.2. Python 패키지 (참고)
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패키지 정보는 다음과 같다.
 
 |Python 패키지|버전|
 |---|---|
@@ -137,8 +148,8 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 
 <br>
 
-#### 주요 소프트웨어
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트웨어 정보는 다음과 같다. (참고)
+### <div id='2.1.3'> 2.1.3. 주요 소프트웨어 (참고)
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트웨어 정보는 다음과 같다.
 
 |주요 소프트웨어|버전|
 |---|---|
@@ -158,8 +169,8 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 
 <br>
 
-#### 방화벽
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 방화벽 정보는 다음과 같다. (***필수 설정***)
+### <div id='2.1.4'> 2.1.4. 방화벽 (***필수 설정***)
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 방화벽 정보는 다음과 같다.
 
 Control Plane 노드
 
@@ -190,10 +201,10 @@ Worker 노드
 
 <br>
 
-#### 스토리지
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 스토리지 정보는 다음과 같다. (***필수 설정***)
+### <div id='2.1.5'> 2.1.5. 스토리지 (***필수 설정***)
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 스토리지 정보는 다음과 같다.
 
-|스토리지|비고|
+|지원 스토리지|비고|
 |---|---|
 |NFS Server|신규 인스턴스 생성|
 |Rook-Ceph|기존 인스턴스에 볼륨 추가|
@@ -210,8 +221,10 @@ Root Volume 이외에 추가 Volume을 각 Worker 노드에 사전에 할당해�
 
 <br>
 
-#### 쿠버네티스 서비스 External IP
-K-PaaS 컨테이너 플랫폼 클러스터의 로드밸런서 타입 서비스에 필요한 External IP 설정 정보는 다음과 같다. (***필수 설정***)
+### <div id='2.1.6'> 2.1.6. 쿠버네티스 서비스 External IP (***필수 설정***)
+K-PaaS 컨테이너 플랫폼 서비스 구성을 위해서 특정 서비스에 로드밸런서 타입 설정 및 External IP 설정이 필요하다.
+
+K-PaaS 컨테이너 플랫폼 클러스터의 로드밸런서 타입 서비스에 필요한 External IP 설정 정보는 다음과 같다.
 
 |서비스|설명|비고|
 |---|---|---|
@@ -221,19 +234,51 @@ K-PaaS 컨테이너 플랫폼 클러스터의 로드밸런서 타입 서비스�
 
 K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 External IP를 할당한다.<br>
 해당 External IP로 외부 통신 및 서비스를 지원하기 위해서는 다음과 같은 설정이 필요하다.
-- 1번 Control Plane 노드와 동일한 네트워크 서브넷에 신규 인터페이스를 생성
-- 외부 통신을 위해 신규 생성한 인터페이스에 Public IP 할당
-- 1번 Control Plane 노드에 신규 생성한 인터페이스 할당
 
 <br>
 
-단일 클러스터에서는 Ingress Nginx Controller 서비스에 설정을 진행한다.
-- 추후 설정할 환경변수 "INGRESS_NGINX_PRIVATE_IP"의 값으로 1번 Control Plane 노드에 할당한 신규 생성 인터페이스 Private IP 설정
+#### NHN 클라우드 (예시)
+***"네트워크 인터페이스 생성" 버튼을 클릭***
+
+***Control Plane 노드와 동일한 네트워크 VPC, 서브넷 선택 후 사설 IP를 지정하여 생성***
+
+***생성한 인터페이스 선택 후 "플로팅 IP 관리" 버튼을 클릭***
+
+***플로팅 IP를 생성 및 할당***
+
+***Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭***
+
+***네트워크 탭에서 "네트워크 인터페이스 연결 추가" 버튼 클릭***
+
+***기존 네트워크 인터페이스 지정 클릭 후 인터페이스 선택***
+
+***"인스턴스 시작" 버튼 클릭***
 
 <br>
 
-#### 로드밸런서
-K-PaaS 컨테이너 플랫폼 클러스터를 HA Control Plane으로 구성할 경우 필요한 로드밸런서 정보는 다음과 같다. (***HA Control Plane 구성 시 필수 설정***)
+#### KT 클라우드 (예시)
+***Virtual IP 메뉴에서 "Virtual IP 생성" 버튼을 클릭***
+
+***Control Plane 노드와 동일한 네트워크 Zone, Tier 선택 후 생성***
+
+***Virtual IP 선택 및 "연결" 버튼 클릭하여 Control Plane VM에 연결***
+
+***Networking 메뉴에서 "IP 생성" 버튼 클릭하여 Control Plane 노드와 동일한 네트워크 Zone에 공인 IP 생성***
+
+***"접속 설정" 버튼 클릭하여 Virtual IP 선택 후 Port Forwarding 설정***
+
+***"방화벽 설정" 버튼 클릭하여 등록한 접속 설정으로 방화벽 설정***
+
+***Control Plane 노드에서 ```$ sudo ifconfig {인터페이스명}:1 {VIP} up``` 명령어 실행 (HA Control Plane 구성 시 VIP 연결한 Control Plane 노드에서 실행)***
+
+<br>
+
+### <div id='2.1.7'> 2.1.7. 로드밸런서 (***HA Control Plane 구성 시 필수 설정***)
+> HA Control Plane 구성이 아닐 경우 로드밸런서 구성 과정은 생략하고 다음 과정을 진행한다.<br> [2.2. SSH Key 생성 및 배포](#2.2)
+
+<br>
+
+K-PaaS 컨테이너 플랫폼 클러스터를 HA Control Plane으로 구성할 경우 필요한 로드밸런서 정보는 다음과 같다.
 
 |클라우드|로드밸런서|비고|
 |---|---|---|
@@ -242,10 +287,12 @@ K-PaaS 컨테이너 플랫폼 클러스터를 HA Control Plane으로 구성할 �
 
 <br>
 
+### <div id='2.1.7.1'> 2.1.7.1. Public 클라우드
 Public 클라우드 환경의 경우 각 CSP에서 제공하는 로드밸런서를 생성한다.
 
-NHN Cloud 환경 로드밸런서 생성 (예시)
+<br>
 
+***NHN 클라우드 환경 로드밸런서 생성 (예시)***
 Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.
 
 ![image 008]
@@ -284,6 +331,13 @@ Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.
 
 <br>
 
+***KT 클라우드 환경 로드밸런서 생성 (예시)***
+
+KT 클라우드 환경 D1 플랫폼에서 로드밸런서를 지원하지 않아 Private 클라우드 환경과 동일하게 Keepalived, HAProxy를 이용하여 로드밸런서를 구성한다.
+
+<br>
+
+### <div id='2.1.7.2'> 2.1.7.2. Private 클라우드
 Private 클라우드 환경의 경우 Keepalived, HAProxy를 이용하여 로드밸런서를 구성한다.
 
 |환경|구성|비고|
@@ -296,7 +350,6 @@ Private 클라우드 환경의 경우 Keepalived, HAProxy를 이용하여 로드
 Private 클라우드 환경의 로드밸런서 구성은 아래 절차를 참고하여 진행한다.
 
 로드밸런서 HA 구성의 경우 다음과 같이 VIP를 구성한다.
-
 - 신규 인터페이스 생성
 - 신규 생성한 인터페이스에 Public IP 할당
 - 로드밸런서 인스턴스에 신규 생성한 인터페이스 할당
@@ -404,9 +457,9 @@ HAProxy 서비스를 재시작한다.
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위해서는 SSH Key가 인벤토리의 모든 서버들에 복사되어야 한다.<br>
 본 문서 (K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드) 에서는 RSA 공개키를 이용하여 SSH 접속 설정을 진행한다.
 
-SSH Key 생성 및 배포 이후의 모든 설치과정은 **Install 인스턴스 또는 1번 Control Plane 노드**에서 진행한다.
+SSH Key 생성 및 배포 이후의 모든 설치과정은 **Install 인스턴스 또는 Control Plane 노드**에서 진행한다.
 
-**Install 인스턴스 또는 1번 Control Plane 노드**에서 RSA 공개키를 생성한다.
+**Install 인스턴스 또는 Control Plane 노드**에서 RSA 공개키를 생성한다.
 ```
 $ ssh-keygen -t rsa -m PEM
 Generating public/private rsa key pair.
@@ -456,7 +509,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 
 ### <div id='2.3'> 2.3. K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드
 
-> 2.3.부터는 **Install 인스턴스 또는 1번 Control Plane 노드**에서만 진행.
+> 2.3.부터는 **Install 인스턴스 또는 Control Plane 노드**에서만 진행.
 
 <br>
 
@@ -476,38 +529,36 @@ $ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.5.x
 ### <div id='2.4'> 2.4. K-PaaS 컨테이너 플랫폼 클러스터 설치 준비
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수를 사전 정의 후 쉘 스크립트를 통해 설치를 진행한다.
 
-K-PaaS 컨테이너 플랫폼 클러스터 설치경로 이동한다.
+K-PaaS 컨테이너 플랫폼 클러스터 설치경로로 이동한다.
 ```
 $ cd ~/cp-deployment/single
 ```
 
 <br>
 
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수를 정의한다.
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수 정보를 입력한다.
 ```
 $ vi cp-cluster-vars.sh
 ```
 
 <br>
 
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 정보를 입력한다.
-
 Control Plane
 
 |환경변수|설명|비고|
 |---|---|---|
 |KUBE_CONTROL_HOSTS|Control Plane 노드의 갯수||
-|ETCD_TYPE|ETCD 배포 방식<br>external : 별도의 노드에 ETCD 구성<br>stacked : Control Plane 노드에 ETCD 구성|Control Plane 노드의 갯수가 1개 이상일 경우 설정|
-|LOADBALANCER_DOMAIN|사전에 구성한 로드밸런서의 IP 또는 Domain 정보|Control Plane 노드의 갯수가 1개 이상일 경우 설정|
-|ETCD1_NODE_HOSTNAME|ETCD 1번 노드의 호스트명|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우 설정|
-|ETCD1_NODE_PRIVATE_IP|ETCD 1번 노드의 Private IP|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우 설정|
-|ETCD{n}_NODE_HOSTNAME|ETCD n번 노드의 호스트명|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우 설정<br>KUBE_CONTROL_HOSTS 갯수만큼 설정|
-|ETCD{n}_NODE_PRIVATE_IP|ETCD n번 노드의 Private IP|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>ETCD 배포방식이 external 일 경우 설정<br>KUBE_CONTROL_HOSTS 갯수만큼 설정|
+|ETCD_TYPE|ETCD 배포 방식<br>external : 별도의 노드에 ETCD 구성<br>stacked : Control Plane 노드에 ETCD 구성|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정|
+|LOADBALANCER_DOMAIN|사전에 구성한 로드밸런서의 VIP 또는 Domain 정보|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정|
+|ETCD1_NODE_HOSTNAME|ETCD 1번 노드의 호스트명|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`ETCD_TYPE` 값이 external 일 경우 설정|
+|ETCD1_NODE_PRIVATE_IP|ETCD 1번 노드의 Private IP|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`ETCD_TYPE` 값이 external 일 경우 설정|
+|ETCD{n}_NODE_HOSTNAME|ETCD n번 노드의 호스트명|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`ETCD_TYPE` 값이 external 일 경우 설정<br>`KUBE_CONTROL_HOSTS` 값만큼 설정|
+|ETCD{n}_NODE_PRIVATE_IP|ETCD n번 노드의 Private IP|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`ETCD_TYPE` 값이 external 일 경우 설정<br>`KUBE_CONTROL_HOSTS` 값만큼 설정|
 |MASTER1_NODE_HOSTNAME|Control Plane 1번 노드의 호스트명||
 |MASTER1_NODE_PUBLIC_IP|Control Plane 1번 노드의 Public IP|Control Plane 1번 노드만 Public IP 정보 필요|
 |MASTER1_NODE_PRIVATE_IP|Control Plane 1번 노드의 Private IP||
-|MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>KUBE_CONTROL_HOSTS 갯수만큼 설정|
-|MASTER{n}_NODE_PRIVATE_IP|Control Plane n번 노드의 Private IP|Control Plane 노드의 갯수가 1개 이상일 경우 설정<br>KUBE_CONTROL_HOSTS 갯수만큼 설정|
+|MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`KUBE_CONTROL_HOSTS` 값만큼 설정|
+|MASTER{n}_NODE_PRIVATE_IP|Control Plane n번 노드의 Private IP|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`KUBE_CONTROL_HOSTS` 값만큼 설정|
 
 <br>
 
@@ -518,8 +569,8 @@ Worker
 |KUBE_WORKER_HOSTS|Worker 노드의 갯수||
 |WORKER1_NODE_HOSTNAME|Worker 1번 노드의 호스트명||
 |WORKER1_NODE_PRIVATE_IP|Worker 1번 노드의 Private IP||
-|WORKER{n}_NODE_HOSTNAME|Worker n번 노드의 호스트명|KUBE_WORKER_HOSTS 갯수만큼 설정|
-|WORKER{n}_NODE_PRIVATE_IP|Worker n번 노드의 Private IP|KUBE_WORKER_HOSTS 갯수만큼 설정|
+|WORKER{n}_NODE_HOSTNAME|Worker n번 노드의 호스트명|`KUBE_WORKER_HOSTS` 값만큼 설정|
+|WORKER{n}_NODE_PRIVATE_IP|Worker n번 노드의 Private IP|`KUBE_WORKER_HOSTS` 값만큼 설정|
 
 <br>
 
@@ -528,7 +579,7 @@ Storage
 |환경변수|설명|비고|
 |---|---|---|
 |STORAGE_TYPE|Storage 정보<br>nfs : NFS 스토리지<br>rook-ceph : Rook Ceph 스토리지||
-|NFS_SERVER_PRIVATE_IP|NFS Server 인스턴스의 Private IP|STORAGE_TYPE 값 nfs 일 경우 설정|
+|NFS_SERVER_PRIVATE_IP|NFS Server 인스턴스의 Private IP|`STORAGE_TYPE` 값 nfs 일 경우 설정|
 
 <br>
 
@@ -536,8 +587,8 @@ LoadBalancer Service
 
 |환경변수|설명|비고|
 |---|---|---|
-|METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역||
-|INGRESS_NGINX_PRIVATE_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 Private IP|METALLB_IP_RANGE 값과 중복되지 않도록 설정|
+|METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역|Control Plane 노드와 동일한 네트워크 서브넷 대역 설정|
+|INGRESS_NGINX_PRIVATE_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 Private IP|`METALLB_IP_RANGE` 값과 중복되지 않도록 설정|
 
 <br>
 
