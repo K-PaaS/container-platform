@@ -271,37 +271,84 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 External I
 
 <br>
 
-#### NHN 클라우드 (예시)
+### NHN 클라우드 (예시)
 ***"네트워크 인터페이스 생성" 버튼을 클릭***
 
 ***Control Plane 노드와 동일한 네트워크 VPC, 서브넷 선택 후 사설 IP를 지정하여 생성***
 
-***생성한 인터페이스 선택 후 "플로팅 IP 관리" 버튼을 클릭***
-
-***플로팅 IP를 생성 및 할당***
-
-***Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭***
-
-***네트워크 탭에서 "네트워크 인터페이스 연결 추가" 버튼 클릭***
-
-***기존 네트워크 인터페이스 지정 클릭 후 인터페이스 선택***
-
-***"인스턴스 시작" 버튼 클릭***
+![image 008]
 
 <br>
 
-#### KT 클라우드 (예시)
+***생성한 인터페이스 선택 후 "플로팅 IP 관리" 버튼을 클릭***
+
+![image 009]
+
+<br>
+
+***플로팅 IP를 생성 및 할당***
+
+![image 010]
+
+<br>
+
+***Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭***
+
+![image 011]
+
+<br>
+
+***네트워크 탭에서 "네트워크 인터페이스 연결 추가" 버튼 클릭***
+
+![image 012]
+
+<br>
+
+***기존 네트워크 인터페이스 지정 클릭 후 인터페이스 선택***
+
+![image 013]
+
+<br>
+
+***"인스턴스 시작" 버튼 클릭***
+
+![image 014]
+
+<br>
+
+### KT 클라우드 (예시)
 ***Virtual IP 메뉴에서 "Virtual IP 생성" 버튼을 클릭***
 
 ***Control Plane 노드와 동일한 네트워크 Zone, Tier 선택 후 생성***
 
+![image 015]
+
+<br>
+
 ***Virtual IP 선택 및 "연결" 버튼 클릭하여 Control Plane VM에 연결***
+
+![image 016]
+
+<br>
 
 ***Networking 메뉴에서 "IP 생성" 버튼 클릭하여 Control Plane 노드와 동일한 네트워크 Zone에 공인 IP 생성***
 
+![image 017]
+
+<br>
+
 ***"접속 설정" 버튼 클릭하여 Virtual IP 선택 후 Port Forwarding 설정***
 
+![image 018]
+![image 019]
+
+<br>
+
 ***"방화벽 설정" 버튼 클릭하여 등록한 접속 설정으로 방화벽 설정***
+
+![image 020]
+
+<br>
 
 ***Control Plane 노드에서 ```$ sudo ifconfig {인터페이스명}:1 {VIP} up``` 명령어 실행 (HA Control Plane 구성 시 VIP 연결한 Control Plane 노드에서 실행)***
 
@@ -333,7 +380,7 @@ Public 클라우드 환경의 경우 각 CSP에서 제공하는 로드밸런서�
 ***NHN 클라우드 환경 로드밸런서 생성 (예시)***
 Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.
 
-![image 008]
+![image 021]
 
 <br>
 
@@ -353,19 +400,19 @@ Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.
 
 <br>
 
-![image 009]
+![image 022]
 
 <br>
 
 생성된 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
 
-![image 010]
+![image 023]
 
 <br>
 
 플로팅 IP 연결을 진행한다.
 
-![image 011]
+![image 024]
 
 <br>
 
@@ -845,5 +892,18 @@ $ source reset-cp-cluster.sh
 [image 009]:images/kpaas-cp-cluster-9.png
 [image 010]:images/kpaas-cp-cluster-10.png
 [image 011]:images/kpaas-cp-cluster-11.png
+[image 012]:images/kpaas-cp-cluster-12.png
+[image 013]:images/kpaas-cp-cluster-13.png
+[image 014]:images/kpaas-cp-cluster-14.png
+[image 015]:images/kpaas-cp-cluster-15.png
+[image 016]:images/kpaas-cp-cluster-16.png
+[image 017]:images/kpaas-cp-cluster-17.png
+[image 018]:images/kpaas-cp-cluster-18.png
+[image 019]:images/kpaas-cp-cluster-19.png
+[image 020]:images/kpaas-cp-cluster-20.png
+[image 021]:images/kpaas-cp-cluster-21.png
+[image 022]:images/kpaas-cp-cluster-22.png
+[image 023]:images/kpaas-cp-cluster-23.png
+[image 024]:images/kpaas-cp-cluster-24.png
 
 ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드
