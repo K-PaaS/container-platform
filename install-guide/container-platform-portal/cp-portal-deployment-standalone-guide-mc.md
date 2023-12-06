@@ -1,4 +1,4 @@
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 싱글 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
+### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 멀티 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
 
 <br>
 
@@ -32,7 +32,7 @@
 
 ## <span id='1'>1. 문서 개요
 ### <span id='1.1'>1.1. 목적
-본 문서(싱글 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드)는 쿠버네티스 클러스터를 설치하고 단독 형 컨테이너 플랫폼 포털 배포 방법을 기술하였다. <br><br>
+본 문서(멀티 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드)는 쿠버네티스 멀티 클러스터 환경에 컨테이너 플랫폼 단독 형 포털 배포 방법을 기술하였다. <br><br>
 
 
 ### <span id='1.2'>1.2. 범위
@@ -93,8 +93,6 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 
 #### <span id='3.1.1'>3.1.1. 컨테이너 플랫폼 포털 Deployment 파일 다운로드
 컨테이너 플랫폼 포털 배포를 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
-:bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
-
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
   [cp-portal-deployment-v1.5.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/SSo9H3qjLsFn3ob/download)
 
@@ -140,8 +138,8 @@ cp-portal-deployment
   <h1></h1>
 
   ```bash
-  $ cd ~/workspace/container-platform/cp-portal-deployment/script
-  $ vi cp-portal-vars.sh
+  $ cd ~/workspace/container-platform/cp-portal-deployment/script_mc
+  $ vi cp-portal-vars-mc.sh
   ```
   ```bash
   # KEYCLOAK (해당 주석 위치로 이동)
@@ -161,40 +159,65 @@ cp-portal-deployment
   </details>
 
 ```bash
-$ cd ~/workspace/container-platform/cp-portal-deployment/script
-$ vi cp-portal-vars.sh
+$ cd ~/workspace/container-platform/cp-portal-deployment/script_mc
+$ vi cp-portal-vars-mc.sh
 ```
 
 ```bash                                                 
 # COMMON VARIABLE (Please change the value of the variables below.)
-K8S_MASTER_NODE_IP="{k8s master node public ip}"                      # Kubernetes Master Node Public IP
-K8S_CLUSTER_API_SERVER="https://${K8S_MASTER_NODE_IP}:6443"           # kubernetes API Server (e.g. https://${K8S_MASTER_NODE_IP}:6443)
-K8S_STORAGECLASS="cp-storageclass"                                    # Kubernetes StorageClass Name (e.g. cp-storageclass)
-HOST_CLUSTER_IAAS_TYPE="1"                                            # Kubernetes Cluster IaaS Type ([1] AWS, [2] OPENSTACK, [3] NAVER, [4] NHN, [5] KT)
-HOST_DOMAIN="{host domain}"                                           # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
-PROVIDER_TYPE="{container platform portal provider type}"             # Container Platform Portal Provider Type (Please enter 'standalone' or 'service')
+CLUSTER1_CONFIG[CTX]="{cluster1 context name}"                                  # Cluster1 Context Name
+CLUSTER1_CONFIG[MASTER_NODE_IP]="{cluster1 master node public ip}"              # Cluster1 Master Node Public IP
+CLUSTER1_CONFIG[API_SERVER]="https://${CLUSTER1_CONFIG[MASTER_NODE_IP]}:6443"   # Cluster1 API Server
+CLUSTER1_CONFIG[STORAGECLASS]="cp-storageclass"                                 # Cluster1 StorageClass Name
+CLUSTER1_CONFIG[IAAS_TYPE]="1"                                                  # Cluster1 Cluster IaaS Type ([1] AWS, [2] OPENSTACK, [3] NAVER, [4] NHN, [5] KT)
+
+CLUSTER2_CONFIG[CTX]="{cluster2 context name}"                                  # Cluster2 Context Name
+CLUSTER2_CONFIG[MASTER_NODE_IP]="{cluster2 master node public ip}"              # Cluster2 Master Node Public IP
+CLUSTER2_CONFIG[API_SERVER]="https://${CLUSTER2_CONFIG[MASTER_NODE_IP]}:6443"   # Cluster2 API Server
+CLUSTER2_CONFIG[STORAGECLASS]="cp-storageclass"                                 # Cluster2 StorageClass Name
+CLUSTER2_CONFIG[IAAS_TYPE]="1"                                                  # Cluster2 Cluster IaaS Type ([1] AWS, [2] OPENSTACK, [3] NAVER, [4] NHN, [5] KT)
+
+HOST_DOMAIN="{host domain}"                                                     # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
+PROVIDER_TYPE="{container platform portal provider type}"                       # Container Platform Portal Provider Type (Please enter 'standalone' or 'service')
 ```
 ```bash    
 # Example
-K8S_MASTER_NODE_IP="103.xxx.xxx.xxx"
-K8S_CLUSTER_API_SERVER="https://${K8S_MASTER_NODE_IP}:6443"
-K8S_STORAGECLASS="cp-storageclass"
-HOST_CLUSTER_IAAS_TYPE="2"
+# 컨테이너 플랫폼을 통해 배포된 클러스터인 경우
+CLUSTER1_CONFIG[CTX]="ctx-1"
+CLUSTER1_CONFIG[MASTER_NODE_IP]="103.xxx.xxx.xxx"
+CLUSTER1_CONFIG[API_SERVER]="https://${CLUSTER1_CONFIG[MASTER_NODE_IP]}:6443"
+CLUSTER1_CONFIG[STORAGECLASS]="cp-storageclass"
+CLUSTER1_CONFIG[IAAS_TYPE]="2"
+
+# 타 Kubernetes 클러스터인 경우
+CLUSTER2_CONFIG[CTX]="ctx-2"
+CLUSTER2_CONFIG[MASTER_NODE_IP]="104.xxx.xxx.xxx"
+CLUSTER2_CONFIG[API_SERVER]="https://63c4f2d9-xxxx.xxxx.com"
+CLUSTER2_CONFIG[STORAGECLASS]="block-storage"
+CLUSTER2_CONFIG[IAAS_TYPE]="4"
+
 HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
 PROVIDER_TYPE="standalone"
 ```
 
 |변수|설명|상세 내용|
 |---|---|---|
-|**K8S_MASTER_NODE_IP**|Kubernetes Master Node<br> Public IP 입력|Master Node에 접근하기 어려운 경우<br>Worker Node Public IP 입력| 
-|**K8S_CLUSTER_API_SERVER**|Kubernetes API Server URL 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`https://${K8S_MASTER_NODE_IP}:6443`</b>이다. <br> Master Node의 6443번 포트 수신 형식이 아닐 경우 값을 수정한다.|
-|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
-|**HOST_CLUSTER_IAAS_TYPE**|Kubernetes Cluster IaaS 환경 입력|[1] AWS [2] OPENSTACK [3] NAVER [4] NHN [5] KT 번호 입력|
-|**HOST_DOMAIN**|Host Domain 값 입력 |<b>`{ingress-nginx-controller 서비스의 EXTERNAL-IP}.nip.io`</b> 입력<br> [아래 내용 확인](#host_domain)|
+|**CTX**|해당 클러스터 컨텍스트 명 입력|| 
+|**MASTER_NODE_IP**|Kubernetes Master Node<br> Public IP 입력|Master Node에 접근하기 어려운 경우<br>Worker Node Public IP 입력|
+|**API_SERVER**|Kubernetes API Server URL 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`https://${K8S_MASTER_NODE_IP}:6443`</b>이다. <br> Master Node의 6443번 포트 수신 형식이 아닐 경우 값을 수정한다.|
+|**STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
+|**IAAS_TYPE**|Kubernetes Cluster IaaS 환경 입력|[1] AWS [2] OPENSTACK [3] NAVER [4] NHN [5] KT 번호 입력|
+|**HOST_DOMAIN**|Host Domain 값 입력 |<b>* 클러스터 Cluster1 *</b>의 <br> <b>`{ingress-nginx-controller 서비스의 EXTERNAL-IP}.nip.io`</b> 입력<br> [아래 내용 확인](#host_domain)|
 |**PROVIDER_TYPE**|컨테이너 플랫폼 포털 제공 타입 입력|본 가이드는 포털 단독 배포 형 설치 가이드로<br> **standalone** 값 입력 필요|
 
 #### 조회
 ```bash
+# 클러스터 컨텍스트 조회
+$ kubectl config get-contexts
+CURRENT  NAME          CLUSTER    AUTHINFO         NAMESPACE
+*        ctx-1 (입력)  cluster1   cluster1-admin
+         ctx-2 (입력)  cluster2   cluster2-admin
+
 # Kubernetes API Server 조회
 $ kubectl config view
 apiVersion: v1
@@ -209,7 +232,7 @@ NAME                   PROVISIONER
 block-storage (입력)   blk.csi...
 ```
 #### HOST_DOMAIN
-Ingress NGINX Controller 서비스의 <b>EXTERNAL-IP</b>`(외부에서 접속 가능 IP)`와 무료 wildcard DNS 서비스 <b>nip.io</b> 를 사용 <br>
+<b>cluster1</b>으로 지정할 클러스터의 Ingress NGINX Controller 서비스 <b>EXTERNAL-IP</b>`(외부에서 접속 가능 IP)`와 <br> 무료 wildcard DNS 서비스 <b>nip.io</b> 를 사용 <br>
 
 컨테이너 플랫폼 포털은 Kubernetes 리소스 Ingress를 통해 각 서비스를 라우팅하며, 그에 필요한 아래 두 서비스를 클러스터 설치 시 포함한다.<br>
 > <b>[MetalLB](https://metallb.universe.tf/)</b> (베어메탈 클러스터 환경에서 로드 밸런서 기능 제공)<br>
@@ -218,8 +241,8 @@ Ingress NGINX Controller 서비스의 <b>EXTERNAL-IP</b>`(외부에서 접속 �
 MetalLB를 통해 할당된 Ingress NGINX Controller 서비스의 EXTERNAL-IP가 외부에서 접속불가인 경우<br>
 각 클라우드 서비스에서 해당 IP의 네트워크 인터페이스 생성, 플로팅 IP 연결, 클러스터 노드에 인터페이스 연결 추가 등 작업이 필요하다.
 ```bash
-# 'ingress-nginx-controller' 서비스 EXTERNAL-IP 조회 (LoadBalancer 타입)
-$ kubectl get svc -n ingress-nginx
+# cluster1의 'ingress-nginx-controller' 서비스 EXTERNAL-IP 조회 (LoadBalancer 타입)
+$ kubectl get svc -n ingress-nginx --context=ctx-1
 NAME                        TYPE           CLUSTER-IP      EXTERNAL-IP            PORT(S)                      AGE
 ingress-nginx-controller    LoadBalancer   10.233.49.255   192.168.0.xxx (확인)   80:30465/TCP,443:32226/TCP   26h
 
@@ -251,67 +274,78 @@ HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
 컨테이너 플랫폼 포털 배포를 위한 스크립트를 실행한다.
 
 ```bash
-$ chmod +x deploy-cp-portal.sh
-$ ./deploy-cp-portal.sh
+$ chmod +x deploy-cp-portal-mc.sh
+$ ./deploy-cp-portal-mc.sh
 ```
 <br>
 
 컨테이너 플랫폼 포털 관련 리소스가 정상적으로 배포되었는지 확인한다.<br>
 리소스 Pod의 경우 Node에 바인딩 및 컨테이너 생성 후 Running 상태로 전환되기까지 몇 초가 소요된다.
+> 클러스터 컨텍스트 정보 변수 설정
+```
+export CLUSTER1_CTX="{클러스터 cluster1 컨텍스트 명}"  #(e.g. ctx-1)
+export CLUSTER2_CTX="{클러스터 cluster2 컨텍스트 명}"  #(e.g. ctx-2)
+```
+
+<br>
 
 - **Vault Pod 조회**
->`$ kubectl get pods -n vault`
+>`$ kubectl get pods -n vault --context=${CLUSTER1_CTX}`
 ```bash
-$ kubectl get pods -n vault
+$ kubectl get pods -n vault --context=${CLUSTER1_CTX}
 NAME                                       READY   STATUS    RESTARTS   AGE
-cp-vault-0                                 1/1     Running   0          5m58s
-cp-vault-agent-injector-5944578cff-5nm7z   1/1     Running   0          5m58s
+cp-vault-0                                 2/2     Running   0          5m20s
+cp-vault-agent-injector-5944578cff-qc6g6   2/2     Running   0          5m20s
 ```
 
 - **Harbor Pod 조회**
->`$ kubectl get pods -n harbor`
+>`$ kubectl get pods -n harbor --context=${CLUSTER1_CTX}`
 ```bash
-$ kubectl get pods -n harbor
+$ kubectl get pods -n harbor --context=${CLUSTER1_CTX}
 NAME                                       READY   STATUS    RESTARTS     AGE
-cp-harbor-chartmuseum-7c85c65495-22ww7     1/1     Running   0            6m
-cp-harbor-core-f799b5d55-bcvhb             1/1     Running   0            6m
-cp-harbor-database-0                       1/1     Running   0            6m
-cp-harbor-jobservice-cf798c89b-674xz       1/1     Running   0            6m
-cp-harbor-notary-server-5957d949dd-b7jrl   1/1     Running   0            6m
-cp-harbor-notary-signer-778f549d7b-pvgpq   1/1     Running   0            6m
-cp-harbor-portal-8649c6cffc-t64w9          1/1     Running   0            6m
-cp-harbor-redis-0                          1/1     Running   0            6m
-cp-harbor-registry-7bcc4f5d9b-n7nn2        2/2     Running   0            6m
-cp-harbor-trivy-0                          1/1     Running   0            6m
+cp-harbor-chartmuseum-7f95c9897c-rjxjt     2/2     Running   0            8m20s
+cp-harbor-core-fd76c6c76-tkfsv             2/2     Running   0            8m20s
+cp-harbor-database-0                       2/2     Running   0            8m20s
+cp-harbor-jobservice-9865f9b8d-x7mgn       2/2     Running   0            8m20s
+cp-harbor-notary-server-744878497c-4d7j2   2/2     Running   0            8m20s
+cp-harbor-notary-signer-657589f68f-smr6h   2/2     Running   0            8m20s
+cp-harbor-portal-8649c6cffc-s8jmw          2/2     Running   0            8m20s
+cp-harbor-redis-0                          2/2     Running   0            8m20s
+cp-harbor-registry-5bd48f6f7b-7phsv        3/3     Running   0            8m20s
+cp-harbor-trivy-0                          2/2     Running   0            8m20s
 ```  
 
 - **MariaDB Pod 조회**
->`$ kubectl get pods -n mariadb`
+>`$ kubectl get pods -n mariadb --context=${CLUSTER2_CTX}`
 ```bash
-$ kubectl get pods -n mariadb
+$ kubectl get pods -n mariadb --context=${CLUSTER2_CTX}
 NAME           READY   STATUS    RESTARTS   AGE
-cp-mariadb-0   1/1     Running   0          4m29s
+cp-mariadb-0   2/2     Running   0          2m23s
 ```    
 
 - **Keycloak Pod 조회**
->`$ kubectl get pods -n keycloak`
+>`$ kubectl get pods -n keycloak --context=${CLUSTER1_CTX}`
 ```bash
-$ kubectl get pods -n keycloak
-NAME                          READY   STATUS    RESTARTS     AGE
-cp-keycloak-c6486d687-2xsdk   1/1     Running   0            4m40s
-cp-keycloak-c6486d687-tl927   1/1     Running   0            4m40s
+$ kubectl get pods -n keycloak --context=${CLUSTER1_CTX}
+NAME                           READY   STATUS    RESTARTS   AGE
+cp-keycloak-77bc59dd98-hjnvw   2/2     Running   0          2m52s
+cp-keycloak-77bc59dd98-qfcqp   2/2     Running   0          2m52s
 ```
 
 - **컨테이너 플랫폼 포털 Pod 조회**
->`$ kubectl get pods -n cp-portal`
+>`$ kubectl get pods -n cp-portal --context=${CLUSTER1_CTX}` <br>
+>`$ kubectl get pods -n cp-portal --context=${CLUSTER2_CTX}`
 ```bash
-$ kubectl get pods -n cp-portal
-NAME                                               READY   STATUS    RESTARTS     AGE
-cp-portal-api-deployment-5b47f6bdff-wk5tp          1/1     Running   0            5m7s
-cp-portal-common-api-deployment-6b7d7cfb58-747tx   1/1     Running   0            5m6s
-cp-portal-metric-api-deployment-8464565dcf-7wtgr   1/1     Running   0            5m5s
-cp-portal-terraman-deployment-7ff6c8bb58-x2rpt     1/1     Running   0            5m4s
-cp-portal-ui-deployment-6fc577dd5b-rd9n9           1/1     Running   0            5m8s
+$ kubectl get pods -n cp-portal --context=${CLUSTER1_CTX}
+NAME                                             READY   STATUS    RESTARTS   AGE
+cp-portal-api-deployment-5d4964986b-5kgtx        2/2     Running   0          3m7s
+cp-portal-terraman-deployment-7b996fbbc7-7mnn5   2/2     Running   0          3m6s
+cp-portal-ui-deployment-5f7c4dc5dc-8b672         2/2     Running   0          3m8s
+
+$ kubectl get pods -n cp-portal --context=${CLUSTER2_CTX}
+NAME                                               READY   STATUS    RESTARTS   AGE
+cp-portal-common-api-deployment-5b987579bf-9sg2t   2/2     Running   0          3m26s
+cp-portal-metric-api-deployment-5f99f8f7fb-mnmjs   2/2     Running   0          3m26s
 ```    
 
 <br>
@@ -322,12 +356,11 @@ cp-portal-ui-deployment-6fc577dd5b-rd9n9           1/1     Running   0          
 > 컨테이너 플랫폼을 통해 설치된 클러스터의 StorageClass 타입이 `NFS`인 경우 reclaim 정책은 `Retain`이다.<br>
 > `Retain`정책은 Persistent Volume을 삭제하여도 스토리지 NFS 서버에 데이터가 여전히 존재하므로<br> 수동으로 데이터 정리가 필요하다.
 ```bash
-$ cd ~/workspace/container-platform/cp-portal-deployment/script
-$ chmod +x uninstall-cp-portal.sh
-$ ./uninstall-cp-portal.sh
+$ cd ~/workspace/container-platform/cp-portal-deployment/script_mc
+$ chmod +x uninstall-cp-portal-mc.sh
+$ ./uninstall-cp-portal-mc.sh
 Are you sure you want to delete the container platform portal? <y/n> y
 ```
-
 <br>    
 
 ## <span id='4'>4. 컨테이너 플랫폼 포털 접속
@@ -448,7 +481,7 @@ Keycloak Admin Console에 접속 후 조회한 Keycloak Admin 계정으로 로�
 
 <br>
 
-### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 싱글 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
+### [Index](https://github.com/PaaS-TA/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 멀티 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
 
 [image 001]:../images/portal/cp-001.png
 [image 002]:../images/portal/cp-002.png
