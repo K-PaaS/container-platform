@@ -35,7 +35,7 @@ K-PaaS 컨테이너 플랫폼 Edge 샘플 배포에 필요한 추가 인스턴�
 
 |인스턴스 종류|인스턴스 갯수|비고|
 |---|---|---|
-|Edge|1개|라즈베리파이|
+|Edge|1개|라즈베리파이<br>ARM64 아키텍쳐|
 
 <br>
 
@@ -83,9 +83,9 @@ $ sudo apt-get -y install podman
 
 `Control Plane 노드`와 ``Edge 노드``에서 각각 샘플 애플리케이션 배포에 필요한 파일을 다운로드한다.
 ```
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/acaatJ77zgYsEYb/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/fkiZoZkB9oCAcnB/download
 
-$ tar zxvf kubeedge-sample-v1.4.tar.gz
+$ tar zxvf kubeedge-sample-v1.5.tar.gz
 ```
 
 <br>
@@ -135,7 +135,7 @@ $ kubectl apply -f kubeedge-pi-counter-app.yaml
 
 <br>
 
-브라우저에서 배포된 웹에 접근하여 카운터 기능을 제어한다. Cloud 환경에 배포된 웹을 통해 Edge 환ㄴ경에 배포된 카운터 애플리케이션을 제어하여 증가하는 카운트 값을 얻을 수 있다.
+브라우저에서 배포된 웹에 접근하여 카운터 기능을 제어한다. Cloud 환경에 배포된 웹을 통해 Edge 환경에 배포된 카운터 애플리케이션을 제어하여 증가하는 카운트 값을 얻을 수 있다.
 
 ![image 002]
 
@@ -143,7 +143,7 @@ $ kubectl apply -f kubeedge-pi-counter-app.yaml
 
 `Control Plane 노드`에서 Device의 정보를 확인하여 수집중인 카운터 정보를 확인한다. status의 value 값 업데이트가 확인된다.
 ```
-$ kubectl get device counter -oyaml -w -n kubeedge
+$ kubectl get device counter -oyaml -w
 ```
 ```
 ...
@@ -186,9 +186,9 @@ $ mosquitto_sub -h 127.0.0.1 -t '$hw/events/device/counter/twin/update' -p 1883
 
 `Control Plane 노드`와 `Edge 노드`에서 샘플 애플리케이션 배포에 필요한 파일을 다운로드한다.
 ```
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/acaatJ77zgYsEYb/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/fkiZoZkB9oCAcnB/download
 
-$ tar zxvf kubeedge-sample-v1.4.tar.gz
+$ tar zxvf kubeedge-sample-v1.5.tar.gz
 ```
 
 <br>
