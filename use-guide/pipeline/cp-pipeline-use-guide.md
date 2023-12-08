@@ -504,7 +504,7 @@
 1.	Job의 “추가” 버튼을 클릭한다.
 ![image](../images/pipeline/20231207142010.png)
 2.	구성 페이지로 이동하여 작업 유형을 테스트(JUnit-Test)로 선택한 후 테스트할 입력유형을 선택한다. 그 후에 작업 트리거는 각자의 상황에 맞게 선택한다. 
-![image](../images/pipeline/20231207142.png)
+![image](../images/pipeline/20231207142144.png)
 3.	“저장” 버튼을 클릭하고, 파이프라인 상세페이지에서 테스트 Job 생성된 것을 확인한다.
 ![image](../images/pipeline/20231207142211.png)
 
