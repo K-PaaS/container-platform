@@ -404,7 +404,7 @@ Keycloak Admin Console에 접속 후 조회한 Keycloak Admin 계정으로 로�
 <br>
 
 ### <div id='5-1-4'/> 5.1.4. Instance Code Template
-Instance Code Template은 IaC를 통해 자동화된 VM 배포를 수행하는 코드의 템플릿으로 파스-타 컨테이너플랫폼을 통해 서브 클러스터를 쉽게 배포할 수 있도록 미리 템플릿을 등록할 수 있으며, 기본적으로 AWS, OPENSTACK, NAVER, NHN을 위한 Template를 제공한다.
+Instance Code Template은 IaC를 통해 자동화된 VM 배포를 수행하는 코드의 템플릿으로 K-PaaS 컨테이너플랫폼을 통해 서브 클러스터를 쉽게 배포할 수 있도록 미리 템플릿을 등록할 수 있으며, 기본적으로 AWS, OPENSTACK, NAVER, NHN을 위한 Template를 제공한다.
 #### <div id='5-1-4-1'/> 5.1.4.1. Instance Code Template 목록 조회
 - Instance Code Template 목록을 조회한다.
   ![IMG_1_4_1]
