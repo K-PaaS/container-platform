@@ -55,7 +55,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 #### <div id='3.1.1'> 3.1.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성
 - 변수 {TERRAMAN_MASTER_NODE_NAME}은 Container Platform Portal Cluster 등록시 Cluster Name과 동일해야한다. 즉, Cluster 등록할 때 Cluster Name과 SSH Key 생성할 때 이름이 동일해야한다.  
 <kbd>
-  <img src="../images/IMG_1_1.png">
+  <img src="../images/IMG_3_1_1.png">
 </kbd>
 
 <br>
@@ -94,8 +94,14 @@ The key's randomart image is:
 $ cat /home/ubuntu/.ssh/terraman-master-key.pub
 ssh-rsa AAAAB3NzaC1yc2EAAA......ADAQABAAABgQCRfg1qOsA12PRCVE2GFNrsMyF+wA5J3H4eKpwsYfYV5ldAZOuC/n7vGYLIr+ykDFEAAC83lAxq.....b7rjoSVXqkYnn06kzjpKDt0WPnMaoRgdY8ZHiSNWnQAgyMzEZO5jPH6sfW6n......FJaPo7vyEn10Uy9Drd5+HNwkj7eYLoIry8kAiMfnWcsYC7f30JpW6ODSe........83fUu1B1aA7GRZTIRL0b55+MJNUwMN/L8ES/n7j.......syNykOtnF9tM= ubuntu@terramantest-1
 ```
+*예시*
 - IaaS Dashboard 접속 - Openstack
-- 공개 키 가져오기
+- 공개 키 등록
+
+<kbd>
+  <img src="../images/IMG_3_1_2.png">
+</kbd>
+
 ### <div id='3.2'> 3.2 SSH Key 구성
 - **id_rsa**, **id_rsa.pub**
 	- Host Cluster 구성 시 생성된 RSA Key
