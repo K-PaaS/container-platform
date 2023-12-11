@@ -157,66 +157,66 @@ data "openstack_compute_keypair_v2" "cp-keypair" {
 
 # 사용 가능한 OpenStack floating_ip 주소 ( instance 별 각각 필요하다. )
 data "openstack_networking_floatingip_v2" "cp-floatingip-master" {
-  address = "203.255.255.115"			                                                # 유동 IP 주소
+  address = "203.255.255.115"			                                        # 유동 IP 주소
 }
 
 # 사용 가능한 OpenStack floating_ip 주소 ( instance 별 각각 필요하다. )
 data "openstack_networking_floatingip_v2" "cp-floatingip-worker" {
-  address = "203.255.255.118"			                                                # 유동 IP 주소
+  address = "203.255.255.118"			                                        # 유동 IP 주소
 }
 
 # 사용 가능한 OpenStack network
 data "openstack_networking_network_v2" "cp-network" {
-  name = "cp-network"			                                                        # network 명
+  name = "cp-network"			                                                # network 명
 }
 
 # 사용 가능한 OpenStack subnet
 data "openstack_networking_subnet_v2" "cp-subnet" {
-  name = "cp-subnet"				                                                    # subnet 명
+  name = "cp-subnet"				                                        # subnet 명
 }
 
 # 사용 가능한 OpenStack router
 data "openstack_networking_router_v2" "ext_route" {
-  name = "ext_route"					                                                # router 명
+  name = "ext_route"					                                # router 명
 }
 
 # 사용 가능한 OpenStack security_group
 data "openstack_networking_secgroup_v2" "cp-secgroup" {
-  name = "cp-secgroup"			                                                        # security group 명
+  name = "cp-secgroup"			                                                # security group 명
 }
 
 # OpenStack 내에서 V2 라우터 인터페이스 리소스를 관리한다.
 resource "openstack_networking_router_interface_v2" "cp-router-interface" {
-  router_id = data.openstack_networking_router_v2.ext_route.id				            # 이 인터페이스가 속한 라우터의 ID
-  subnet_id = data.openstack_networking_subnet_v2.cp-subnet.id		                    # 이 인터페이스가 연결되는 서브넷의 ID
+  router_id = data.openstack_networking_router_v2.ext_route.id				# 이 인터페이스가 속한 라우터의 ID
+  subnet_id = data.openstack_networking_subnet_v2.cp-subnet.id		                # 이 인터페이스가 연결되는 서브넷의 ID
 }
 
 # OpenStack 내에서 V2 VM 인스턴스 리소스를 관리
-resource "openstack_compute_instance_v2" "opentofu-master-node" {                       # 인스턴스 생성시 반드시 "master"와 "worker"명칭으로 구분
-  name              = "opentofu-master-node"				                            # 리소스의 고유한 이름
-  flavor_id         = "m1.large"											           	# 서버에 대해 원하는 플레이버의 플레이버 ID
-  key_pair          = data.openstack_compute_keypair_v2.cp-keypair.id		        	# 서버에 넣을 키 쌍의 이름
+resource "openstack_compute_instance_v2" "opentofu-master-node" {                       # 인스턴스 생성시 반드시 "master"와 "worker" 명칭으로 구분
+  name              = "opentofu-master-node"				                # 리소스의 고유한 이름
+  flavor_id         = "m1.large"							# 서버에 대해 원하는 플레이버의 플레이버 ID
+  key_pair          = data.openstack_compute_keypair_v2.cp-keypair.id		        # 서버에 넣을 키 쌍의 이름
   security_groups   = [data.openstack_networking_secgroup_v2.cp-secgroup.id]   	        # 서버와 연결할 하나 이상의 보안 그룹 이름 배열
-  availability_zone = "octavia"									                	    # 서버를 생성할 가용성 영역
-  region            = "RegionOne"										                # 서버 인스턴스를 생성할 지역
+  availability_zone = "octavia"								# 서버를 생성할 가용성 영역
+  region            = "RegionOne"							# 서버 인스턴스를 생성할 지역
 
   # 블록 영역
   block_device {
-    uuid                  = data.openstack_images_image_v2.ubuntu.id		            # 이미지, 볼륨 또는 스냅샷의 UUID
-    source_type           = "image"					                                    # 장치의 소스 유형입니다. "", "image", "volume", "snapshot" 중 하나
-    volume_size           = 80							                                # 생성할 볼륨의 크기(GB)
-    boot_index            = 0								                            # 볼륨의 부팅 인덱스
-    destination_type      = "volume"				                                    # 생성되는 유형
-    delete_on_termination = true						                                # 인스턴스 종료 시 볼륨/블록 디바이스를 삭제 여부, 기본값 false
+    uuid                  = data.openstack_images_image_v2.ubuntu.id		        # 이미지, 볼륨 또는 스냅샷의 UUID
+    source_type           = "image"					                # 장치의 소스 유형입니다. "", "image", "volume", "snapshot" 중 하나
+    volume_size           = 80							        # 생성할 볼륨의 크기(GB)
+    boot_index            = 0								# 볼륨의 부팅 인덱스
+    destination_type      = "volume"				                        # 생성되는 유형
+    delete_on_termination = true						        # 인스턴스 종료 시 볼륨/블록 디바이스를 삭제 여부, 기본값 false
   }
 
   # network 영역
   network {
-    uuid = data.openstack_networking_network_v2.cp-network.id			                # 서버에 연결할 네트워크 UUID
+    uuid = data.openstack_networking_network_v2.cp-network.id			        # 서버에 연결할 네트워크 UUID
   }
 }
 
-resource "openstack_compute_instance_v2" "opentofu-worker-node" {                       # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker"명칭으로 구분
+resource "openstack_compute_instance_v2" "opentofu-worker-node" {                       # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker" 명칭으로 구분
   name              = "opentofu-worker-node"
   flavor_id         = "m1.large"
   key_pair          = data.openstack_compute_keypair_v2.cp-keypair.id
@@ -241,8 +241,8 @@ resource "openstack_compute_instance_v2" "opentofu-worker-node" {               
 # floating IP 영역
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
   floating_ip = data.openstack_networking_floatingip_v2.cp-floatingip-master.address	# 연결할 유동 IP
-  instance_id = "${openstack_compute_instance_v2.opentofu-master-node.id}"			    # 유동 IP를 연결할 인스턴스
-  wait_until_associated = true					                                        # OpenStack 환경이 연결이 완료될 때까지 자동으로 기다리지 않는 경우 유동 IP가 연결될 때까지 OpenTofu가 인스턴스를 폴링하도록 이 옵션을 설정, 기본값 false
+  instance_id = "${openstack_compute_instance_v2.opentofu-master-node.id}"		# 유동 IP를 연결할 인스턴스
+  wait_until_associated = true					                        # OpenStack 환경이 연결이 완료될 때까지 자동으로 기다리지 않는 경우 유동 IP가 연결될 때까지 OpenTofu가 인스턴스를 폴링하도록 이 옵션을 설정, 기본값 false
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_2" {
@@ -268,37 +268,36 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 ```
 # 키 페어에 대한 정보 제공
 data "aws_key_pair" "default_key" {
-  key_name = "cluster-name-key"		# 키 쌍 이름
+  key_name = "cluster-name-key"		                                                # 키 쌍 이름
 }
 
 # 리소스에서 사용할 등록된 AMI의 ID 제공
 data "aws_ami" "ubuntu" {
-	most_recent = true							                                         # 둘 이상의 결과가 반환되는 경우 가장 최근의 AMI를 사용
-	filter {										                                     # 필터링할 하나 이상의 이름/값 쌍
-		name = "name"								                                     # 기본 AWS API에서 정의한 필터링 기준 필드의 이름
-		values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]	         # 지정된 필드에 대해 허용되는 값 집합
+	most_recent = true							        # 둘 이상의 결과가 반환되는 경우 가장 최근의 AMI를 사용
+	filter {									# 필터링할 하나 이상의 이름/값 쌍
+		name = "name"								# 기본 AWS API에서 정의한 필터링 기준 필드의 이름
+		values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]	# 지정된 필드에 대해 허용되는 값 집합
 	}
 	filter {
 		name = "virtualization-type"
 		values = ["hvm"]
 	}
-	owners = ["099720109477"]				                                             # 검색을 제한할 AMI 소유자 목록
+	owners = ["099720109477"]				                        # 검색을 제한할 AMI 소유자 목록
 }
 
 # VPC 리소스 영역
 resource "aws_vpc" "cp-opentofu-vpc" {
-	cidr_block = "172.10.0.0/20"					                                     # VPC에 대한 IPv4 CIDR 블록
-	tags = { Name = "cp-opentofu-vpc" }		                                             # 리소스에 할당할 태그 맵
+	cidr_block = "172.10.0.0/20"					                # VPC에 대한 IPv4 CIDR 블록
+	tags = { Name = "cp-opentofu-vpc" }		                                # 리소스에 할당할 태그 맵
 }
 
 # VPC 서브넷 리소스 영역
 resource "aws_subnet" "cp-opentofu-subnet01" {
-  vpc_id = "${aws_vpc.aws-vpc.id}"					                                     # VPC ID
-  cidr_block = "172.10.0.0/24"						                                     # 서브넷의 IPv4 CIDR 블록
-  availability_zone = "ap-northeast-2a"				                                     # 서브넷의 AZ
-  tags = { Name = "cp-opentofu-subnet01" }	                                             # 리소스에 할당할 태그 맵
+  vpc_id = "${aws_vpc.aws-vpc.id}"					                # VPC ID
+  cidr_block = "172.10.0.0/24"						                # 서브넷의 IPv4 CIDR 블록
+  availability_zone = "ap-northeast-2a"				                        # 서브넷의 AZ
+  tags = { Name = "cp-opentofu-subnet01" }	                                        # 리소스에 할당할 태그 맵
 }
-
 resource "aws_subnet" "cp-opentofu-subnet02" {
   vpc_id = "${aws_vpc.aws-vpc.id}"
   cidr_block = "172.10.1.0/24"
@@ -310,18 +309,18 @@ resource "aws_subnet" "cp-opentofu-subnet02" {
 
 # 보안 그룹 리소스 영역
 resource "aws_security_group" "cp-opentofu-sg-all" {
-  name = "cp-opentofu-sg-all"				                                          	 # 보안 그룹의 이름
-  description = "Allow all inbound traffic"			                                     # 보안 그룹 설명
-  vpc_id = "${aws_vpc.aws-vpc.id}"	# VPC ID
+  name = "cp-opentofu-sg-all"				                                # 보안 그룹의 이름
+  description = "Allow all inbound traffic"			                        # 보안 그룹 설명
+  vpc_id = "${aws_vpc.aws-vpc.id}"	                                                # VPC ID
 
-  ingress {							                                                     # 수신 규칙에 대한 구성 블록
-	from_port = 0					                                                     # 시작 포트
-	to_port = 0						                                                     # 끝 범위 포트
-	protocol = "-1"					                                                     # 프로토콜
-	cidr_blocks = ["0.0.0.0/0"]		                                                     # CIDR 블록 집합
+  ingress {							                        # 수신 규칙에 대한 구성 블록
+	from_port = 0					                                # 시작 포트
+	to_port = 0						                        # 끝 범위 포트
+	protocol = "-1"					                                # 프로토콜
+	cidr_blocks = ["0.0.0.0/0"]		                                        # CIDR 블록 집합
   }
 
-  egress {							                                                     # 송신 규칙에 대한 구성 블록
+  egress {							                        # 송신 규칙에 대한 구성 블록
 	from_port = 0
 	to_port = 0
 	protocol = "-1"
@@ -330,33 +329,33 @@ resource "aws_security_group" "cp-opentofu-sg-all" {
 }
 
 # 인스턴스 리소스 영역
-resource "aws_instance" "master" {                                                       # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker"명칭으로 구분
-  ami = "${data.aws_ami.ubuntu.id}"								                         # 인스턴스에 사용할 AMI
-  instance_type = "t3.medium"										                     # 인스턴스에 사용할 인스턴스 유형
-  key_name = data.aws_key_pair.default_key.key_name					                     # 인스턴스에 사용할 키 쌍의 키 이름
-  subnet_id = "${aws_subnet.cp-opentofu-subnet01.id}"		                             # 시작할 VPC 서브넷 ID
-  vpc_security_group_ids = [										                     # 연결할 보안 그룹 ID
+resource "aws_instance" "master" {                                                      # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker" 명칭으로 구분
+  ami = "${data.aws_ami.ubuntu.id}"							# 인스턴스에 사용할 AMI
+  instance_type = "t3.medium"								# 인스턴스에 사용할 인스턴스 유형
+  key_name = data.aws_key_pair.default_key.key_name					# 인스턴스에 사용할 키 쌍의 키 이름
+  subnet_id = "${aws_subnet.cp-opentofu-subnet01.id}"		                        # 시작할 VPC 서브넷 ID
+  vpc_security_group_ids = [								# 연결할 보안 그룹 ID
 	"${aws_security_group.cp-opentofu-sg-all.id}"
   ]
-  associate_public_ip_address = true			                                         # 퍼블릭 IP 주소를 VPC의 인스턴스와 연결할지 여부
-  tags = {													                             # 리소스에 할당할 태그의 맵
+  associate_public_ip_address = true			                                # 퍼블릭 IP 주소를 VPC의 인스턴스와 연결할지 여부
+  tags = {										# 리소스에 할당할 태그의 맵
 	Name = "cp-opentofu-m"
   }
-  provisioner "remote-exec" {				                                             # OpenTofu로 리소스를 생성하거나 제거할 때 로컬이나 원격에서 스크립트를 실행할 수 있는 기능
-	connection {							                                             # 연결 블록
-	  type = "ssh"						                                                 # 연결 유형
-	  host = "${self.public_ip}"			                                             # 연결할 리소스의 주소
-	  user = "ubuntu"									                                 # 연결에 사용할 사용자
-	  private_key = file("~/.ssh/cluster-name-key.pem")		                             # 연결에 사용할 SSH 키의 내용
-	  timeout = "1m"									                                 # 연결을 사용할 수 있을 때까지 기다리는 시간 초과
+  provisioner "remote-exec" {				                                # OpenTofu로 리소스를 생성하거나 제거할 때 로컬이나 원격에서 스크립트를 실행할 수 있는 기능
+	connection {							                # 연결 블록
+	  type = "ssh"						                        # 연결 유형
+	  host = "${self.public_ip}"			                                # 연결할 리소스의 주소
+	  user = "ubuntu"								# 연결에 사용할 사용자
+	  private_key = file("~/.ssh/cluster-name-key.pem")		                # 연결에 사용할 SSH 키의 내용
+	  timeout = "1m"								# 연결을 사용할 수 있을 때까지 기다리는 시간 초과
 	}
 	inline = [
-	  "cat .ssh/authorized_keys"							                             # 실행 커맨드
+	  "cat .ssh/authorized_keys"							# 실행 커맨드
 	]
   }
 }
 
-resource "aws_instance" "worker" {                                                       # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker"명칭으로 구분                  
+resource "aws_instance" "worker" {                                                      # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker" 명칭으로 구분                  
   ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t3.medium"
   key_name = data.aws_key_pair.default_key.key_name
@@ -385,20 +384,20 @@ resource "aws_instance" "worker" {                                              
 
 # VPC의 기본 라우팅 테이블을 관리하기 위한 리소스 영역
 resource "aws_default_route_table" "nc-public" {
-  default_route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"	                 # 기본 라우팅 테이블의 ID
-  tags = { Name = "New Public Route Table" }						                     # 리소스에 할당할 태그의 맵
+  default_route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"	                # 기본 라우팅 테이블의 ID
+  tags = { Name = "New Public Route Table" }						# 리소스에 할당할 태그의 맵
 }
 
 # VPC 라우팅 테이블을 생성하기 위한 리소스 영역
 resource "aws_route_table" "nc-private" {
-  vpc_id = "${aws_vpc.aws-vpc.id}"				                                         # VPC ID
-  tags = { Name = "New Route Private Table" }	                                         # 리소스에 할당할 태그의 맵
+  vpc_id = "${aws_vpc.aws-vpc.id}"				                        # VPC ID
+  tags = { Name = "New Route Private Table" }	                                        # 리소스에 할당할 태그의 맵
 }
 
 # 라우팅 테이블과 서브넷 또는 라우팅 테이블과 인터넷 게이트웨이 또는 가상 프라이빗 게이트웨이 간의 연결을 생성하기 위한 리소스 영역
 resource "aws_route_table_association" "aws_public_2a" {
-  subnet_id = "${aws_subnet.cp-opentofu-subnet01.id}"		                             # 연결을 생성하기 위한 서브넷 ID
-  route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"		                     # 연결할 라우팅 테이블의 ID
+  subnet_id = "${aws_subnet.cp-opentofu-subnet01.id}"		                        # 연결을 생성하기 위한 서브넷 ID
+  route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"		                # 연결할 라우팅 테이블의 ID
 }
 
 resource "aws_route_table_association" "aws_private_2a" {
@@ -408,15 +407,15 @@ resource "aws_route_table_association" "aws_private_2a" {
 
 # VPC 인터넷 게이트웨이를 생성하기 위한 리소스
 resource "aws_internet_gateway" "aws-igw" {
-  vpc_id = "${aws_vpc.aws-vpc.id}"					                                      # 생성할 VPC ID
-  tags = { Name = "aws-vpc Internet Gateway" }		                                      # 리소스에 할당할 태그 맵
+  vpc_id = "${aws_vpc.aws-vpc.id}"					                # 생성할 VPC ID
+  tags = { Name = "aws-vpc Internet Gateway" }		                                # 리소스에 할당할 태그 맵
 }
 
 # VPC 라우팅 테이블에서 라우팅 테이블 항목(경로)을 생성하기 위한 리소스
 resource "aws_route" "aws_public" {
-  route_table_id         = "${aws_vpc.aws-vpc.default_route_table_id}"	                  # 라우팅 테이블의 ID
-  destination_cidr_block = "0.0.0.0/0"								                      # 대상 CIDR 블록
-  gateway_id             = "${aws_internet_gateway.aws-igw.id}"			                  # VPC 인터넷 게이트웨이 또는 가상 프라이빗 게이트웨이의 식별자
+  route_table_id         = "${aws_vpc.aws-vpc.default_route_table_id}"	                # 라우팅 테이블의 ID
+  destination_cidr_block = "0.0.0.0/0"							# 대상 CIDR 블록
+  gateway_id             = "${aws_internet_gateway.aws-igw.id}"			        # VPC 인터넷 게이트웨이 또는 가상 프라이빗 게이트웨이의 식별자
 }
 
 resource "aws_route" "aws_private" {
@@ -427,13 +426,13 @@ resource "aws_route" "aws_private" {
 
 # 탄력적 IP 리소스를 제공
 resource "aws_eip" "aws_nat" {
-  vpc = true		                                                                      # EIP가 VPC에 있는 경우, 리전이 EC2-Classic을 지원하지 않는 한 기본값은 true
+  vpc = true		                                                                # EIP가 VPC에 있는 경우, 리전이 EC2-Classic을 지원하지 않는 한 기본값은 true
 }
 
 # VPC NAT 게이트웨이를 생성하기 위한 리소스 영역
 resource "aws_nat_gateway" "aws-nat" {
-  allocation_id = "${aws_eip.aws_nat.id}"					                     	      # 게이트웨이에 대한 탄력적 IP 주소의 할당 ID
-  subnet_id     = "${aws_subnet.cp-opentofu-subnet01.id}"		                          # 게이트웨이를 배치할 서브넷의 서브넷 ID
+  allocation_id = "${aws_eip.aws_nat.id}"					        # 게이트웨이에 대한 탄력적 IP 주소의 할당 ID
+  subnet_id     = "${aws_subnet.cp-opentofu-subnet01.id}"		                # 게이트웨이를 배치할 서브넷의 서브넷 ID
 }
 ```
 ### <div id='4.3'> 4.3 NHN
@@ -490,36 +489,36 @@ resource "openstack_networking_port_v2" "nic" {
 }
 
 ## Manages a V2 VM instance resource within OpenStack.
-resource "openstack_compute_instance_v2" "vm-cp-master" {                                 # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker"명칭으로 구분
+resource "openstack_compute_instance_v2" "vm-cp-master" {                               # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker" 명칭으로 구분
 
   name              = "cp-cluster-master"
   availability_zone = "kr-pub-a"
   flavor_name       = "m2.c4m8"
   key_pair          = "cp-nhn-common-key"
 
-  block_device {                                                                          # Configuration of block devices.
-    uuid                  = data.openstack_images_image_v2.ubuntu_focal.id                # The UUID of the image, volume, or snapshot. Changing this creates a new server.
-    source_type           = "image"                                                       # The source type of the device. Must be one of "blank", "image", "volume", or "snapshot". Changing this creates a new server.
-    destination_type      = "volume"                                                      # The type that gets created. Possible values are "volume" and "local". Changing this creates a new server.
-    delete_on_termination = true                                                          # Delete the volume / block device upon termination of the instance. Defaults to false. Changing this creates a new server.
-    volume_size           = 40                                                            # The size of the volume to create (in gigabytes).
-    volume_type           = "General HDD"                                                 # The volume type that will be used, for example SSD or HDD storage.
+  block_device {                                                                        # Configuration of block devices.
+    uuid                  = data.openstack_images_image_v2.ubuntu_focal.id              # The UUID of the image, volume, or snapshot. Changing this creates a new server.
+    source_type           = "image"                                                     # The source type of the device. Must be one of "blank", "image", "volume", or "snapshot". Changing this creates a new server.
+    destination_type      = "volume"                                                    # The type that gets created. Possible values are "volume" and "local". Changing this creates a new server.
+    delete_on_termination = true                                                        # Delete the volume / block device upon termination of the instance. Defaults to false. Changing this creates a new server.
+    volume_size           = 40                                                          # The size of the volume to create (in gigabytes).
+    volume_type           = "General HDD"                                               # The volume type that will be used, for example SSD or HDD storage.
   }
 
   network {
-    port = openstack_networking_port_v2.nic.id                                            # The port UUID of a network to attach to the server.
+    port = openstack_networking_port_v2.nic.id                                          # The port UUID of a network to attach to the server.
   }
 }
 
 ## Manages a V2 floating IP resource within OpenStack Neutron (networking) that can be used for load balancers. These are similar to Nova (compute) floating IP resources, but only compute floating IPs can be used with compute instances.
 resource "openstack_networking_floatingip_v2" "fip_1" {
-  pool       = data.openstack_networking_network_v2.ext_network.name    # The name of the pool from which to obtain the floating IP. Changing this creates a new floating IP.
+  pool       = data.openstack_networking_network_v2.ext_network.name                    # The name of the pool from which to obtain the floating IP. Changing this creates a new floating IP.
 }
 
 ## Associate a floating IP to an instance.
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
-  floating_ip = openstack_networking_floatingip_v2.fip_1.address                          # The floating IP to associate.
-  instance_id = openstack_compute_instance_v2.vm-cp-master.id                                       # The instance to associte the floating IP with.
-  wait_until_associated = true                                                            # In cases where the OpenStack environment does not automatically wait until the association has finished, set this option to have OpenTofu poll the instance until the floating IP has been associated. Defaults to false.
+  floating_ip = openstack_networking_floatingip_v2.fip_1.address                        # The floating IP to associate.
+  instance_id = openstack_compute_instance_v2.vm-cp-master.id                           # The instance to associte the floating IP with.
+  wait_until_associated = true                                                          # In cases where the OpenStack environment does not automatically wait until the association has finished, set this option to have OpenTofu poll the instance until the floating IP has been associated. Defaults to false.
 }
 ```
