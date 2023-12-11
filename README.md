@@ -122,7 +122,7 @@
 
 ### 포털 이용 가이드
   + [포털 사용 가이드](use-guide/portal/container-platform-portal-guide.md)
-  + [Terraman IaC 스크립트 가이드](check-guide/cp-terraman-check-guide.md)
+  + [Terraman IaC 스크립트 가이드](check-guide/cp-terraman-check-index-guide.md)
   
 ### 서비스 이용 가이드
 - Pipeline 서비스

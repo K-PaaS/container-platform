@@ -18,11 +18,11 @@
 ## <div id='1'> 1. 문서 개요
 
 ### <div id='1.1'> 1.1. 목적
- Terraman IaC 스크립트 가이드는 Terraform을 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 스크립트를 작성하는 데 도움을 주기 위한 목적으로 제작되었다.
+ Terraman IaC 스크립트 가이드는 OpenTofu를 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 스크립트를 작성하는 데 도움을 주기 위한 목적으로 제작되었다.
 ### <div id='1.2'> 1.2. 범위
 Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 ### <div id='1.3'> 1.3. 참고자료
-- Terraform NAVER
+- NAVER
 > https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs
 
 ## <div id='2'> 2. Prerequisite
@@ -40,7 +40,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 ## <div id='3'> 3. SSH Key 설정
 #### 들어가기 전
-- **Host Cluster**: Terraform을 생성하는 데 사용되는 클러스터
+- **Host Cluster**: OpenTofu를 생성하는 데 사용되는 클러스터
 - **Sub Cluster**: Terraman을 통해 배포되는 클러스터
 
 ### <div id='3.1'> 3.1 SSH Key 구성
@@ -75,7 +75,16 @@ $ kubectl cp /home/ubuntu/.ssh/id_rsa cp-portal-terraman-deployment-689585bc94-p
 ## <div id='4'> 4. Template 생성
 ### <div id='4.1'> 4.1 NAVER
 - 이 Template는 Terraman을 사용하여 NAVER에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 초점을 맞추고 있다.
-
+- [NAVER Template 작성시 변수 참고](https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs#argument-reference)
+- 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
+*예시*
+  + 인스턴스 1개 생성시 
+    - resource "ncloud_server" "master" {...}
+  + 인스턴스 n개 생성시 
+    - resource "ncloud_server" "master" {...}
+    - resource "ncloud_server" "worker1" {...}
+    - resource "ncloud_server" "worker2" {...}
+    - resource "ncloud_server" "worker3" {...} ...
 ```
 ## Provides a Login key resource.
 resource "ncloud_login_key" "key_scn_01" {
@@ -92,18 +101,18 @@ resource "ncloud_vpc" "vpc_scn_01" {
 resource "ncloud_subnet" "subnet_scn_01" {
   name           = var.server_name01
   vpc_no         = ncloud_vpc.vpc_scn_01.id
-  subnet         = cidrsubnet(ncloud_vpc.vpc_scn_01.ipv4_cidr_block, 8, 1)  # 10.0.1.0/24
-  zone           = "KR-1"     # Available zone where the subnet will be placed physically.
-  network_acl_no = ncloud_vpc.vpc_scn_01.default_network_acl_no   # The ID of Network ACL.
-  subnet_type    = "PUBLIC"   # PUBLIC(Public) | PRIVATE(Private)
+  subnet         = cidrsubnet(ncloud_vpc.vpc_scn_01.ipv4_cidr_block, 8, 1)                          # 10.0.1.0/24
+  zone           = "KR-1"                                                                           # Available zone where the subnet will be placed physically.
+  network_acl_no = ncloud_vpc.vpc_scn_01.default_network_acl_no                                     # The ID of Network ACL.
+  subnet_type    = "PUBLIC"                                                                         # PUBLIC(Public) | PRIVATE(Private)
 }
 
 ## Provides a Network Interface resource
 resource "ncloud_network_interface" "nic01" {
   name                  = "server-nic1"
   description           = "for server-nic"
-  subnet_no             = ncloud_subnet.subnet_scn_01.id     # The ID of the associated Subnet.
-  access_control_groups = [ncloud_access_control_group.acg_scn_01.id]    # List of ACG ID to apply to network interfaces. A maximum of three ACGs can be applied.
+  subnet_no             = ncloud_subnet.subnet_scn_01.id                                            # The ID of the associated Subnet.
+  access_control_groups = [ncloud_access_control_group.acg_scn_01.id]                               # List of ACG ID to apply to network interfaces. A maximum of three ACGs can be applied.
 }
 
 resource "ncloud_network_interface" "nic02" {
@@ -128,13 +137,13 @@ resource "ncloud_network_interface" "nic04" {
 }
 
 ## Provides a Server instance resource.
-resource "ncloud_server" "server_01" {
+resource "ncloud_server" "server_01_master" {                                                       # 인스턴스 생성시 반드시 "master"와 "worker"명칭으로 구분
   subnet_no                 = ncloud_subnet.subnet_scn_01.id
   name                      = var.server_name01
-  server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"  # Server image product code to determine which server image to create. It can be obtained through data.ncloud_server_image(s)
+  server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"                                 # Server image product code to determine which server image to create. It can be obtained through data.ncloud_server_image(s)
   login_key_name            = ncloud_login_key.key_scn_01.key_name
   description = "master"
-  network_interface {                 # List of Network Interface. You can assign up to three network interfaces.
+  network_interface {                                                                               # List of Network Interface. You can assign up to three network interfaces.
     network_interface_no = ncloud_network_interface.nic01.id
     order                = 0
   }
@@ -176,7 +185,7 @@ resource "ncloud_server" "server_04" {
 
 ## Provides a Public IP instance resource.
 resource "ncloud_public_ip" "public_ip_01" {
-  server_instance_no = ncloud_server.server_01.id
+  server_instance_no = ncloud_server.server_01_master.id
   description        = "for ${var.server_name01}"
 }
 

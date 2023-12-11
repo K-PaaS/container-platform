@@ -22,16 +22,16 @@
 ## <div id='1'> 1. 문서 개요
 
 ### <div id='1.1'> 1.1. 목적
- Terraman IaC 스크립트 가이드는 Terraform을 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 스크립트를 작성하는 데 도움을 주기 위한 목적으로 제작되었다.
+Terraman IaC 스크립트 가이드는 OpenTofu를 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 스크립트를 작성하는 데 도움을 주기 위한 목적으로 제작되었다.
 ### <div id='1.2'> 1.2. 범위
 Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 ### <div id='1.3'> 1.3. 참고자료
-- Terraform OpenStack
+- OpenStack
 > https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs  
-- Terraform AWS
+- AWS
 > https://registry.terraform.io/providers/hashicorp/aws/latest/docs
-- Terraform NHN
-> https://docs.nhncloud.com/ko/Compute/Instance/ko/terraform-guide/
+- NHN
+> https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs 
 
 ## <div id='2'> 2. Prerequisite
 - Terraman을 실행하기 전 필요한 사전 작업에 대한 설명이다.
@@ -48,12 +48,12 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 ## <div id='3'> 3. SSH Key 설정
 #### 들어가기 전
-- **Host Cluster**: Terraform을 생성하는 데 사용되는 클러스터
+- **Host Cluster**: OpenTofu를 생성하는 데 사용되는 클러스터
 - **Sub Cluster**: Terraman을 통해 배포되는 클러스터
 
 ### <div id='3.1'>  3.1. SSH Key 생성
 #### <div id='3.1.1'> 3.1.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성
-- 변수 {TERRAMAN_MASTER_NODE_NAME}은 Container Platform Portal Cluster 등록시 Cluster Name과 동일해야한다. 즉, Cluster 등록할 때 이름과 SSH Key 생성할 때 이름이 동일해야한다.  
+- 변수 {TERRAMAN_MASTER_NODE_NAME}은 Container Platform Portal Cluster 등록시 Cluster Name과 동일해야한다. 즉, Cluster 등록할 때 Cluster Name과 SSH Key 생성할 때 이름이 동일해야한다.  
 <kbd>
   <img src="../images/IMG_1_1.png">
 </kbd>
@@ -95,9 +95,7 @@ $ cat /home/ubuntu/.ssh/terraman-master-key.pub
 ssh-rsa AAAAB3NzaC1yc2EAAA......ADAQABAAABgQCRfg1qOsA12PRCVE2GFNrsMyF+wA5J3H4eKpwsYfYV5ldAZOuC/n7vGYLIr+ykDFEAAC83lAxq.....b7rjoSVXqkYnn06kzjpKDt0WPnMaoRgdY8ZHiSNWnQAgyMzEZO5jPH6sfW6n......FJaPo7vyEn10Uy9Drd5+HNwkj7eYLoIry8kAiMfnWcsYC7f30JpW6ODSe........83fUu1B1aA7GRZTIRL0b55+MJNUwMN/L8ES/n7j.......syNykOtnF9tM= ubuntu@terramantest-1
 ```
 - IaaS Dashboard 접속 - Openstack
-![[Pasted image 20231109170626.png]]
 - 공개 키 가져오기
-![[Pasted image 20231109170742.png]]
 ### <div id='3.2'> 3.2 SSH Key 구성
 - **id_rsa**, **id_rsa.pub**
 	- Host Cluster 구성 시 생성된 RSA Key
@@ -136,75 +134,71 @@ $ kubectl cp /home/ubuntu/.ssh/terraman-master-key cp-portal-terraman-deployment
 ## <div id='4'> 4. Template 생성
 ### <div id='4.1'> 4.1 OpenStack
 - 이 Template는 Terraman을 사용하여 OpenStack에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
-
+- [OpenStack Template 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
+- 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
+*예시*
+  + 인스턴스 1개 생성시 
+    - resource "openstack_compute_instance_v2" "master" {...}
+  + 인스턴스 n개 생성시 
+    - resource "openstack_compute_instance_v2" "master" {...}
+    - resource "openstack_compute_instance_v2" "worker1" {...}
+    - resource "openstack_compute_instance_v2" "worker2" {...}
+    - resource "openstack_compute_instance_v2" "worker3" {...} ...
 ```
-# 1. data로 시작되는 영역은 Openstack에서 사용가능한 자원을 가져와 보관한다. 
-#   - name으로 가져온 자원의 id는 사용가능하다.
-#	ex)	data "테라폼 데이터소스 함수명" "사용할 변수명" {
-#		  name = "ubuntu-20.04"
-#		}
-#		...
-#	    block_device {
-#		  uuid = data.테라폼 데이터소스 함수명.변수명.id
-#		}
-#
-# 2. resource로 시작되는 영역은 자원 생성 및 보관에 관여하며 data로 선언한 값을 사용 할 수 있다.
-# 3. openstack의 경우 각 instance별로 floating_ip자원을 가져와 수동으로 붙여야한다.
-
 # 사용 가능한 OpenStack 이미지
 data "openstack_images_image_v2" "ubuntu" {
-  name = "ubuntu-20.04"                                     # 이미지 명
+  name = "ubuntu-20.04"                                                                 # 이미지 명
 }
 
 # 사용 가능한 OpenStack keyPair
-data "openstack_compute_keypair_v2" "paasta-cp-keypair" {
-  name = "passta-cp-terraform-keypair"	                    # keyPair 명
+data "openstack_compute_keypair_v2" "cp-keypair" {
+  name = "passta-cp-opentofu-keypair"	                                                # keyPair 명
 }
 
 # 사용 가능한 OpenStack floating_ip 주소 ( instance 별 각각 필요하다. )
-data "openstack_networking_floatingip_v2" "paasta-cp-floatingip-master" {
-  address = "203.255.255.115"			                    # 유동 IP 주소
+data "openstack_networking_floatingip_v2" "cp-floatingip-master" {
+  address = "203.255.255.115"			                                                # 유동 IP 주소
 }
 
 # 사용 가능한 OpenStack floating_ip 주소 ( instance 별 각각 필요하다. )
-data "openstack_networking_floatingip_v2" "paasta-cp-floatingip-worker" {
-  address = "203.255.255.118"			                    # 유동 IP 주소
+data "openstack_networking_floatingip_v2" "cp-floatingip-worker" {
+  address = "203.255.255.118"			                                                # 유동 IP 주소
 }
 
 # 사용 가능한 OpenStack network
-data "openstack_networking_network_v2" "paasta-cp-network" {
-  name = "paasta-cp-network"			                    # network 명
+data "openstack_networking_network_v2" "cp-network" {
+  name = "cp-network"			                                                        # network 명
 }
 
 # 사용 가능한 OpenStack subnet
-data "openstack_networking_subnet_v2" "paasta-cp-subnet" {
-  name = "paasta-cp-subnet"				                    # subnet 명
+data "openstack_networking_subnet_v2" "cp-subnet" {
+  name = "cp-subnet"				                                                    # subnet 명
 }
 
 # 사용 가능한 OpenStack router
 data "openstack_networking_router_v2" "ext_route" {
-  name = "ext_route"					                    # router 명
+  name = "ext_route"					                                                # router 명
 }
 
 # 사용 가능한 OpenStack security_group
-data "openstack_networking_secgroup_v2" "paasta-cp-secgroup" {
-  name = "paasta-cp-secgroup"			                    # security group 명
+data "openstack_networking_secgroup_v2" "cp-secgroup" {
+  name = "cp-secgroup"			                                                        # security group 명
 }
 
 # OpenStack 내에서 V2 라우터 인터페이스 리소스를 관리한다.
-resource "openstack_networking_router_interface_v2" "paasta-cp-router-interface" {
+resource "openstack_networking_router_interface_v2" "cp-router-interface" {
   router_id = data.openstack_networking_router_v2.ext_route.id				            # 이 인터페이스가 속한 라우터의 ID
-  subnet_id = data.openstack_networking_subnet_v2.paasta-cp-subnet.id		            # 이 인터페이스가 연결되는 서브넷의 ID
+  subnet_id = data.openstack_networking_subnet_v2.cp-subnet.id		                    # 이 인터페이스가 연결되는 서브넷의 ID
 }
 
 # OpenStack 내에서 V2 VM 인스턴스 리소스를 관리
-resource "openstack_compute_instance_v2" "paasta-terraform-master-node" {
-  name              = "paasta-terraform-master-node"				                    # 리소스의 고유한 이름
-  flavor_id         = "m1.large"														# 서버에 대해 원하는 플레이버의 플레이버 ID
-  key_pair          = data.openstack_compute_keypair_v2.paasta-cp-keypair.id			# 서버에 넣을 키 쌍의 이름
-  security_groups   = [data.openstack_networking_secgroup_v2.paasta-cp-secgroup.id]		# 서버와 연결할 하나 이상의 보안 그룹 이름 배열
-  availability_zone = "octavia"															# 서버를 생성할 가용성 영역
-  region            = "RegionOne"														# 서버 인스턴스를 생성할 지역
+resource "openstack_compute_instance_v2" "opentofu-master-node" {                       # 인스턴스 생성시 반드시 "master"와 "worker"명칭으로 구분
+  name              = "opentofu-master-node"				                            # 리소스의 고유한 이름
+  flavor_id         = "m1.large"											           	# 서버에 대해 원하는 플레이버의 플레이버 ID
+  key_pair          = data.openstack_compute_keypair_v2.cp-keypair.id		        	# 서버에 넣을 키 쌍의 이름
+  security_groups   = [data.openstack_networking_secgroup_v2.cp-secgroup.id]   	        # 서버와 연결할 하나 이상의 보안 그룹 이름 배열
+  availability_zone = "octavia"									                	    # 서버를 생성할 가용성 영역
+  region            = "RegionOne"										                # 서버 인스턴스를 생성할 지역
 
   # 블록 영역
   block_device {
@@ -218,15 +212,15 @@ resource "openstack_compute_instance_v2" "paasta-terraform-master-node" {
 
   # network 영역
   network {
-    uuid = data.openstack_networking_network_v2.paasta-cp-network.id			        # 서버에 연결할 네트워크 UUID
+    uuid = data.openstack_networking_network_v2.cp-network.id			                # 서버에 연결할 네트워크 UUID
   }
 }
 
-resource "openstack_compute_instance_v2" "paasta-terraform-worker-node" {
-  name              = "paasta-terraform-worker-node"
+resource "openstack_compute_instance_v2" "opentofu-worker-node" {                       # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker"명칭으로 구분
+  name              = "opentofu-worker-node"
   flavor_id         = "m1.large"
-  key_pair          = data.openstack_compute_keypair_v2.paasta-cp-keypair.id
-  security_groups   = [data.openstack_networking_secgroup_v2.paasta-cp-secgroup.id]
+  key_pair          = data.openstack_compute_keypair_v2.cp-keypair.id
+  security_groups   = [data.openstack_networking_secgroup_v2.cp-secgroup.id]
   availability_zone = "octavia"
   region            = "RegionOne"
 
@@ -240,20 +234,20 @@ resource "openstack_compute_instance_v2" "paasta-terraform-worker-node" {
   }
 
   network {
-    uuid = data.openstack_networking_network_v2.paasta-cp-network.id
+    uuid = data.openstack_networking_network_v2.cp-network.id
   }
 }
 
 # floating IP 영역
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
-  floating_ip = data.openstack_networking_floatingip_v2.paasta-cp-floatingip-master.address		# 연결할 유동 IP
-  instance_id = "${openstack_compute_instance_v2.paasta-terraform-master-node.id}"				# 유동 IP를 연결할 인스턴스
-  wait_until_associated = true					                                                # OpenStack 환경이 연결이 완료될 때까지 자동으로 기다리지 않는 경우 유동 IP가 연결될 때까지 Terraform이 인스턴스를 폴링하도록 이 옵션을 설정, 기본값 false
+  floating_ip = data.openstack_networking_floatingip_v2.cp-floatingip-master.address	# 연결할 유동 IP
+  instance_id = "${openstack_compute_instance_v2.opentofu-master-node.id}"			    # 유동 IP를 연결할 인스턴스
+  wait_until_associated = true					                                        # OpenStack 환경이 연결이 완료될 때까지 자동으로 기다리지 않는 경우 유동 IP가 연결될 때까지 OpenTofu가 인스턴스를 폴링하도록 이 옵션을 설정, 기본값 false
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_2" {
-  floating_ip = data.openstack_networking_floatingip_v2.paasta-cp-floatingip-worker.address
-  instance_id = "${openstack_compute_instance_v2.paasta-terraform-worker-node.id}"
+  floating_ip = data.openstack_networking_floatingip_v2.cp-floatingip-worker.address
+  instance_id = "${openstack_compute_instance_v2.opentofu-worker-node.id}"
   wait_until_associated = true
 }
 ```
@@ -261,29 +255,17 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 
 ### <div id='4.2'> 4.2 AWS
 - 이 템플릿은 Terraman을 사용하여 AWS에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 키페어 및 이미지 리소스를 활용하는 데 초점을 맞추고 있다. 그러므로 키페어 및 이미지 리소스는 사전에 생성되어 있어야 한다.
-
+- [AWS Template 작성시 변수 참고](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#aws-configuration-reference)
+- 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
+*예시*
+  + 인스턴스 1개 생성시 
+    - resource "aws_instance" "master" {...}
+  + 인스턴스 n개 생성시 
+    - resource "aws_instance" "master" {...}
+    - resource "aws_instance" "worker1" {...}
+    - resource "aws_instance" "worker2" {...}
+    - resource "aws_instance" "worker3" {...} ...
 ```
-# 1. data로 시작되는 영역은 Openstack에서 사용가능한 자원을 가져와 보관한다. 
-#   - name으로 가져온 자원의 id는 사용가능하다.
-#	ex)	data "테라폼 데이터소스 함수명" "사용할 변수명" {
-#		  name = "ubuntu-20.04"
-#		}
-#		...
-#	    block_device {
-#		  uuid = data.테라폼 데이터소스 함수명.변수명.id
-#		}
-#
-# 2. resource로 시작되는 영역은 자원 생성 및 보관에 관여하며 data로 선언한 값을 사용 할 수 있다.
-# 3. variable로 시작되는 영역은 변수 선언영역이다.
-#   ex)	variable "route_table_name" {
-#			default = "paasta-cp-routing-public"
-#		}
-#		...
-#		filter {
-#			name = "tag-value"
-#			values = ["${var.route_table_name}"]
-#		}
-
 # 키 페어에 대한 정보 제공
 data "aws_key_pair" "default_key" {
   key_name = "cluster-name-key"		# 키 쌍 이름
@@ -291,55 +273,55 @@ data "aws_key_pair" "default_key" {
 
 # 리소스에서 사용할 등록된 AMI의 ID 제공
 data "aws_ami" "ubuntu" {
-	most_recent = true							       # 둘 이상의 결과가 반환되는 경우 가장 최근의 AMI를 사용
-	filter {										   # 필터링할 하나 이상의 이름/값 쌍
-		name = "name"								   # 기본 AWS API에서 정의한 필터링 기준 필드의 이름
-		values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]	# 지정된 필드에 대해 허용되는 값 집합
+	most_recent = true							                                         # 둘 이상의 결과가 반환되는 경우 가장 최근의 AMI를 사용
+	filter {										                                     # 필터링할 하나 이상의 이름/값 쌍
+		name = "name"								                                     # 기본 AWS API에서 정의한 필터링 기준 필드의 이름
+		values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]	         # 지정된 필드에 대해 허용되는 값 집합
 	}
 	filter {
 		name = "virtualization-type"
 		values = ["hvm"]
 	}
-	owners = ["099720109477"]				           # 검색을 제한할 AMI 소유자 목록
+	owners = ["099720109477"]				                                             # 검색을 제한할 AMI 소유자 목록
 }
 
 # VPC 리소스 영역
-resource "aws_vpc" "paasta-cp-terraform-vpc" {
-	cidr_block = "172.10.0.0/20"					   # VPC에 대한 IPv4 CIDR 블록
-	tags = { Name = "paasta-cp-terraform-vpc" }		   # 리소스에 할당할 태그 맵
+resource "aws_vpc" "cp-opentofu-vpc" {
+	cidr_block = "172.10.0.0/20"					                                     # VPC에 대한 IPv4 CIDR 블록
+	tags = { Name = "cp-opentofu-vpc" }		                                             # 리소스에 할당할 태그 맵
 }
 
 # VPC 서브넷 리소스 영역
-resource "aws_subnet" "paasta-cp-terraform-subnet01" {
-  vpc_id = "${aws_vpc.aws-vpc.id}"					   # VPC ID
-  cidr_block = "172.10.0.0/24"						   # 서브넷의 IPv4 CIDR 블록
-  availability_zone = "ap-northeast-2a"				   # 서브넷의 AZ
-  tags = { Name = "paasta-cp-terraform-subnet01" }	   # 리소스에 할당할 태그 맵
+resource "aws_subnet" "cp-opentofu-subnet01" {
+  vpc_id = "${aws_vpc.aws-vpc.id}"					                                     # VPC ID
+  cidr_block = "172.10.0.0/24"						                                     # 서브넷의 IPv4 CIDR 블록
+  availability_zone = "ap-northeast-2a"				                                     # 서브넷의 AZ
+  tags = { Name = "cp-opentofu-subnet01" }	                                             # 리소스에 할당할 태그 맵
 }
 
-resource "aws_subnet" "paasta-cp-terraform-subnet02" {
+resource "aws_subnet" "cp-opentofu-subnet02" {
   vpc_id = "${aws_vpc.aws-vpc.id}"
   cidr_block = "172.10.1.0/24"
   availability_zone = "ap-northeast-2a"
   tags = {
-    Name = "paasta-cp-terraform-subnet02"
+    Name = "cp-opentofu-subnet02"
   }
 }
 
 # 보안 그룹 리소스 영역
-resource "aws_security_group" "paasta-cp-terraform-sg-all" {
-  name = "paasta-cp-terraform-sg-all"					# 보안 그룹의 이름
-  description = "Allow all inbound traffic"			    # 보안 그룹 설명
+resource "aws_security_group" "cp-opentofu-sg-all" {
+  name = "cp-opentofu-sg-all"				                                          	 # 보안 그룹의 이름
+  description = "Allow all inbound traffic"			                                     # 보안 그룹 설명
   vpc_id = "${aws_vpc.aws-vpc.id}"	# VPC ID
 
-  ingress {							                    # 수신 규칙에 대한 구성 블록
-	from_port = 0					                    # 시작 포트
-	to_port = 0						                    # 끝 범위 포트
-	protocol = "-1"					                    # 프로토콜
-	cidr_blocks = ["0.0.0.0/0"]		                    # CIDR 블록 집합
+  ingress {							                                                     # 수신 규칙에 대한 구성 블록
+	from_port = 0					                                                     # 시작 포트
+	to_port = 0						                                                     # 끝 범위 포트
+	protocol = "-1"					                                                     # 프로토콜
+	cidr_blocks = ["0.0.0.0/0"]		                                                     # CIDR 블록 집합
   }
 
-  egress {							                    # 송신 규칙에 대한 구성 블록
+  egress {							                                                     # 송신 규칙에 대한 구성 블록
 	from_port = 0
 	to_port = 0
 	protocol = "-1"
@@ -348,44 +330,44 @@ resource "aws_security_group" "paasta-cp-terraform-sg-all" {
 }
 
 # 인스턴스 리소스 영역
-resource "aws_instance" "master" {
-  ami = "${data.aws_ami.ubuntu.id}"									# 인스턴스에 사용할 AMI
-  instance_type = "t3.medium"										# 인스턴스에 사용할 인스턴스 유형
-  key_name = data.aws_key_pair.default_key.key_name					# 인스턴스에 사용할 키 쌍의 키 이름
-  subnet_id = "${aws_subnet.paasta-cp-terraform-subnet01.id}"		# 시작할 VPC 서브넷 ID
-  vpc_security_group_ids = [										# 연결할 보안 그룹 ID
-	"${aws_security_group.paasta-cp-terraform-sg-all.id}"
+resource "aws_instance" "master" {                                                       # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker"명칭으로 구분
+  ami = "${data.aws_ami.ubuntu.id}"								                         # 인스턴스에 사용할 AMI
+  instance_type = "t3.medium"										                     # 인스턴스에 사용할 인스턴스 유형
+  key_name = data.aws_key_pair.default_key.key_name					                     # 인스턴스에 사용할 키 쌍의 키 이름
+  subnet_id = "${aws_subnet.cp-opentofu-subnet01.id}"		                             # 시작할 VPC 서브넷 ID
+  vpc_security_group_ids = [										                     # 연결할 보안 그룹 ID
+	"${aws_security_group.cp-opentofu-sg-all.id}"
   ]
-  associate_public_ip_address = true			                    # 퍼블릭 IP 주소를 VPC의 인스턴스와 연결할지 여부
-  tags = {													        # 리소스에 할당할 태그의 맵
-	Name = "paasta-cp-terraform-m"
+  associate_public_ip_address = true			                                         # 퍼블릭 IP 주소를 VPC의 인스턴스와 연결할지 여부
+  tags = {													                             # 리소스에 할당할 태그의 맵
+	Name = "cp-opentofu-m"
   }
-  provisioner "remote-exec" {				                        # Terraform으로 리소스를 생성하거나 제거할 때 로컬이나 원격에서 스크립트를 실행할 수 있는 기능
-	connection {							                        # 연결 블록
-	  type = "ssh"						                            # 연결 유형
-	  host = "${self.public_ip}"			                        # 연결할 리소스의 주소
-	  user = "ubuntu"									            # 연결에 사용할 사용자
-	  private_key = file("~/.ssh/cluster-name-key.pem")		        # 연결에 사용할 SSH 키의 내용
-	  timeout = "1m"									            # 연결을 사용할 수 있을 때까지 기다리는 시간 초과
+  provisioner "remote-exec" {				                                             # OpenTofu로 리소스를 생성하거나 제거할 때 로컬이나 원격에서 스크립트를 실행할 수 있는 기능
+	connection {							                                             # 연결 블록
+	  type = "ssh"						                                                 # 연결 유형
+	  host = "${self.public_ip}"			                                             # 연결할 리소스의 주소
+	  user = "ubuntu"									                                 # 연결에 사용할 사용자
+	  private_key = file("~/.ssh/cluster-name-key.pem")		                             # 연결에 사용할 SSH 키의 내용
+	  timeout = "1m"									                                 # 연결을 사용할 수 있을 때까지 기다리는 시간 초과
 	}
 	inline = [
-	  "cat .ssh/authorized_keys"							        # 실행 커맨드
+	  "cat .ssh/authorized_keys"							                             # 실행 커맨드
 	]
   }
 }
 
-resource "aws_instance" "worker" {
+resource "aws_instance" "worker" {                                                       # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker"명칭으로 구분                  
   ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t3.medium"
   key_name = data.aws_key_pair.default_key.key_name
-  subnet_id = "${aws_subnet.paasta-cp-terraform-subnet01.id}"
+  subnet_id = "${aws_subnet.cp-opentofu-subnet01.id}"
   vpc_security_group_ids = [
-    "${aws_security_group.paasta-cp-terraform-sg-all.id}"
+    "${aws_security_group.cp-opentofu-sg-all.id}"
     #data.aws_security_group.default.id
   ]
   associate_public_ip_address = true
   tags = {
-    Name = "paasta-cp-terraform-w"
+    Name = "cp-opentofu-w"
   }
   provisioner "remote-exec" {
     connection {
@@ -403,38 +385,38 @@ resource "aws_instance" "worker" {
 
 # VPC의 기본 라우팅 테이블을 관리하기 위한 리소스 영역
 resource "aws_default_route_table" "nc-public" {
-  default_route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"	# 기본 라우팅 테이블의 ID
-  tags = { Name = "New Public Route Table" }							# 리소스에 할당할 태그의 맵
+  default_route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"	                 # 기본 라우팅 테이블의 ID
+  tags = { Name = "New Public Route Table" }						                     # 리소스에 할당할 태그의 맵
 }
 
 # VPC 라우팅 테이블을 생성하기 위한 리소스 영역
 resource "aws_route_table" "nc-private" {
-  vpc_id = "${aws_vpc.aws-vpc.id}"				                        # VPC ID
-  tags = { Name = "New Route Private Table" }	                        # 리소스에 할당할 태그의 맵
+  vpc_id = "${aws_vpc.aws-vpc.id}"				                                         # VPC ID
+  tags = { Name = "New Route Private Table" }	                                         # 리소스에 할당할 태그의 맵
 }
 
 # 라우팅 테이블과 서브넷 또는 라우팅 테이블과 인터넷 게이트웨이 또는 가상 프라이빗 게이트웨이 간의 연결을 생성하기 위한 리소스 영역
 resource "aws_route_table_association" "aws_public_2a" {
-  subnet_id = "${aws_subnet.paasta-cp-terraform-subnet01.id}"		    # 연결을 생성하기 위한 서브넷 ID
-  route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"		    # 연결할 라우팅 테이블의 ID
+  subnet_id = "${aws_subnet.cp-opentofu-subnet01.id}"		                             # 연결을 생성하기 위한 서브넷 ID
+  route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"		                     # 연결할 라우팅 테이블의 ID
 }
 
 resource "aws_route_table_association" "aws_private_2a" {
-  subnet_id = "${aws_subnet.paasta-cp-terraform-subnet02.id}"
+  subnet_id = "${aws_subnet.cp-opentofu-subnet02.id}"
   route_table_id = "${aws_vpc.aws-vpc.default_route_table_id}"
 }
 
 # VPC 인터넷 게이트웨이를 생성하기 위한 리소스
 resource "aws_internet_gateway" "aws-igw" {
-  vpc_id = "${aws_vpc.aws-vpc.id}"					                    # 생성할 VPC ID
-  tags = { Name = "aws-vpc Internet Gateway" }		                    # 리소스에 할당할 태그 맵
+  vpc_id = "${aws_vpc.aws-vpc.id}"					                                      # 생성할 VPC ID
+  tags = { Name = "aws-vpc Internet Gateway" }		                                      # 리소스에 할당할 태그 맵
 }
 
 # VPC 라우팅 테이블에서 라우팅 테이블 항목(경로)을 생성하기 위한 리소스
 resource "aws_route" "aws_public" {
-  route_table_id         = "${aws_vpc.aws-vpc.default_route_table_id}"	# 라우팅 테이블의 ID
-  destination_cidr_block = "0.0.0.0/0"								    # 대상 CIDR 블록
-  gateway_id             = "${aws_internet_gateway.aws-igw.id}"			# VPC 인터넷 게이트웨이 또는 가상 프라이빗 게이트웨이의 식별자
+  route_table_id         = "${aws_vpc.aws-vpc.default_route_table_id}"	                  # 라우팅 테이블의 ID
+  destination_cidr_block = "0.0.0.0/0"								                      # 대상 CIDR 블록
+  gateway_id             = "${aws_internet_gateway.aws-igw.id}"			                  # VPC 인터넷 게이트웨이 또는 가상 프라이빗 게이트웨이의 식별자
 }
 
 resource "aws_route" "aws_private" {
@@ -445,31 +427,28 @@ resource "aws_route" "aws_private" {
 
 # 탄력적 IP 리소스를 제공
 resource "aws_eip" "aws_nat" {
-  vpc = true		# EIP가 VPC에 있는 경우, 리전이 EC2-Classic을 지원하지 않는 한 기본값은 true
+  vpc = true		                                                                      # EIP가 VPC에 있는 경우, 리전이 EC2-Classic을 지원하지 않는 한 기본값은 true
 }
 
 # VPC NAT 게이트웨이를 생성하기 위한 리소스 영역
 resource "aws_nat_gateway" "aws-nat" {
-  allocation_id = "${aws_eip.aws_nat.id}"								# 게이트웨이에 대한 탄력적 IP 주소의 할당 ID
-  subnet_id     = "${aws_subnet.paasta-cp-terraform-subnet01.id}"		# 게이트웨이를 배치할 서브넷의 서브넷 ID
+  allocation_id = "${aws_eip.aws_nat.id}"					                     	      # 게이트웨이에 대한 탄력적 IP 주소의 할당 ID
+  subnet_id     = "${aws_subnet.cp-opentofu-subnet01.id}"		                          # 게이트웨이를 배치할 서브넷의 서브넷 ID
 }
 ```
 ### <div id='4.3'> 4.3 NHN
 - 이 Template는 Terraman을 사용하여 NHN에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
+- [OpenStack Template 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
+- 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
+*예시*
+  + 인스턴스 1개 생성시 
+    - resource "openstack_compute_instance_v2" "master" {...}
+  + 인스턴스 n개 생성시 
+    - resource "openstack_compute_instance_v2" "master" {...}
+    - resource "openstack_compute_instance_v2" "worker1" {...}
+    - resource "openstack_compute_instance_v2" "worker2" {...}
+    - resource "openstack_compute_instance_v2" "worker3" {...} ...
 ```
-# 1. data로 시작되는 영역은 Openstack에서 사용가능한 자원을 가져와 보관한다. 
-#   - name으로 가져온 자원의 id는 사용가능하다.
-#	ex)	data "테라폼 데이터소스 함수명" "사용할 변수명" {
-#		  name = "ubuntu-20.04"
-#		}
-#		...
-#	    block_device {
-#		  uuid = data.테라폼 데이터소스 함수명.변수명.id
-#		}
-#
-# 2. resource로 시작되는 영역은 자원 생성 및 보관에 관여하며 data로 선언한 값을 사용 할 수 있다.
-# 3. nhn의 경우 각 instance별로 floating_ip자원을 가져와 수동으로 붙여야한다.
-
 ## Use this data source to get the ID of an available OpenStack network.
 data "openstack_networking_network_v2" "cp-network" {
   name = "Default Network"
@@ -511,24 +490,24 @@ resource "openstack_networking_port_v2" "nic" {
 }
 
 ## Manages a V2 VM instance resource within OpenStack.
-resource "openstack_compute_instance_v2" "vm" {
+resource "openstack_compute_instance_v2" "vm-cp-master" {                                 # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker"명칭으로 구분
 
   name              = "cp-cluster-master"
   availability_zone = "kr-pub-a"
   flavor_name       = "m2.c4m8"
   key_pair          = "cp-nhn-common-key"
 
-  block_device {                                       # Configuration of block devices.
-    uuid                  = data.openstack_images_image_v2.ubuntu_focal.id   # The UUID of the image, volume, or snapshot. Changing this creates a new server.
-    source_type           = "image"                # The source type of the device. Must be one of "blank", "image", "volume", or "snapshot". Changing this creates a new server.
-    destination_type      = "volume"               # The type that gets created. Possible values are "volume" and "local". Changing this creates a new server.
-    delete_on_termination = true                   # Delete the volume / block device upon termination of the instance. Defaults to false. Changing this creates a new server.
-    volume_size           = 40                     # The size of the volume to create (in gigabytes).
-    volume_type           = "General HDD"          # The volume type that will be used, for example SSD or HDD storage.
+  block_device {                                                                          # Configuration of block devices.
+    uuid                  = data.openstack_images_image_v2.ubuntu_focal.id                # The UUID of the image, volume, or snapshot. Changing this creates a new server.
+    source_type           = "image"                                                       # The source type of the device. Must be one of "blank", "image", "volume", or "snapshot". Changing this creates a new server.
+    destination_type      = "volume"                                                      # The type that gets created. Possible values are "volume" and "local". Changing this creates a new server.
+    delete_on_termination = true                                                          # Delete the volume / block device upon termination of the instance. Defaults to false. Changing this creates a new server.
+    volume_size           = 40                                                            # The size of the volume to create (in gigabytes).
+    volume_type           = "General HDD"                                                 # The volume type that will be used, for example SSD or HDD storage.
   }
 
   network {
-    port = openstack_networking_port_v2.nic.id     # The port UUID of a network to attach to the server.
+    port = openstack_networking_port_v2.nic.id                                            # The port UUID of a network to attach to the server.
   }
 }
 
@@ -539,8 +518,8 @@ resource "openstack_networking_floatingip_v2" "fip_1" {
 
 ## Associate a floating IP to an instance.
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
-  floating_ip = openstack_networking_floatingip_v2.fip_1.address   # The floating IP to associate.
-  instance_id = openstack_compute_instance_v2.vm.id                # The instance to associte the floating IP with.
-  wait_until_associated = true                                     # In cases where the OpenStack environment does not automatically wait until the association has finished, set this option to have Terraform poll the instance until the floating IP has been associated. Defaults to false.
+  floating_ip = openstack_networking_floatingip_v2.fip_1.address                          # The floating IP to associate.
+  instance_id = openstack_compute_instance_v2.vm-cp-master.id                                       # The instance to associte the floating IP with.
+  wait_until_associated = true                                                            # In cases where the OpenStack environment does not automatically wait until the association has finished, set this option to have OpenTofu poll the instance until the floating IP has been associated. Defaults to false.
 }
 ```
