@@ -137,7 +137,7 @@ resource "ncloud_network_interface" "nic04" {
 }
 
 ## Provides a Server instance resource.
-resource "ncloud_server" "server_01_master" {                                                       # 인스턴스 생성시 반드시 "master"와 "worker"명칭으로 구분
+resource "ncloud_server" "server_01_master" {                                                       # 인스턴스 생성시 반드시 "master"와 "worker" 명칭으로 구분
   subnet_no                 = ncloud_subnet.subnet_scn_01.id
   name                      = var.server_name01
   server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"                                 # Server image product code to determine which server image to create. It can be obtained through data.ncloud_server_image(s)
