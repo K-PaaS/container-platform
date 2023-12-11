@@ -58,7 +58,7 @@ Kubespray를 통해 설치된 Kubernetes Cluster 환경에 컨테이너 플랫�
 ### <div id='2.1'>2.1. 컨테이너 플랫폼 포털 설치
 컨테이너 플랫폼 파이프라인에서 사용할 인프라로 인증서버 **KeyCloak**, 데이터베이스 **MariaDB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
 K-PaaS 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치하므로 아래 가이드를 참조하여 사전 설치를 진행한다.
-> [[단독 형 컨테이너 플랫폼 포털 배포]](../container-platform-portal/cp-portal-deployment-standalone-guide.md)
+> [[단독 형 컨테이너 플랫폼 포털 배포]](../portal/cp-portal-standalone-guide.md)
 
 <br>
 
@@ -146,9 +146,9 @@ PROVIDER_TYPE="standalone"
 
 |변수|설명|상세 내용|
 |---|---|---|
-|**K8S_MASTER_NODE_IP**|Kubernetes Master Node Public IP 입력|Master Node에 접근하기 어려운 경우<br>[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../container-platform-portal/cp-portal-deployment-standalone-guide.md#3.1.2)에서<br>정의한 `K8S_MASTER_NODE_IP` 값 입력| 
+|**K8S_MASTER_NODE_IP**|Kubernetes Master Node Public IP 입력|Master Node에 접근하기 어려운 경우<br>[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `K8S_MASTER_NODE_IP` 값 입력| 
 |**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
-|**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../container-platform-portal/cp-portal-deployment-standalone-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
+|**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
 |**PROVIDER_TYPE**|컨테이너 플랫폼 파이프라인 제공 타입 입력|본 가이드는 단독 배포 형 설치 가이드로<br> **standalone** 값 입력 필요|
 |**CF_API_URL**|K-PaaS의 API Domain 입력|**단독 배포 형은 입력할 필요 없음**|
 
@@ -269,7 +269,7 @@ namespace "cp-pipeline" deleted
 
 ### <div id='4.1'/>4.1. 컨테이너 플랫폼 파이프라인 관리자 로그인
 컨테이너 플랫폼 포털 관리자 계정으로 파이프라인에 로그인한다.
-> [[(참고) 컨테이너 플랫폼 포털 관리자 계정 로그인]](../container-platform-portal/cp-portal-deployment-standalone-guide.md#4.1)
+> [[(참고) 컨테이너 플랫폼 포털 관리자 계정 로그인]](../portal/cp-portal-standalone-guide.md#4.1)
 + **Username** : `admin`
 + **Password** : `초기화한 패스워드 값`
 

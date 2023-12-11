@@ -59,7 +59,7 @@
 ### <div id='2.1'>2.1. 컨테이너 플랫폼 포털 설치
 컨테이너 플랫폼 소스 컨트롤에서 사용할 인프라로 인증서버 **KeyCloak**, 데이터베이스 **MariaDB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치하므로 아래 가이드를 참조하여 사전 설치를 진행한다.
-> [[서비스 형 컨테이너 플랫폼 포털 배포]](../container-platform-portal/cp-portal-deployment-service-guide.md)
+> [[서비스 형 컨테이너 플랫폼 포털 배포]](../portal/cp-portal-service-guide.md)
 
 <br>
 
@@ -116,9 +116,9 @@ PROVIDER_TYPE="service"
 ```
 |변수|설명|상세 내용|
 |---|---|---|
-|**K8S_MASTER_NODE_IP**|Kubernetes Master Node Public IP 입력|Master Node에 접근하기 어려운 경우<br>[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../container-platform-portal/cp-portal-deployment-service-guide.md#3.1.2)에서<br>정의한 `K8S_MASTER_NODE_IP` 값 입력| 
+|**K8S_MASTER_NODE_IP**|Kubernetes Master Node Public IP 입력|Master Node에 접근하기 어려운 경우<br>[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-service-guide.md#3.1.2)에서<br>정의한 `K8S_MASTER_NODE_IP` 값 입력| 
 |**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
-|**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../container-platform-portal/cp-portal-deployment-service-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
+|**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-service-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
 |**PROVIDER_TYPE**|컨테이너 플랫폼 소스 컨트롤 제공 타입 입력|본 가이드는 서비스 배포 형 설치 가이드로<br> **service** 값 입력 필요|
 
 <br>
@@ -215,7 +215,7 @@ K-PaaS 운영자 포털을 통해 서비스를 등록하고 공개하면 K-PaaS 
 ### <div id='4.1'>4.1. 컨테이너 플랫폼 소스 컨트롤 사용자 인증 서비스 구성
 애플리케이션 플랫폼 포털에서 컨테이너 플랫폼 소스 컨트롤을 서비스로 사용하기 위해서는 **사용자 인증 서비스** 구성이 사전에 진행되어야 한다.
 사용자 인증 서비스 구성은 아래 가이드를 참조한다.
-> [[컨테이너 플랫폼 포털 사용자 인증 서비스 구성]](../container-platform-portal/cp-portal-deployment-service-guide.md#4)
+> [[컨테이너 플랫폼 포털 사용자 인증 서비스 구성]](../portal/cp-portal-service-guide.md#4)
 
 <br>
 
