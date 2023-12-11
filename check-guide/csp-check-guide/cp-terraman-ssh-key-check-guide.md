@@ -443,7 +443,7 @@ resource "aws_nat_gateway" "aws-nat" {
 ```
 ### <div id='4.3'> 4.3 NHN
 - 이 Template는 Terraman을 사용하여 NHN에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
-- [OpenStack Template 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
+- [NHN Template 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
 *예시*
   + 인스턴스 1개 생성시 
