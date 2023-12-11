@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > [Terraman IaC Index](../cp-terraman-check-index-guide.md) > Terraman IaC 스크립트 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > [Terraman IaC Index](../cp-terraman-check-index-guide.md) > Terraman IaC 스크립트 가이드
 
 ## Table of Contents
 
