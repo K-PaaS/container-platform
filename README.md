@@ -55,7 +55,7 @@
 <br>
 
 ## 소개
-네이티브 쿠버네티스 설치 가이드(Kubespray 설치, KubeEdge 설치) 및 쿠버네티스에 컨테이너 플랫폼을 배포하여 사용할 수 있는 방법에 대한 설치 및 활용 가이드를 다루고 있다.
+네이티브 쿠버네티스 설치 가이드(Kubespray 설치, KubeEdge 설치) 및 쿠버네티스에 컨테이너 플랫폼을 배포하여 사용할 수 있는 방법에 대한 다양한 설치 방법에 대한 가이드 및 활용 가이드를 다루고 있다.
 
 <br>
 
@@ -83,11 +83,10 @@
   + [포털 설치 가이드](install-guide/portal/cp-portal-standalone-guide-mc.md)
   + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
   + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release)
-- 서비스매시
+- 컨테이너플랫폼 Kubernetes 활용
   + [Linkerd 설치 가이드](install-guide/multicluster/cp-linkerd-install.md)
-- 페더레이션
   + [Karmada 설치 가이드](install-guide/multicluster/cp-karmada-install.md)
-- CSP Kubernetes Service
+- CSP Kubernetes Service 활용
   + [istio 설치 및 샘플](install-guide/csp/container-platform-csp-istio-guide.md)
   + [linkerd 설치 및 샘플](install-guide/csp/container-platform-csp-linkerd-guide.md)
 
