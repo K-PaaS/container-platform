@@ -363,10 +363,10 @@ $ helm install linkerd-multicluster -n linkerd-multicluster --create-namespace l
 자격 증명을 위한 Secret 및 미러 컨트롤러를 생성한다.
 ```bash
 ## cluster1(ctx-1) 자격증명 추출 후 cluster2(ctx-2)에 생성
-$ linkerd multicluster link --context=ctx-1  --cluster-name cluster1  |  kubectl --context=ctx-2 apply -f -
+$ linkerd multicluster link --gateway-addresses {CLUSTER2_EXTERNAL_PUBLIC_IP} --context=ctx-1  --cluster-name cluster1  |  kubectl --context=ctx-2 apply -f -
 
 ## cluster2(ctx-2) 자격증명 추출 후 cluster1(ctx-1)에 생성
-$ linkerd multicluster link --context=ctx-2  --cluster-name cluster2  |  kubectl --context=ctx-1 apply -f -
+$ linkerd multicluster link --gateway-addresses {CLUSTER1_EXTERNAL_PUBLIC_IP} --context=ctx-2  --cluster-name cluster2  |  kubectl --context=ctx-1 apply -f -
 ```
 
 ```bash
