@@ -61,9 +61,11 @@
 
 ## Install
 
-### 단독형 배포   
+### 단독형 배포
+
+#### Single Cloud
 - 클러스터 설치
-  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install.md)
+  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-single.md)
 - 포털 설치
   + [포털 설치 가이드](install-guide/portal/cp-portal-standalone-guide.md)
   + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
@@ -74,7 +76,25 @@
 - Kubeflow 튜토리얼
   + [Kubeflow 파이프라인 튜토리얼 가이드](install-guide/standalone/cp-kubeflow-sample-guide.md)
 
+#### Multi Cloud
+- 클러스터 설치
+  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-multi.md)
+- 포털 설치
+  + [포털 설치 가이드](install-guide/portal/cp-portal-standalone-guide-mc.md)
+  + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
+  + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release)
+- 서비스매시
+  + [Linkerd 설치 가이드](install-guide/multicluster/cp-linkerd-install.md)
+- 페더레이션
+  + [Karmada 설치 가이드](install-guide/multicluster/cp-karmada-install.md)
+- CSP Kubernetes Service
+  + [istio 설치 및 샘플](install-guide/csp/container-platform-csp-istio-guide.md)
+  + [linkerd 설치 및 샘플](install-guide/csp/container-platform-csp-linkerd-guide.md)
+
 ### 서비스형 배포 
+
+#### Single Cloud
+
 - 클러스터 설치
   + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install.md)
 - 포털 설치
@@ -84,8 +104,17 @@
 - 서비스 설치
   + [Pipeline 설치 가이드](install-guide/pipeline/cp-pipeline-service-guide.md)
   + [SourceControl 설치 가이드](install-guide/source-control/cp-source-control-service-guide.md)
-- Kubeflow 튜토리얼
-  + [Kubeflow 파이프라인 튜토리얼 가이드](install-guide/standalone/cp-kubeflow-sample-guide.md)
+
+#### Multi Cloud
+
+- 클러스터 설치
+  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-multi.md)
+- 포털 설치
+  + [포털 설치 가이드](install-guide/portal/cp-portal-service-guide-mc.md)
+- 서비스 매시
+  + [Linkerd 설치 가이드](install-guide/multicluster/cp-linkerd-install.md)
+- 페더레이션
+  + [Karmada 설치 가이드](install-guide/multicluster/cp-karmada-install.md)
 
 ### Edge 배포
 - Edge 설치
@@ -121,12 +150,12 @@
 ## Project
 
 ### 포털 프로젝트 
-- [container-platform-portal-api](https://github.com/K-PaaS/cp-portal-api)
-- [container-platform-portal-common-api](https://github.com/K-PaaS/cp-portal-common-api)
-- [container-platform-portal-ui](https://github.com/K-PaaS/cp-portal-ui)
-- [container-platform-portal-service-broker](https://github.com/K-PaaS/cp-portal-service-broker)
-- [container-platform-metrics-api](https://github.com/K-PaaS/cp-metrics-api)
-- [container-platform-terraman](https://github.com/K-PaaS/cp-terraman)
+- [cp-portal-api](https://github.com/K-PaaS/cp-portal-api)
+- [cp-portal-common-api](https://github.com/K-PaaS/cp-portal-common-api)
+- [cp-portal-ui](https://github.com/K-PaaS/cp-portal-ui)
+- [cp-portal-service-broker](https://github.com/K-PaaS/cp-portal-service-broker)
+- [cp-metrics-api](https://github.com/K-PaaS/cp-metrics-api)
+- [cp-terraman](https://github.com/K-PaaS/cp-terraman)
 
 <br>
 
