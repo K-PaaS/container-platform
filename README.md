@@ -5,7 +5,7 @@
 <table>
   <tr>
     <td colspan=2 align=center>플랫폼</td>
-    <td colspan=2 align=center><a href="https://github.com/K-PaaS/cp-deployment">🚩 컨테이너 플랫폼</a></td>
+    <td colspan=2 align=center><a href="https://github.com/K-PaaS/cp-deployment">컨테이너 플랫폼</a></td>
     <td colspan=2 align=center><a href="https://github.com/K-PaaS/sidecar-deployment">사이드카</a></td>
     <td colspan=2 align=center><a href="https://github.com/K-PaaS/ap-deployment">어플리케이션 플랫폼</a></td>
   </tr>
@@ -91,7 +91,7 @@
   + [linkerd 설치 및 샘플](install-guide/csp/container-platform-csp-linkerd-guide.md)
 
 ### 서비스형 배포 
-
+`애플리케이션 플랫폼 포털 연계 형`
 #### Single Cloud
 
 - 클러스터 설치
