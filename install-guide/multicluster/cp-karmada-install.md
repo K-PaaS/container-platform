@@ -229,7 +229,7 @@ clusters:
   ...skipped
   ..
   ..
-	server: https://133.186.247.183:6443
+	server: https://103.xxx.xxx.xxx:6443
   name: cluster.local
 contexts:
 - context:
@@ -263,7 +263,7 @@ clusters:
  ...skipped
  ..
  ..
-	server: https://211.62.99.89:6443
+	server: https://104.xxx.xxx.xxx:6443
   name: cluster.local
 contexts:
 - context:
