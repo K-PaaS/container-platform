@@ -7,13 +7,19 @@
 	1.2. [범위](#1.2)  
 	1.3. [참고자료](#1.3)
 2. [Prerequisite](#2)  
-   	2.1. [방화벽 정보](#2.1)
+  2.1. [방화벽 정보](#2.1)
 3. [SSH Key 설정](#3)  
 	3.1 [SSH Key 구성](#3.1)  
 	3.2 [SSH Key 복사](#3.2)  
 4. [Template 생성](#4)  
-  4.1 [NAVER](#4.1)  
-	
+  4.1. [Template 작성](#4.1)  
+  　4.1.1. [NAVER](#4.1.1)   
+  4.2. [Instance Code Template 생성](#4.2)  
+5. [Cloud Accounts 생성](#5)  
+ 5.1. [Cloud Accounts 작성](#5.1)  
+　5.1.1. [NAVER](#5.1.1)   
+6. [Cluster 생성](#6)  
+ 6.1. [Cluster 작성](#6.1)  
 
 ## <div id='1'> 1. 문서 개요
 
@@ -26,7 +32,10 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 > https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs
 
 ## <div id='2'> 2. Prerequisite
+- [Container Platform Cluster](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install.md) 설치가 사전에 진행 되어야한다.
+- [Container Platform Portal](https://github.com/K-PaaS/container-platform/blob/master/install-guide/container-platform-portal/cp-portal-deployment-standalone-guide.md) 설치가 사전에 진행 되어야한다.
 - Terraman을 실행하기 전 필요한 사전 작업에 대한 설명이다.
+
 ### <div id='2.1'> 2.1 방화벽 정보
 - Master Node
 
@@ -73,7 +82,8 @@ $ kubectl cp /home/ubuntu/.ssh/id_rsa cp-portal-terraman-deployment-689585bc94-p
 ```
 
 ## <div id='4'> 4. Template 생성
-### <div id='4.1'> 4.1 NAVER
+### <div id='4.1'> 4.1 Template 작성
+#### <div id='4.1.1'> 4.1.1 NAVER
 - 이 Template는 Terraman을 사용하여 NAVER에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 초점을 맞추고 있다.
 - [NAVER Template 작성시 변수 참고](https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs#argument-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
@@ -86,6 +96,18 @@ $ kubectl cp /home/ubuntu/.ssh/id_rsa cp-portal-terraman-deployment-689585bc94-p
     - resource "ncloud_server" "worker2" {...}
     - resource "ncloud_server" "worker3" {...} ...
 ```
+variable server_name01 {
+  default = "cp-master"
+}
+
+variable server_name02 {
+  default = "cp-worker"
+}
+
+variable client_ip {
+  default = "0.0.0.0"                                                                               #client ip 지정
+}
+
 ## Provides a Login key resource.
 resource "ncloud_login_key" "key_scn_01" {
   key_name = var.server_name01
@@ -115,26 +137,12 @@ resource "ncloud_network_interface" "nic01" {
   access_control_groups = [ncloud_access_control_group.acg_scn_01.id]                               # List of ACG ID to apply to network interfaces. A maximum of three ACGs can be applied.
 }
 
-resource "ncloud_network_interface" "nic02" {
-  name                  = "server-nic2"
-  description           = "for server-nic"
-  subnet_no             = ncloud_subnet.subnet_scn_01.id
-  access_control_groups = [ncloud_access_control_group.acg_scn_01.id]
-}
-
-resource "ncloud_network_interface" "nic03" {
-  name                  = "server-nic3"
-  description           = "for server-nic"
-  subnet_no             = ncloud_subnet.subnet_scn_01.id
-  access_control_groups = [ncloud_access_control_group.acg_scn_01.id]
-}
-
-resource "ncloud_network_interface" "nic04" {
-  name                  = "server-nic4"
-  description           = "for server-nic"
-  subnet_no             = ncloud_subnet.subnet_scn_01.id
-  access_control_groups = [ncloud_access_control_group.acg_scn_01.id]
-}
+ resource "ncloud_network_interface" "nic02" {
+ name                  = "server-nic2"
+ description           = "for server-nic"
+ subnet_no             = ncloud_subnet.subnet_scn_01.id
+ access_control_groups = [ncloud_access_control_group.acg_scn_01.id]
+ }
 
 ## Provides a Server instance resource.
 resource "ncloud_server" "server_01_master" {                                                       # 인스턴스 생성시 반드시 "master"와 "worker" 명칭으로 구분
@@ -160,29 +168,6 @@ resource "ncloud_server" "server_02" {
   }
 }
 
-resource "ncloud_server" "server_03" {
-  subnet_no                 = ncloud_subnet.subnet_scn_01.id
-  name                      = var.server_name03
-  server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"
-  login_key_name            = ncloud_login_key.key_scn_01.key_name
-  network_interface {
-    network_interface_no = ncloud_network_interface.nic03.id
-    order                = 0
-  }
-}
-
-resource "ncloud_server" "server_04" {
-  subnet_no                 = ncloud_subnet.subnet_scn_01.id
-  name                      = var.server_name04
-  server_image_product_code = "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050"
-  login_key_name            = ncloud_login_key.key_scn_01.key_name
-  description = "nfs"
-  network_interface {
-    network_interface_no = ncloud_network_interface.nic04.id
-    order                = 0
-  }
-}
-
 ## Provides a Public IP instance resource.
 resource "ncloud_public_ip" "public_ip_01" {
   server_instance_no = ncloud_server.server_01_master.id
@@ -194,31 +179,19 @@ resource "ncloud_public_ip" "public_ip_02" {
   description        = "for ${var.server_name02}"
 }
 
-resource "ncloud_public_ip" "public_ip_03" {
-  server_instance_no = ncloud_server.server_03.id
-  description        = "for ${var.server_name03}"
-}
-
-resource "ncloud_public_ip" "public_ip_04" {
-  server_instance_no = ncloud_server.server_04.id
-  description        = "for ${var.server_name04}"
-}
-
 ## priority, protocol, ip_block, port_range, rule_action for networkACL
 locals {
   scn01_inbound = [
     [1, "TCP", "0.0.0.0/0", "80", "ALLOW"],
     [2, "TCP", "0.0.0.0/0", "443", "ALLOW"],
     [3, "TCP", "${var.client_ip}/32", "22", "ALLOW"],
-    [4, "TCP", "${var.client_ip2}/32", "22", "ALLOW"],
-    [5, "TCP", "${var.client_ip3}/32", "22", "ALLOW"],
-    [6, "TCP", "0.0.0.0/0", "111", "ALLOW"],
-    [7, "TCP", "0.0.0.0/0", "2049", "ALLOW"],
-    [8, "TCP", "0.0.0.0/0", "6443", "ALLOW"],
-    [9, "TCP", "0.0.0.0/0", "2379-2380", "ALLOW"],
-    [10, "TCP", "0.0.0.0/0", "10250-10255", "ALLOW"],
-    [11, "UDP", "0.0.0.0/0", "4789", "ALLOW"],
-    [12, "TCP", "0.0.0.0/0", "30000-32767", "ALLOW"],
+    [4, "TCP", "0.0.0.0/0", "111", "ALLOW"],
+    [5, "TCP", "0.0.0.0/0", "2049", "ALLOW"],
+    [6, "TCP", "0.0.0.0/0", "6443", "ALLOW"],
+    [7, "TCP", "0.0.0.0/0", "2379-2380", "ALLOW"],
+    [8, "TCP", "0.0.0.0/0", "10250-10255", "ALLOW"],
+    [9, "UDP", "0.0.0.0/0", "4789", "ALLOW"],
+    [10, "TCP", "0.0.0.0/0", "30000-32767", "ALLOW"],
     [197, "TCP", "0.0.0.0/0", "1-65535", "ALLOW"],
     [198, "UDP", "0.0.0.0/0", "1-65535", "ALLOW"],
     [199, "ICMP", "0.0.0.0/0", null, "ALLOW"],
@@ -228,10 +201,8 @@ locals {
     [1, "TCP", "0.0.0.0/0", "80", "ALLOW"],
     [2, "TCP", "0.0.0.0/0", "443", "ALLOW"],
     [3, "TCP", "${var.client_ip}/32", "1000-65535", "ALLOW"],
-    [4, "TCP", "${var.client_ip2}/32", "1000-65535", "ALLOW"],
-    [5, "TCP", "${var.client_ip3}/32", "1000-65535", "ALLOW"],
-    [6, "TCP", "0.0.0.0/0", "30000-32767", "ALLOW"],
-    [7, "UDP", "0.0.0.0/0", "30000-32767", "ALLOW"],
+    [4, "TCP", "0.0.0.0/0", "30000-32767", "ALLOW"],
+    [5, "UDP", "0.0.0.0/0", "30000-32767", "ALLOW"],
     [197, "TCP", "0.0.0.0/0", "1-65535", "ALLOW"],
     [198, "UDP", "0.0.0.0/0", "1-65535", "ALLOW"],
     [199, "ICMP", "0.0.0.0/0", null, "ALLOW"]
@@ -269,19 +240,17 @@ resource "ncloud_network_acl_rule" "network_acl_01_rule" {
 ## protocol, ip_loack, port_range for ACG
 locals {
   default_acg_rules_inbound = [
-   ["TCP", "0.0.0.0/0", "80"],
-   ["TCP", "0.0.0.0/0", "443"],
-   ["TCP", "0.0.0.0/0", "111"],
-   ["TCP", "0.0.0.0/0", "2049"],
-   ["TCP", "0.0.0.0/0", "2379-2380"],
-   ["TCP", "0.0.0.0/0", "6443"],
-   ["TCP", "0.0.0.0/0", "10250-10255"],
-   ["TCP", "0.0.0.0/0", "30000-32767"],
-   ["UDP", "0.0.0.0/0", "4789"],
-   ["TCP", "10.0.1.0/24", "22"],
-   ["TCP", "${var.client_ip}/32", "22"],
-   ["TCP", "${var.client_ip2}/32", "22"],
-   ["TCP", "${var.client_ip3}/32", "22"],
+    ["TCP", "0.0.0.0/0", "80"],
+    ["TCP", "0.0.0.0/0", "443"],
+    ["TCP", "0.0.0.0/0", "111"],
+    ["TCP", "0.0.0.0/0", "2049"],
+    ["TCP", "0.0.0.0/0", "2379-2380"],
+    ["TCP", "0.0.0.0/0", "6443"],
+    ["TCP", "0.0.0.0/0", "10250-10255"],
+    ["TCP", "0.0.0.0/0", "30000-32767"],
+    ["UDP", "0.0.0.0/0", "4789"],
+    ["TCP", "10.0.1.0/24", "22"],
+    ["TCP", "${var.client_ip}/32", "22"],
     ["TCP", "0.0.0.0/0", "1-65535"],
     ["UDP", "0.0.0.0/0", "1-65534"],
     ["ICMP", "0.0.0.0/0", null]
@@ -296,7 +265,6 @@ locals {
 
 ## Provides an ACG(Access Control Group) resource.
 resource "ncloud_access_control_group" "acg_scn_01" {
-  description = "Access to Cloud2"
   vpc_no      = ncloud_vpc.vpc_scn_01.id
 }
 
@@ -323,3 +291,34 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
   }
 }
 ```
+### <div id='4.2'> 4.2 Instance Code Template 생성
+- Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 Template 등록이 가능하다. 
+
+<kbd>
+  <img src="../images/IMG_4_2.png">
+</kbd>
+
+## <div id='5'> 5. Cloud Accounts 생성
+### <div id='5.1'> 5.1 Cloud Accounts 작성
+- Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보 등록이 가능하다. 
+#### <div id='5.1.1'> 5.1.1 NAVER
+- 입력시 NAVER Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+
+  |Cloud Accounts 입력 창|NAVER Cloud 정보|  
+  |:------:|:------:|
+  |accessKey 필드|access_key 값|
+  |secretKey 필드|secret_key 값|
+  |site 필드|site 값|  
+  |region 필드|region 값|
+
+<kbd>
+  <img src="../images/IMG_5_1_1_NAVER.png">
+</kbd>
+
+## <div id='6'> 6. Cluster 생성
+### <div id='6.1'> 6.1 Cluster 작성
+- Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster 생성이 가능하다. 
+
+<kbd>
+  <img src="../images/IMG_6_1.png">
+</kbd>

@@ -15,9 +15,18 @@
  3.2 [SSH Key 구성](#3.2)  
  3.3 [SSH Key 복사](#3.3)  
 4. [Template 생성](#4)  
- 4.1 [Openstack](#4.1)  
- 4.2 [AWS](#4.2)  
- 4.3 [NHN](#4.3)
+ 4.1. [Template 작성](#4.1)  
+　4.1.1. [OpenStack](#4.1.1)   
+　4.1.2. [AWS](#4.1.2)   
+　4.1.3. [NHN](#4.1.3)   
+ 4.2. [Instance Code Template 생성](#4.2)  
+5. [Cloud Accounts 생성](#5)  
+ 5.1. [Cloud Accounts 작성](#5.1)  
+　5.1.1. [OpenStack](#5.1.1)   
+　5.1.2. [AWS](#5.1.2)   
+　5.1.3. [NHN](#5.1.3)   
+6. [Cluster 생성](#6)  
+ 6.1. [Cluster 작성](#6.1)  
 
 ## <div id='1'> 1. 문서 개요
 
@@ -34,7 +43,10 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 > https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs 
 
 ## <div id='2'> 2. Prerequisite
+- [Container Platform Cluster](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install.md) 설치가 사전에 진행 되어야한다.
+- [Container Platform Portal](https://github.com/K-PaaS/container-platform/blob/master/install-guide/container-platform-portal/cp-portal-deployment-standalone-guide.md) 설치가 사전에 진행 되어야한다.
 - Terraman을 실행하기 전 필요한 사전 작업에 대한 설명이다.
+
 #### <div id='2.1'> 2.1 방화벽 정보
 - Master Node
 
@@ -138,7 +150,8 @@ $ kubectl cp /home/ubuntu/.ssh/terraman-master-key cp-portal-terraman-deployment
 ```
 
 ## <div id='4'> 4. Template 생성
-### <div id='4.1'> 4.1 OpenStack
+### <div id='4.1'> 4.1 Template 작성
+#### <div id='4.1.1'> 4.1.1 OpenStack
 - 이 Template는 Terraman을 사용하여 OpenStack에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
 - [OpenStack Template 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
@@ -259,7 +272,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 ```
 
 
-### <div id='4.2'> 4.2 AWS
+#### <div id='4.1.2'> 4.1.2 AWS
 - 이 템플릿은 Terraman을 사용하여 AWS에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 키페어 및 이미지 리소스를 활용하는 데 초점을 맞추고 있다. 그러므로 키페어 및 이미지 리소스는 사전에 생성되어 있어야 한다.
 - [AWS Template 작성시 변수 참고](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#aws-configuration-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
@@ -441,7 +454,7 @@ resource "aws_nat_gateway" "aws-nat" {
   subnet_id     = "${aws_subnet.cp-opentofu-subnet01.id}"		                # 게이트웨이를 배치할 서브넷의 서브넷 ID
 }
 ```
-### <div id='4.3'> 4.3 NHN
+#### <div id='4.1.3'> 4.1.3 NHN
 - 이 Template는 Terraman을 사용하여 NHN에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
 - [NHN Template 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
@@ -472,7 +485,7 @@ data "openstack_networking_secgroup_v2" "cp-sg" {
 
 ## Use this data source to get the ID of an available OpenStack image.
 data "openstack_images_image_v2" "ubuntu_focal" {
-  name        = "Ubuntu Server 20.04.6 LTS (2023.08.22)"
+  name        = "Ubuntu Server 22.04.3 LTS (2023.11.21)"
   most_recent = true
 }
 
@@ -494,13 +507,25 @@ resource "openstack_networking_port_v2" "nic" {
   ]
 }
 
+resource "openstack_networking_port_v2" "nic2" {
+
+  name = "cp-nic02"
+  network_id = data.openstack_networking_network_v2.cp-network.id
+  fixed_ip {
+    subnet_id = data.openstack_networking_subnet_v2.cp-subnet.id
+  }
+  security_group_ids = [
+    data.openstack_networking_secgroup_v2.cp-sg.id
+  ]
+}
+
 ## Manages a V2 VM instance resource within OpenStack.
 resource "openstack_compute_instance_v2" "vm-cp-master" {                               # 인스턴스 2개 이상 생성시 반드시 "master"와 "worker" 명칭으로 구분
 
   name              = "cp-cluster-master"
   availability_zone = "kr-pub-a"
   flavor_name       = "m2.c4m8"
-  key_pair          = "cp-nhn-common-key"
+  key_pair          = "nhn-cluster-key"
 
   block_device {                                                                        # Configuration of block devices.
     uuid                  = data.openstack_images_image_v2.ubuntu_focal.id              # The UUID of the image, volume, or snapshot. Changing this creates a new server.
@@ -527,4 +552,95 @@ resource "openstack_compute_floatingip_associate_v2" "fip_1" {
   instance_id = openstack_compute_instance_v2.vm-cp-master.id                           # The instance to associte the floating IP with.
   wait_until_associated = true                                                          # In cases where the OpenStack environment does not automatically wait until the association has finished, set this option to have OpenTofu poll the instance until the floating IP has been associated. Defaults to false.
 }
+
+resource "openstack_compute_instance_v2" "vm-cp-worker" {
+  name              = "cp-cluster-worker"
+  availability_zone = "kr-pub-a"
+  flavor_name       = "m2.c4m8"
+  key_pair          = "nhn-cluster-key"
+
+  block_device {
+    uuid                  = data.openstack_images_image_v2.ubuntu_focal.id
+    source_type           = "image"
+    destination_type      = "volume"
+    delete_on_termination = true
+    volume_size           = 40
+    volume_type           = "General HDD"
+  }
+
+  network {
+    port = openstack_networking_port_v2.nic2.id
+  }
+}
+
+resource "openstack_networking_floatingip_v2" "fip_2" {
+  pool       = data.openstack_networking_network_v2.ext_network.name
+}
+
+resource "openstack_compute_floatingip_associate_v2" "fip_2" {
+  floating_ip = openstack_networking_floatingip_v2.fip_2.address
+  instance_id = openstack_compute_instance_v2.vm-cp-worker.id
+  wait_until_associated = true
+}
 ```
+### <div id='4.2'> 4.2 Instance Code Template 생성
+- Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 Template 등록이 가능하다. 
+
+<kbd>
+  <img src="../images/IMG_4_2.png">
+</kbd>
+
+## <div id='5'> 5. Cloud Accounts 생성
+### <div id='5.1'> 5.1 Cloud Account 작성
+- Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보 등록이 가능하다. 
+
+#### <div id='5.1.1'> 5.1.1 OpenStack
+- 입력시 OpenStack Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+
+  |Cloud Accounts 입력 창|OpenStack Cloud 정보|  
+  |:------:|:------:|
+  |auth_url 필드|auth_url 값|
+  |password 필드|password 값|
+  |user_name 필드|user_name 값|
+  |project 필드|tenant_name 값|
+  |region 필드|region 값|
+
+<kbd>
+  <img src="../images/IMG_5_1_1_OpenStack.png">
+</kbd>
+
+#### <div id='5.1.2'> 5.1.2 AWS
+- 입력시 AWS Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+
+  |Cloud Accounts 입력 창|AWS Cloud 정보|  
+  |:------:|:------:|
+  |accessKey 필드|access_key 값|
+  |secretKey 필드|secret_key 값|
+  |region 필드|region 값|
+
+<kbd>
+  <img src="../images/IMG_5_1_2.png">
+</kbd>
+
+#### <div id='5.1.3'> 5.1.3 NHN
+- 입력시 NHN Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+
+  |Cloud Accounts 입력 창|OpenStack Cloud 정보|  
+  |:------:|:------:|
+  |auth_url 필드|auth_url 값|
+  |password 필드|password 값|
+  |user_name 필드|user_name 값|
+  |project 필드|tenant_id 값|
+  |region 필드|region 값|
+
+<kbd>
+  <img src="../images/IMG_5_1_3.png">
+</kbd>
+
+## <div id='6'> 6. Cluster 생성
+### <div id='6.1'> 6.1 Cluster 작성
+- Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster 생성이 가능하다. 
+
+<kbd>
+  <img src="../images/IMG_6_1.png">
+</kbd>
