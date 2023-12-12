@@ -31,8 +31,6 @@
 
 6. [Sample App 배포](#6)
 
-7. [이슈사항](#7)
-
 <br>
 
 ## <div id='1'> 1. 문서 개요
@@ -782,38 +780,6 @@ helloworld-cluster1        -   100.00%   0.1rps           0ms           0ms     
 Linkerd Dashboard Service 상태를 확인한다.
 
 ![image 004]
-
-<br>
-
-## <div id='7'> 7. 이슈사항
-Linkerd viz 에서 CRD `TrafficSplit`을 관리하지 하지 않아 Dashboard에서 `TrafficSplit` 확인이 불가하다.
-
-> [Linkerd cli viz](https://linkerd.io/2.13/reference/cli/viz/#stat)<br>
-> [linkerd viz stat for traffic split invalid](https://github.com/linkerd/linkerd2/issues/10990)
-
-```
-So, I see, the SMI is dead, in favor of the Gateway API
-Anyway, the docs need some updates and cleanup ;-). I'll keep this issue open, therefore.
-```
-```
- Valid resource types include:
-  * cronjobs
-  * daemonsets
-  * deployments
-  * namespaces
-  * jobs
-  * pods
-  * replicasets
-  * replicationcontrollers
-  * statefulsets
-  * authorities (not supported in --from)
-  * authorizationpolicies (not supported in --from)
-  * httproutes (not supported in --from)
-  * services (not supported in --from)
-  * servers (not supported in --from)
-  * serverauthorizations (not supported in --from)
-  * all (all resource types, not supported in --from or --to)
-```
 
 <br>
 
