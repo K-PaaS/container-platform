@@ -176,12 +176,12 @@ data "openstack_compute_keypair_v2" "cp-keypair" {
 
 # 사용 가능한 OpenStack floating_ip 주소 ( instance 별 각각 필요하다. )
 data "openstack_networking_floatingip_v2" "cp-floatingip-master" {
-  address = "203.255.255.115"			                                        # 유동 IP 주소
+  address = "x.x.x.x"        			                                        # 유동 IP 주소
 }
 
 # 사용 가능한 OpenStack floating_ip 주소 ( instance 별 각각 필요하다. )
 data "openstack_networking_floatingip_v2" "cp-floatingip-worker" {
-  address = "203.255.255.118"			                                        # 유동 IP 주소
+  address = "x.x.x.x"        			                                        # 유동 IP 주소
 }
 
 # 사용 가능한 OpenStack network

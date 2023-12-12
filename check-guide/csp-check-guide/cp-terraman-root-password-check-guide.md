@@ -105,7 +105,7 @@ variable server_name02 {
 }
 
 variable client_ip {
-  default = "0.0.0.0"                                                                               #client ip 지정
+  default = "x.x.x.x"                                                                               #client ip 지정
 }
 
 ## Provides a Login key resource.
