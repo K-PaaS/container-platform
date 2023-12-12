@@ -45,11 +45,6 @@
 
 K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 `멀티 클러스터`를 구성하고 추가로 Karmada Host 클러스터 용도로 `단일 클러스터`를 구성한다.
 
-K-PaaS 컨테이너 플랫폼 클러스터 설치는 아래 가이드를 참고한다.
-
-> [K-PaaS 컨테이너 플랫폼 멀티 클러스터 설치 가이드](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-multi.md)<br>
-> [K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md)
-
 <br>
 
 ### <div id='1.4'> 1.4. 참고 자료
@@ -59,6 +54,12 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치는 아래 가이드를 참고�
 <br>
 
 ## <div id='2'> 2. Prerequisite
+
+### K-PaaS 컨테이너 플랫폼 클러스터
+K-PaaS 컨테이너 플랫폼 클러스터 설치는 아래 가이드를 참고한다.
+
+> [K-PaaS 컨테이너 플랫폼 멀티 클러스터 설치 가이드](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-multi.md)<br>
+> [K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md)
 
 <br>
 

@@ -387,16 +387,42 @@ service/probe-gateway-cluster2 created
 Multi Cluster 통신을 위한 Gateway 서비스에 External IP 할당, 인터페이스 추가, iptable 정책을 추가한다.
 
 ```bash
+## cluster1 linkerd-gateway external ip 정보 확인
 $ kubectl get svc linkerd-gateway -n linkerd-multicluster --context=ctx-1
 
+## cluster2 linkerd-gateway external ip 정보 확인
 $ kubectl get svc linkerd-gateway -n linkerd-multicluster --context=ctx-2
 ```
 
+<br>
+
+아래 가이드를 참고하여 MetalLB에 할당한 IP 대역으로 신규 인터페이스를 생성하여 진행한다.
+
 > [쿠버네티스 서비스 External IP 설정](https://github.com/K-PaaS/container-platform/blob/branch/1.5.x_origin/install-guide/standalone/cp-cluster-install-single.md#2.1.6)
 
-```bash
+<br>
 
+```bash
+## cluster1 linkerd-gateway external ip 변경
+$ kubectl patch svc linkerd-gateway -p '{"spec":{"loadBalancerIP":"{CLUSTER1_EXTERNAL_PRIVATE_IP}"}}' -n linkerd-multicluster --context=ctx-1
+
+## cluster2 linkerd-gateway external ip 변경
+$ kubectl patch svc linkerd-gateway -p '{"spec":{"loadBalancerIP":"{CLUSTER2_EXTERNAL_PRIVATE_IP}"}}' -n linkerd-multicluster --context=ctx-2
 ```
+
+<br>
+
+```bash
+## cluster1 전체 노드에서 실행
+## cluster2의 추가 인터페이스 IP 정보 입력
+$ sudo iptables -t nat -I PREROUTING -d {CLUSTER2_EXTERNAL_PRIVATE_IP} -j DNAT --to-destination {CLUSTER2_EXTERNAL_PUBLIC_IP}
+
+## cluster2 전체 노드에서 실행
+## cluster1의 추가 인터페이스 IP 정보 입력
+$ sudo iptables -t nat -I PREROUTING -d {CLUSTER1_EXTERNAL_PRIVATE_IP} -j DNAT --to-destination {CLUSTER1_EXTERNAL_PUBLIC_IP}
+```
+
+<br>
 
 Multi Cluster 연결 상태를 확인한다.
 ```bash
