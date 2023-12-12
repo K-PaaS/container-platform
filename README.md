@@ -95,7 +95,7 @@
 #### Single Cloud
 
 - 클러스터 설치
-  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install.md)
+  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-single.md)
 - 포털 설치
   + [포털 설치 가이드](install-guide/portal/cp-portal-service-guide.md)
   + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart/tree/master)
