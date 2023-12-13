@@ -24,7 +24,13 @@
 4. [샘플 애플리케이션 배포](#4)<br>
   4.1. [PropagationPolicy 정책 생성 및 배포](#4.1)<br>
   4.2. [샘플 yaml 생성](#4.2)<br>
-  4.3. [샘플 애플리케이션 확인](#4.3)
+  4.3. [샘플 애플리케이션 확인](#4.3)<br>
+
+5. [멀티 클러스터 샘플 애플리케이션 배포](#5)<br>
+  5.1 [namespace 생성](#5.1)<br>
+  5.2 [Karmada Propagationpolicy 생성](#5.2)<br>
+  5.3 [예제 코드 생성](#5.3)<br>
+	5.4 [실습 애플리케이션 동작 확인](#5.4)
 
 <br>
 
@@ -68,9 +74,9 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치는 아래 가이드를 참고�
 ### <div id='3.1'> 3.1. Karmadactl 설치
 
 ### <div id='3.1.1'> 3.1.1. Karmada 최신 릴리즈 다운로드
-karmada 최신 릴리즈를 다운로드한다.
+karmada v1.7.0 릴리즈를 다운로드한다.
 ```bash
-$ curl -s https://raw.githubusercontent.com/karmada-io/karmada/master/hack/install-cli.sh | sudo bash
+$ curl -s https://raw.githubusercontent.com/karmada-io/karmada/master/hack/install-cli.sh | sudo INSTALL_CLI_VERSION=1.7.0 bash
 ```
 
 <br>
@@ -200,7 +206,7 @@ Switched to context "karmada-apiserver".
 
 ### <div id='3.2'> 3.2. Member 클러스터 설정
 
-### <div id='3.2.1'> 3.2.1, Config 파일 설정
+### <div id='3.2.1'> 3.2.1. Config 파일 설정
 멀티 클러스터의 Kube Config 파일을 Karmada Host 클러스터의 다음 경로에 위치시킨다.<br>
 Member 클러스터의 Kube Config 파일은 각 클러스터의 `$HOME/.kube/config` 에 저장되어 있다.<br>
 `server: https://127.0.0.1:6443`을 `server: https://{Master_Node_IP}:6443`로 변경 해야 한다.
@@ -391,5 +397,324 @@ nginx   member2   2/2     2            2           12s   Y
 ```
 
 <br>
+
+## <div id='5'> 5. 멀티 클러스터 샘플 애플리케이션 배포
+karmada를 활용해 클러스터 member1, member2의 멀티 클러스터 통신 확인을 위한 샘플 앱을 배포한다.<br>
+그 후 Cluster의 Install VM으로 이동해 각 클러스터간의 통신을 체크해본다.<br>
+<br>
+먼저 실습을 위한 경로를 생성한다.<br>
+```bash
+# 실습 경로 생성 
+$ mkdir $HOME/samples
+$ cd samples
+```
+
+### <div id='5.1'> 5.1. Namespace 생성
+샘플 애플리케이션 배포를 위한 namespace를 생성한다.
+
+```bash
+$ vi namespace.yaml
+```
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sample
+```
+
+```bash
+# 네임스페이스 생성
+$ kubectl apply -f namespace.yaml
+```
+<br>
+
+### <div id='5.2'> 5.2. Propagationpolicy 생성
+샘플 애플리케이션 확인을 위해 PropagationPolicy 정책을 생성한다.<br>
+
+```bash
+$ vi propagationpolicy.yaml
+```
+```yaml
+apiVersion: policy.karmada.io/v1alpha1
+kind: PropagationPolicy
+metadata:
+  name: helloworld-v1-policy
+spec:
+  resourceSelectors:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: helloworld-v1
+  placement:
+    clusterAffinity:
+      clusterNames:
+        - member1
+---
+apiVersion: policy.karmada.io/v1alpha1
+kind: PropagationPolicy
+metadata:
+  name: helloworld-v2-policy
+spec:
+  resourceSelectors:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: helloworld-v2
+  placement:
+    clusterAffinity:
+      clusterNames:
+        - member2
+---
+apiVersion: policy.karmada.io/v1alpha1
+kind: PropagationPolicy
+metadata:
+  name: helloworld-common-policy
+spec:
+  resourceSelectors:
+    - apiVersion: v1
+      kind: Namespace
+      name: sample
+    - apiVersion: v1
+      kind: Service
+      name: helloworld
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: sleep
+    - apiVersion: v1
+      kind: ServiceAccount
+      name: sleep
+    - apiVersion: v1
+      kind: Service
+      name: sleep
+  placement:
+    clusterAffinity:
+      clusterNames:
+        - member1
+        - member2
+```
+
+```bash
+# 앞서 생성한 namespace에 배포한다
+$ kubectl apply -f propagationpolicy.yaml -n sample
+```
+<br>
+
+### <div id='5.3'> 5.3. 예제 코드 생성
+`member1`에 helloworld(v1), `member2`에 helloworld(v2) Application을 배포한다.<br>
+
+```bash
+$ vi helloworld.yaml
+```
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld
+  namespace: sample
+  labels:
+    app: helloworld
+    service: helloworld
+spec:
+  ports:
+  - port: 5000
+    name: http
+  selector:
+    app: helloworld
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-v1
+  namespace: sample
+  labels:
+    app: helloworld
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: helloworld
+        version: v1
+    spec:
+      containers:
+      - name: helloworld
+        image: docker.io/istio/examples-helloworld-v1
+        resources:
+          requests:
+            cpu: "100m"
+        imagePullPolicy: IfNotPresent #Always
+        ports:
+        - containerPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-v2
+  namespace: sample
+  labels:
+    app: helloworld
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: helloworld
+        version: v2
+    spec:
+      containers:
+      - name: helloworld
+        image: docker.io/istio/examples-helloworld-v2
+        resources:
+          requests:
+            cpu: "100m"
+        imagePullPolicy: IfNotPresent #Always
+        ports:
+        - containerPort: 5000
+```
+
+```bash
+$ kubectl apply -f helloworld.yaml
+```
+<br>
+
+sleep application을 배포한다. 
+
+
+
+```bash
+$ vi sleep.yaml
+```
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sleep
+  namespace: sample
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sleep
+  namespace: sample
+  labels:
+    app: sleep
+    service: sleep
+spec:
+  ports:
+  - port: 80
+    name: http
+  selector:
+    app: sleep
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleep
+  namespace: sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleep
+  template:
+    metadata:
+      labels:
+        app: sleep
+    spec:
+      terminationGracePeriodSeconds: 0
+      serviceAccountName: sleep
+      containers:
+      - name: sleep
+        image: curlimages/curl
+        command: ["/bin/sleep", "infinity"]
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /etc/sleep/tls
+          name: secret-volume
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: sleep-secret
+          optional: true
+```
+
+```bash
+$ kubectl apply -f sleep.yaml
+```
+
+<br>
+
+
+### <div id='5.4'> 5.4. 실습 애플리케이션 동작 확인
+`sample` namespace에 배포된 리소스를 확인한다.<br>
+`member1`에는 helloworld(v1)이, `member2`에는 helloworld(v2)가 배포됨을 알 수 있다.<br>
+
+```bash
+$ karmadactl get all -n sample
+
+NAME                                 CLUSTER   READY   STATUS    RESTARTS   AGE
+pod/helloworld-v2-79d5467d55-8d6st   member2   2/2     Running   0          19m
+pod/sleep-9454cc476-jwm86            member2   2/2     Running   0          19m
+pod/helloworld-v1-b6c45f55-gz5qb     member1   2/2     Running   0          19m
+pod/sleep-9454cc476-bg9xz            member1   2/2     Running   0          19m
+
+NAME                 CLUSTER   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/helloworld   member1   ClusterIP   10.233.48.160   <none>        5000/TCP   25m
+service/sleep        member1   ClusterIP   10.233.31.191   <none>        80/TCP     19m
+service/helloworld   member2   ClusterIP   10.233.3.223    <none>        5000/TCP   19m
+service/sleep        member2   ClusterIP   10.233.3.198    <none>        80/TCP     19m
+
+NAME                            CLUSTER   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/helloworld-v1   member1   1/1     1            1           19m
+deployment.apps/sleep           member1   1/1     1            1           19m
+deployment.apps/helloworld-v2   member2   1/1     1            1           19m
+deployment.apps/sleep           member2   1/1     1            1           19m
+
+NAME                                       CLUSTER   DESIRED   CURRENT   READY   AGE
+replicaset.apps/helloworld-v1-b6c45f55     member1   1         1         1       19m
+replicaset.apps/sleep-9454cc476            member1   1         1         1       19m
+replicaset.apps/helloworld-v2-79d5467d55   member2   1         1         1       19m
+replicaset.apps/sleep-9454cc476            member2   1         1         1       19m
+```
+
+### Helloworld 통신 테스트<br>
+:bulb: **최종 확인을 위해 Member1 Cluster의 Install VM으로 이동한다**
+
+```bash
+# 통신 체크를 위한 각 cluster의 변수 설정
+$ export CTX_CLUSTER1=cluster1
+$ export CTX_CLUSTER2=cluster2
+```
+
+`TrafficSplit`을 통해 `cluster1`의 helloworld-v1, `cluster2`의 hellodworld-v2로 트래픽이 분활되어 통신 되는 것을 확인 할 수 있다.
+```bash
+$ $ kubectl exec --context="${CTX_CLUSTER1}" -n sample -c sleep \
+    "$(kubectl get pod --context="${CTX_CLUSTER1}" -n sample -l \
+    app=sleep -o jsonpath='{.items[0].metadata.name}')" \
+    -- curl -sS helloworld.sample:5000/hello
+
+Hello version: v2, instance: helloworld-v2-79d5467d55-8d6st
+Hello version: v1, instance: helloworld-v1-b6c45f55-gz5qb
+Hello version: v1, instance: helloworld-v1-b6c45f55-gz5qb
+Hello version: v1, instance: helloworld-v1-b6c45f55-gz5qb
+Hello version: v2, instance: helloworld-v2-79d5467d55-8d6st
+Hello version: v2, instance: helloworld-v2-79d5467d55-8d6st
+Hello version: v1, instance: helloworld-v1-b6c45f55-gz5qb
+.
+.
+.
+```
+
 
 ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 Karmada 설치 가이드
