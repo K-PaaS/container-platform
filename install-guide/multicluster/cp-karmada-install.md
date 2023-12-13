@@ -192,8 +192,9 @@ statefulset.apps/etcd   1/1     3m31s
 $ sudo cp /etc/karmada/karmada-apiserver.config ~/.kube
 $ export KUBECONFIG=~/.kube/config:~/.kube/karmada-apiserver.config
 $ kubectl config get-contexts
+
 CURRENT   NAME                             CLUSTER             AUTHINFO        NAMESPACE
-		  karmada-apiserver                karmada-apiserver   karmada-admin
+          karmada-apiserver                karmada-apiserver   karmada-admin
 *         kubernetes-admin@cluster.local   cluster.local       kubernetes-admin
 ```
 
@@ -229,18 +230,18 @@ $ vi member1_config
 apiVersion: v1
 clusters:
 - cluster:
-	certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJWHBOaDJRQVFLVzh3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1Wlh
+  certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJWHBOaDJRQVFLVzh3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1Wlh
   ..
   ..
   ...skipped
   ..
   ..
-	server: https://103.xxx.xxx.xxx:6443
+  server: https://103.xxx.xxx.xxx:6443
   name: cluster.local
 contexts:
 - context:
-	cluster: cluster.local
-	user: kubernetes-admin
+  cluster: cluster.local
+  user: kubernetes-admin
   name: kubernetes-admin@cluster.local
 current-context: kubernetes-admin@cluster.local
 kind: Config
