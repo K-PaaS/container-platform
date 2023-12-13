@@ -210,7 +210,6 @@ Switched to context "karmada-apiserver".
 ### <div id='3.2.1'> 3.2.1. Config 파일 설정
 멀티 클러스터의 Kube Config 파일을 Karmada Host 클러스터의 다음 경로에 위치시킨다.<br>
 Member 클러스터의 Kube Config 파일은 각 클러스터의 `$HOME/.kube/config` 에 저장되어 있다.<br>
-`server: https://127.0.0.1:6443`을 `server: https://{Master_Node_IP}:6443`로 변경 해야 한다.
 ```bash
 $ mkdir -p $HOME/.kube/member
 
@@ -226,16 +225,16 @@ member1_cofing 파일 예시
 $ vi member1_config
 ```
 
-```yaml
+```
 apiVersion: v1
 clusters:
 - cluster:
   certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJWHBOaDJRQVFLVzh3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1Wlh
-  ..
-  ..
-  ...skipped
-  ..
-  ..
+  .
+  .
+  ..skipped
+  .
+  .
   server: https://103.xxx.xxx.xxx:6443
   name: cluster.local
 contexts:
@@ -246,11 +245,11 @@ contexts:
 current-context: kubernetes-admin@cluster.local
 kind: Config
 preferences: {}
-..
-..
+.
+.
 ...skipped
-..
-..
+.
+.
 ```
 
 <br>
@@ -260,30 +259,30 @@ member2_config 파일 예시
 $ vi member2_config
 ```
 
-```yaml
+```
 apiVersion: v1
 clusters:
 - cluster:
-	certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJVk94MDFEOE5IdHN3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1Wlh
- ..
- ..
+  certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJVk94MDFEOE5IdHN3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1Wlh
+ .
+ .
  ...skipped
- ..
- ..
-	server: https://104.xxx.xxx.xxx:6443
+ .
+ .
+  server: https://104.xxx.xxx.xxx:6443
   name: cluster.local
 contexts:
 - context:
-	cluster: cluster.local
-	user: kubernetes-admin
+  cluster: cluster.local
+  user: kubernetes-admin
   name: kubernetes-admin@cluster.local
 current-context: kubernetes-admin@cluster.local
 kind: Config
-..
-..
+.
+.
 ...skipped
-..
-..
+.
+.
 ```
 
 <br>
