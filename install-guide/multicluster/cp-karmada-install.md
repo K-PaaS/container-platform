@@ -340,8 +340,8 @@ resourceSelectors:
 placement:
 clusterAffinity:
   clusterNames:
-	- member1
-	- member2
+  - member1
+  - member2
 ```
 
 ```bash
@@ -372,11 +372,11 @@ matchLabels:
 template:
 metadata:
   labels:
-	app: nginx
+  app: nginx
 spec:
   containers:
   - image: nginx
-	name: nginx
+    name: nginx
 ```
 
 ```bash
