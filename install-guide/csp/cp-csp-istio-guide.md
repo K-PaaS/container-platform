@@ -1,45 +1,45 @@
-### [Index](https://github.com/K-PAAS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > Istio 멀티 클러스터 설치 가이드
+### [Index](https://github.com/K-PAAS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > CSP 쿠버네티스 서비스 Istio 멀티 클러스터 설치 가이드
+
 <br>
 
 ## Table of Contents
 1. [문서 개요](#1)    
-    1.1. [목적](#1.1)  
-    1.2. [범위](#1.2)  
-    1.3. [시스템 구성도](#1.3)  
-    1.4. [참고 자료](#1.4)  
+   1.1. [목적](#1.1)  
+   1.2. [범위](#1.2)  
+   1.3. [시스템 구성도](#1.3)  
+   1.4. [참고 자료](#1.4)
 
 2. [Prerequisite](#2)  
-    2.1. [설치 목록](#2.1)  
-    2.2. [방화벽 정보](#2.2)     
+   2.1. [설치 목록](#2.1)  
+   2.2. [방화벽 정보](#2.2)
 
 3. [Istio 멀티 클러스터 설치](#3)  
-    3.1. [Deployment 파일 다운로드](#3.1)   
-    3.2. [도구 설치](#3.2)  
-    3.3. [멀티 클러스터 접근 구성](#3.3)       
-    3.4. [Istio 멀티 클러스터 설치 변수 정의](#3.4)   
-    3.5. [Istio 멀티 클러스터 설치 스크립트 실행](#3.5)  
-    3.6. [(참고) Istio 멀티 클러스터 삭제](#3.6)   
-       
+   3.1. [Deployment 파일 다운로드](#3.1)   
+   3.2. [도구 설치](#3.2)  
+   3.3. [멀티 클러스터 접근 구성](#3.3)       
+   3.4. [Istio 멀티 클러스터 설치 변수 정의](#3.4)   
+   3.5. [Istio 멀티 클러스터 설치 스크립트 실행](#3.5)  
+   3.6. [(참고) Istio 멀티 클러스터 삭제](#3.6)
+
 4. [샘플 애플리케이션 배포](#4)  
-    4.1. [클러스터 cluster1에 샘플 애플리케이션 배포](#4.1)     
-    4.2. [클러스터 cluster2에 샘플 애플리케이션 배포](#4.2)    
-    4.3. [멀티 클러스터 통신 테스트](#4.3)    
+   4.1. [클러스터 cluster1에 샘플 애플리케이션 배포](#4.1)     
+   4.2. [클러스터 cluster2에 샘플 애플리케이션 배포](#4.2)    
+   4.3. [멀티 클러스터 통신 테스트](#4.3)
 
 5. [(참고) 컨테이너 플랫폼 포털 배포 시 사전 설정](#5)  
-    5.1. [StorageClass 설정](#5.1)  
-    5.2. [Ingress NGINX Controller 배포](#5.2)    
+   5.1. [StorageClass 설정](#5.1)  
+   5.2. [Ingress NGINX Controller 배포](#5.2)
 
-   
+
 <br>
 
-## <span id='1'> 1. 문서 개요  
+## <span id='1'> 1. 문서 개요
 ### <span id='1.1'> 1.1. 목적
-본 문서(Istio 멀티 클러스터 설치 가이드)는 Kubernetes 클러스터 내 서비스 메시를 지원하는 Istio의 설치 방법을 기술하여 독립적인 두 Kubernetes 클러스터의 서비스 간 통신이 가능하도록 한다.
-
+본 문서(CSP 쿠버네티스 서비스 Istio 멀티 클러스터 설치 가이드)는 클라우드 서비스 제공업체의 Kubernetes 서비스에 Istio 멀티 클러스터 설치 방법을 기술하여 독립적인 두 Kubernetes 클러스터의 서비스 간 통신이 가능하도록 한다.
 <br>
 
 ### <span id='1.2'>1.2. 범위
-설치 범위는 Istio 멀티 클러스터 설치 기준으로 작성하였다.
+설치 범위는 `CSP 쿠버네티스 서비스` 클러스터를 대상으로 Istio를 이용하여 `멀티 클러스터`를 구성하도록 작성하였다.
 
 <br>
 
@@ -49,9 +49,9 @@
 
 > *이미지 출처* <br>
 > [Install Multi-Primary on different networks](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)<br>
- 
+
 <img src="https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/arch.svg" width="800">
- 
+
 
 <br>
 
@@ -64,7 +64,7 @@
 - 작업 인스턴스는 **Ubuntu 22.04** 또는 **Ubuntu 20.04** 환경에서 설치하는 것을 기준으로 한다.
 - **두 개의 클러스터**를 대상으로 Istio 멀티 클러스터를 구성한다.
 - 각 클러스터는 **로드 밸런서(LoadBalancer)** 유형의 서비스 지원이 필요하다.
-<br>
+  <br>
 
 ### <span id='2.1'>2.1. 설치 목록
 설치되는 도구 목록은 아래와 같다.
@@ -85,31 +85,9 @@
 
 ### <span id='2.2'>2.2. 방화벽 정보
 IaaS Security Group의 열어줘야할 Port를 설정한다.
-
-- Master Node
-
-| <center>프로토콜</center> | <center>포트</center> | <center>비고</center> |  
-| :---: | :---: | :--- |  
-| TCP | 111 | NFS PortMapper |  
-| TCP | 2049 | NFS |  
-| TCP | 2379-2380 | etcd server client API |  
-| TCP | 6443 | Kubernetes API Server |  
-| TCP | 10250 | Kubelet API |  
-| TCP | 10251 | kube-scheduler |  
-| TCP | 10252 | kube-controller-manager |  
-| TCP | 10255 | Read-Only Kubelet API |  
-| UDP | 4789 | Calico networking VXLAN |  
-
-- Worker Node
-
-| <center>프로토콜</center> | <center>포트</center> | <center>비고</center> |  
-| :---: | :---: | :--- |  
-| TCP | 111 | NFS PortMapper |  
-| TCP | 2049 | NFS |  
-| TCP | 10250 | Kubelet API |  
-| TCP | 10255 | Read-Only Kubelet API |  
-| TCP | 30000-32767 | NodePort Services |  
-| UDP | 4789 | Calico networking VXLAN |  
+|프로토콜|포트|비고|
+|---|---|---|
+|TCP|15443|Istio IngressGateway mtls|
 
 
 <br>
@@ -120,7 +98,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 Istio 멀티 클러스터 설치를 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-   [cp-portal-deployment-v1.5.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/SSo9H3qjLsFn3ob/download)
+  [cp-portal-deployment-v1.5.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/SSo9H3qjLsFn3ob/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -206,7 +184,7 @@ k8s-cluster-2-default-worker-node-0   Ready    <none>   5h43m   v1.27.3
 <br>
 
 ### <span id='3.4'>3.4. Istio 멀티 클러스터 설치 변수 정의
-Istio 멀티 클러스터를 설치하기 전 클러스터 컨텍스트 값 정의가 필요하다. 설정에 필요한 정보를 확인하여 변수를 설정한다. 
+Istio 멀티 클러스터를 설치하기 전 클러스터 컨텍스트 값 정의가 필요하다. 설정에 필요한 정보를 확인하여 변수를 설정한다.
 
 ```bash
 $ cd ~/workspace/container-platform/cp-portal-deployment/istio_mc
@@ -302,7 +280,7 @@ cluster1     istio-system/istio-remote-secret-cluster1     synced     istiod-5fc
 <br>
 
 #### Istio 리소스 배포 현황
-> 클러스터 컨텍스트 명 환경변수 설정 
+> 클러스터 컨텍스트 명 환경변수 설정
 ```bash
 $ source ~/workspace/container-platform/cp-portal-deployment/istio_mc/istio-vars-mc.sh
 ```
@@ -368,7 +346,7 @@ $ ./uninstall-istio-mc.sh
 ## <span id='4'>4. 샘플 애플리케이션 배포
 클러스터 cluster1, cluster2에 멀티 클러스터 통신 샘플 애플리케이션 배포를 진행한다.
 
-#### 애플리케이션 배포 위치 
+#### 애플리케이션 배포 위치
 | 애플리케이션| cluster1 | cluster2 | 정보 |
 | :---: |:---: | :---: | :---: |  
 | helloworld-v1 | :heavy_check_mark: | | 해당 버전<b>(v1)</b>과 호스트 명을 반환 |
@@ -436,7 +414,7 @@ deployment.apps/sleep created
 ```
 <br>
 
-### <span id='4.3'>4.3. 멀티 클러스터 통신 테스트 
+### <span id='4.3'>4.3. 멀티 클러스터 통신 테스트
 ```bash
 # cluster1의 helloword-v1 pod 조회
 $ kubectl get pods -l app=helloworld --context="${CLUSTER1_CONFIG[CTX]}" -n sample
@@ -481,7 +459,7 @@ Hello version: v2, instance: helloworld-v2-f58d4c8cb-jkjnw
 해당 가이드를 통해 구성된 Istio 멀티 클러스터 환경에 컨테이너 플랫폼 포털 멀티 클러스터 (단독/서비스) 형 을 배포할 경우 아래 사전 설정이 필요하다.
 ### <span id='5.1'>5.1. StorageClass 설정
 각 Kubernetes 클러스터에 `StorageClass`가 설정되어 있는지 확인한다.
-> StorageClass를 제공하지 않는다면 별도 설치 필요 
+> StorageClass를 제공하지 않는다면 별도 설치 필요
 ```bash
 # 클러스터 cluster1의 StorageClass 조회 (별도 설치)
 $ kubectl get storageclass --context=${CLUSTER1_CONFIG[CTX]}
@@ -516,3 +494,5 @@ $ helm upgrade --install ingress-nginx ingress-nginx \
 ```
 
 <br>
+
+### [Index](https://github.com/K-PAAS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > CSP 쿠버네티스 서비스 Istio 멀티 클러스터 설치 가이드

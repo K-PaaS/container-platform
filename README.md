@@ -87,11 +87,14 @@
   + [Linkerd 설치 가이드](install-guide/multicluster/cp-linkerd-install.md)
   + [Karmada 설치 가이드](install-guide/multicluster/cp-karmada-install.md)
 - CSP Kubernetes Service 활용
-  + [istio 설치 및 샘플](install-guide/csp/container-platform-csp-istio-guide.md)
-  + [linkerd 설치 및 샘플](install-guide/csp/container-platform-csp-linkerd-guide.md)
+  + [Istio 설치 및 샘플](install-guide/csp/cp-csp-istio-guide.md)
+  + [Linkerd 설치 및 샘플](install-guide/csp/cp-csp-linkerd-guide.md)
 
-### 서비스형 배포 
-`애플리케이션 플랫폼 포털 연계 형`
+<br>
+
+### 서비스형 배포
+> :speaker: 서비스형 배포는 애플리케이션 플랫폼 포털 연계 형입니다.
+
 #### Single Cloud
 
 - 클러스터 설치
@@ -114,6 +117,8 @@
   + [Linkerd 설치 가이드](install-guide/multicluster/cp-linkerd-install.md)
 - 페더레이션
   + [Karmada 설치 가이드](install-guide/multicluster/cp-karmada-install.md)
+
+<br>
 
 ### Edge 배포
 - Edge 설치

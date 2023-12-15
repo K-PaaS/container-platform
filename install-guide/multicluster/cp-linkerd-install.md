@@ -1,431 +1,435 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 Linkerd 멀티 클러스터 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md)  > K-PaaS 컨테이너 플랫폼 Linkerd 멀티 클러스터 설치 가이드
 
 <br>
 
 ## Table of Contents
 
 1. [문서 개요](#1)<br>
-  1.1. [목적](#1.1)<br>
-  1.2. [범위](#1.2)<br>
-  1.3. [시스템 구성도](#1.3)<br>
-  1.4. [참고자료](#1.4)
+   1.1. [목적](#1.1)<br>
+   1.2. [범위](#1.2)<br>
+   1.3. [시스템 구성도](#1.3)<br>
+   1.4. [참고자료](#1.4)
 
 2. [Prerequisite](#2)<br>
-  2.1. [컨텍스트 설정](#2.1)<br>
-  2.2. [Helm 확인](#2.2)<br>
-  2.3. [MetalLB 확인](#2.3)<br>
-  2.4. [Step CLI 설치](#2.4)<br>
-  2.5. [Linkerd CLI 설치](#2.5)
+   2.1. [설치 목록](#2.1)<br>
+   2.2. [방화벽 정보](#2.2)<br>
+   2.3. [컨텍스트 구성](#2.3)<br>
+   2.4. [Helm 설치 확인](#2.4)<br>
+   2.5. [MetalLB 확인](#2.5)<br>
+   2.6. [환경 변수 설정](#2.6)<br>
+   2.7. [Linkerd CLI, step 설치](#2.7)
 
-3. [인증서 생성](#3)
+3. [Linkerd 멀티 클러스터 설치](#3)<br>
+   3.1. [인증서 생성](#3.1)<br>
+   3.2. [linkerd-crds 설치](#3.2)<br>
+   3.3. [linkerd-control-plane 설치](#3.3)<br>
+   3.4. [linkerd-multicluster 설치](#3.4)<br>
+   3.5. [iptable 정책 추가](#3.5)<br>
+   3.6. [linkerd-smi 설치](#3.6)
 
-4. [Linkerd 설치](#4)<br>
-  4.1. [Linkerd-crds 설치](#4.1)<br>
-  4.2. [Linkerd-control-plane 설치](#4.2)<br>
-  4.3. [Linkerd-viz 설치](#4.3)<br>
-  4.4. [Linkerd-viz Dashboard 접속](#4.4)
+4. [샘플 애플리케이션 배포](#4)<br>
+   4.1. [클러스터 cluster1에 샘플 애플리케이션 배포](#4.1)<br>
+   4.2. [클러스터 cluster2에 샘플 애플리케이션 배포](#4.2)<br>
+   4.3. [멀티 클러스터 통신 테스트](#4.3)
 
-5. [Linkerd multi-cluster 구성](#5)<br>
-  5.1. [Linkerd-multicluster 설치](#5.1)<br>
-  5.2. [Linkerd-smi 설치](#5.2)
-
-6. [Sample App 배포](#6)
-
-<br>
-
-## <div id='1'> 1. 문서 개요
-
-### <div id='1.1'> 1.1. 목적
-본 문서 (K-PaaS 컨테이너 플랫폼 Linkerd 멀티 클러스터 설치 가이드) 는 기획자, 개발자, 운영자 지원 환경의 개방형 PaaS 플랫폼인 K-PaaS 컨테이너 플랫폼의 클러스터에 Linkerd를 설치하여 `멀티 클러스터`를 구성하는 방법을 기술하였다.
 
 <br>
 
-### <div id='1.2'> 1.2. 범위
-설치 범위는 K-PaaS 컨테이너 플랫폼 환경의 기반이 되는 클러스터 설치를 `멀티 클라우드` 환경 기준으로 설치한 후 Linkerd를 이용하여 `멀티 클러스터`를 구성하도록 작성하였다.
+## <span id='1'> 1. 문서 개요
+
+### <span id='1.1'> 1.1. 목적
+본 문서 (K-PaaS 컨테이너 플랫폼 Linkerd 멀티 클러스터 설치 가이드) 는 기획자, 개발자, 운영자 지원 환경의 개방형 PaaS 플랫폼인 K-PaaS 컨테이너 플랫폼의 클러스터에 Kubernetes용 서비스 메시 도구인 Linkerd를 설치하여 두 클러스터의 서비스 간 통신이 가능하도록 한다.
 
 <br>
 
-### <div id='1.3'> 1.3. 시스템 구성도
-시스템 구성은 쿠버네티스 `멀티 클러스터` (Control Plane, Worker) 환경으로 구성되어 있다.
+### <span id='1.2'> 1.2. 범위
+설치 범위는 `싱글 클라우드` 기준 K-PaaS 컨테이너 플랫폼 환경의 두 클러스터를 설치한 후 Linkerd를 이용하여 `멀티 클러스터`를 구성하도록 작성하였다.
 
+<br>
+
+### <span id='1.3'> 1.3. 시스템 구성도
 K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 `단일 클러스터` 2개를 각각 구성하고 Linkerd를 설치하여 `멀티 클러스터` 환경을 구성한다.
 
 <br>
 
-### <div id='1.4'> 1.4. 참고자료
-> https://linkerd.io<br>
-> https://github.com/linkerd/linkerd2
+### <span id='1.4'> 1.4. 참고자료
+> [[Linkerd Docs]](https://linkerd.io/2.14/overview/) <br>
+> [[Linkerd Installing Multi-cluster Components]](https://linkerd.io/2.14/tasks/installing-multicluster/) <br>
+> [[Linkerd Multi-cluster communication]](https://linkerd.io/2.14/features/multicluster/)
 
 <br>
 
-## <div id='2'> 2. Prerequisite
-본 가이드 (K-PaaS 컨테이너 플랫폼 Linkerd 멀티 클러스터 설치 가이드)는 K-PaaS 컨테이너 플랫폼 클러스터 2개(`cluster1`, `cluster2`)에 Linkerd 멀티 클러스터 서비스 메시를 구성한다.
-
-Linkerd Control Plane 및 Extensions 설치는 클러스터 `cluster1` 에서 작업을 진행한다. 진행하기 전 아래 사항이 미리 구성되어야 한다.
-
-<br>
-
-### K-PaaS 컨테이너 플랫폼 클러스터
-K-PaaS 컨테이너 플랫폼 클러스터 설치는 아래 가이드를 참고한다.
-
-> [K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md)
+## <span id='2'> 2. Prerequisite
+- 컨테이너 플랫폼 `단일 클러스터` 2개를 대상으로 Linkerd 멀티 클러스터를 구성한다.
+  + [[K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드]](/install-guide/standalone/cp-cluster-install-single.md)
+- Linkerd 멀티 클러스터 구성을 위한 작업 인스턴스는 `cluster1`의 **Master Node** 에서 진행한다.
 
 <br>
 
-### Linkerd 버전
-> [Linkerd Extension List](https://linkerd.io/2.13/reference/extension-list/#)
+### <span id='2.1'>2.1. 설치 목록
+설치되는 도구 목록은 아래와 같다.
+#### Linkerd
+> [Linkerd Releases and Versions](https://linkerd.io/releases/) <br>
+> [Linkerd Extension List](https://linkerd.io/2.14/reference/extension-list/)
 
-|NAME|NAMESPACE|CHART VERSION|APP VERSION|Extensions|
-|---|---|---|---|---|
-|linkerd-crds|linkerd|linkerd-crds-1.6.1|-|-|
-|linkerd-control-plane|linkerd|linkerd-control-plane-1.12.5| stable-2.13.5|-|
-|linkerd-viz|linkerd-viz|linkerd-viz-30.8.5|stable-2.13.5|O|
-|linkerd-multicluster|linkerd-multicluster|linkerd-multicluster-30.7.5|stable-2.13.5|O|
-|linkerd-smi|linkerd-smi|linkerd-smi-1.0.1 |v0.2.1|O|
+|NAME|NAMESPACE|Extensions|
+|:---|:---|:---|
+|<b>[linkerd-crds](https://artifacthub.io/packages/helm/linkerd2/linkerd-crds)</b>|-|-|
+|<b>[linkerd-control-plane](https://artifacthub.io/packages/helm/linkerd2/linkerd-control-plane)</b>|linkerd|-|
+|<b>[linkerd-multicluster](https://artifacthub.io/packages/helm/linkerd2/linkerd-multicluster)</b>|linkerd-multicluster|O|
+|<b>[linkerd-smi](https://github.com/linkerd/linkerd-smi)</b>|linkerd-smi|O|
+
+#### step ([`v0.24.4`](https://github.com/smallstep/cli/releases/tag/v0.24.4))
+> [step CLI](https://smallstep.com/docs/step-cli/index.html)
+
 
 <br>
 
-### 방화벽 설정
+### <span id='2.2'>2.2. 방화벽 정보
+IaaS Security Group의 열어줘야할 Port를 설정한다.
 |프로토콜|포트|비고|
 |---|---|---|
-|TCP|4191|Linkerd|
-|TCP|5000|Linkerd Sample|
-|TCP|4143|Linkerd Multi Cluster Gateway|
+|TCP|4191|Linkerd Gateway Probe|
+|TCP|4143|Linkerd Gateway|
+|TCP|5000|Linkerd Sample App|
 
 <br>
 
+### <span id='2.3'>2.3. 컨텍스트 구성
+> Linkerd 멀티 클러스터 구성을 위한 작업 인스턴스는 `cluster1`의 **Master Node** 에서 진행하도록 한다. <br>
 
-### <div id='2.1'> 2.1. 컨텍스트 설정
-클러스터 `cluster1`에서 `cluster1`, `cluster2` 컨텍스트 설정을 확인한다.
+Linkerd 멀티 클러스터를 설치할 클러스터 cluster1, cluster2에 접근할 수 있도록 컨텍스트 구성이 필요하다. <br>
+:loudspeaker: cluster1, cluster2 두 kubeconfig 파일 내 cluster, context, user 명이 중복되지 않는지 확인한다. <br>
 ```bash
-## cluster api server 주소는 외부에서 접근가능해야한다. https://127.0.0.1:6443 안됨
-$ kubectl config view
-```
+# .kube 디렉터리 이동
+$ cd ${HOME}/.kube
 
-```yaml
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: DATA+OMITTED
-    server: https://10.100.0.172:6443
-  name: cluster1
-- cluster:
-    certificate-authority-data: DATA+OMITTED
-    server: https://10.100.0.122:6443
-  name: cluster2
-...
-```
+# cluster1, cluster2의 kubeconfig 파일 생성
+$ ls ${HOME}/.kube
+cluster1-config  cluster2-config ...
 
+# kubeconfig 파일 경로 설정
+$ export KUBECONFIG="${HOME}/.kube/cluster1-config:${HOME}/.kube/cluster2-config"
+```
+- 컨텍스트 목록 조회 정상 확인
 ```bash
 $ kubectl config get-contexts
-CURRENT   NAME    CLUSTER    AUTHINFO         NAMESPACE
-*         ctx-1   cluster1   cluster1-admin
-          ctx-2   cluster2   cluster2-admin
+CURRENT   NAME       CLUSTER    AUTHINFO   NAMESPACE
+*         cluster1   cluster1   cluster1
+          cluster2   cluster2   cluster2
+```
+- 클러스터 접근 정상 확인
+```bash
+# cluster1 노드 조회 
+$ kubectl get nodes --context=cluster1
+NAME              STATUS   ROLES           AGE     VERSION
+cluster1-node-1   Ready    control-plane   4h25m   v1.27.5
+cluster1-node-2   Ready    <none>          4h24m   v1.27.5
+cluster1-node-3   Ready    <none>          4h24m   v1.27.5
+
+# cluster2 노드 조회 
+$ kubectl get nodes --context=cluster2
+NAME              STATUS   ROLES           AGE    VERSION
+cluster2-node-1   Ready    control-plane   3h6m   v1.27.5
+cluster2-node-2   Ready    <none>          3h5m   v1.27.5
+cluster2-node-3   Ready    <none>          3h5m   v1.27.5
 ```
 
 <br>
 
-### <div id='2.2'> 2.2. Helm 확인
-K-PaaS 컨테이너 플랫폼 클러스터 배포에서 Helm 설치를 기본으로 제공한다.
+### <span id='2.4'>2.4. Helm 설치 확인
+K-PaaS 컨테이너 플랫폼 클러스터는 Helm 설치를 기본으로 제공한다.<br> Helm CLI가 정상적으로 동작하는지 확인한다.
 ```bash
 $ helm version
-version.BuildInfo{Version:"v3.9.4", GitCommit:"dbc6d8e20fe1d58d50e6ed30f09a04a77e4c68db", GitTreeState:"clean", GoVersion:"go1.17.13"}
+version.BuildInfo{Version:"v3.12.3", ...}
 ```
 
 <br>
 
-### <div id='2.3'> 2.3. MetalLB 확인
-K-PaaS 컨테이너 플랫폼 클러스터 배포에서 MetalLB 설치를 기본으로 제공한다.<br>
-클러스터 `cluster1`, `cluster2`에서 MetalLB 설치를 확인한다.
+### <span id='2.5'> 2.5. MetalLB 확인
+K-PaaS 컨테이너 플랫폼 클러스터는 MetalLB 설치를 기본으로 제공한다.<br> 클러스터 cluster1, cluster2에서 MetalLB 설치를 확인한다.
 ```bash
-$ kubectl get pods -n metallb-system --context=ctx-1
+# cluster1 MetalLB 배포 확인
+$ kubectl get pods -n metallb-system --context=cluster1
 NAME                          READY   STATUS    RESTARTS   AGE
-controller-6c58495cbb-46q4z   1/1     Running   0          18d
-speaker-9jhfq                 1/1     Running   0          18d
-speaker-zq55b                 1/1     Running   0          18d
+controller-58cd4b5d45-xgbs6   1/1     Running   0          4h8m
+speaker-26qjf                 1/1     Running   0          4h28m
+speaker-69nm5                 1/1     Running   0          4h28m
+speaker-7wxrx                 1/1     Running   0          4h5m
 
-$ kubectl get pods -n metallb-system --context=ctx-2
+# cluster2 MetalLB 배포 확인
+$ kubectl get pods -n metallb-system  --context=cluster2
 NAME                          READY   STATUS    RESTARTS   AGE
-controller-6c58495cbb-ngxn9   1/1     Running   0          18d
-speaker-gbkv7                 1/1     Running   0          18d
-speaker-whkjr                 1/1     Running   0          18d
+controller-58cd4b5d45-rqdzh   1/1     Running   0          3h7m
+speaker-d5kdz                 1/1     Running   0          3h7m
+speaker-s62z9                 1/1     Running   0          3h7m
+speaker-sswws                 1/1     Running   0          3h7m
 ```
 
 <br>
 
-### <div id='2.4'> 2.4. Step CLI 설치
-클러스터 `cluster1`에서 인증서와 키 생성을 위해 Step CLI를 설치한다.
+### <span id='2.6'>2.6. 환경 변수 설정
+Linkerd 멀티 클러스터 설치를 위한 클러스터 정보, CLI 등 환경 변수를 설정한다.
+- 클러스터 명, 컨텍스트 정보, step 버전 설정
 ```bash
-## step 다운로드 및 /usr/bin 배치
-$ wget https://github.com/smallstep/cli/releases/download/v0.24.4/step_linux_0.24.4_amd64.tar.gz -O step.tar.gz
-$ tar -xvzf step.tar.gz
-$ sudo mv step_0.24.4/bin/step /usr/bin/
-$ sudo chmod +x /usr/bin/step
-
-$ step version
-Smallstep CLI/0.24.4 (linux/amd64)
-Release Date: 2023-05-11T19:52:34Z
+export CLUSTER1_CTX="{클러스터 cluster1 컨텍스트 명}"  #(e.g. cluster1)
+export CLUSTER1_NAME="{Linkerd 멀티 클러스터 연결 시 사용할 클러스터 cluster1 명}" #(e.g. cluster1)
+export CLUSTER2_CTX="{클러스터 cluster2 컨텍스트 명}"  #(e.g. cluster2)
+export CLUSTER2_NAME="{Linkerd 멀티 클러스터 연결 시 사용할 클러스터 cluster2 명}" #(e.g. cluster2)
+export STEP_VERSION="0.24.4"
 ```
 
 <br>
 
-### <div id='2.5'> 2.5. Linkerd CLI 설치 
-클러스터 `cluster1`에서 Linkerd CLI 설치를 진행한다.
+### <span id='2.7'>2.7. Linkerd CLI, step 설치
+Linkerd와 상호작용을 위한 Linkerd CLI, 인증서 생성을 위한 step을 설치한다.
+- Linkerd CLI 설치
 ```bash
-## linkerd cli 수동설치
-$ curl --proto '=https' --tlsv1.2 -sSfL https://run.linkerd.io/install | sh
+# Linkerd CLI 설치
+$ curl --proto '=https' --tlsv1.2 -sSfL https://run.linkerd.io/install | sh -
 
-## 설치 중
 Download complete!
 
 Validating checksum...
 Checksum valid.
 
-Linkerd stable-2.13.5 was successfully installed 🎉
-
-## 설치 완료
-$ sudo mv $HOME/.linkerd2/bin/linkerd /usr/bin/
-$ sudo chmod +x /usr/bin/linkerd
-
-$ linkerd version
-Client version: stable-2.13.5
-Server version: unavailable
+Linkerd stable-2.x was successfully installed 🎉
+...
 ```
-
+```bash
+$ sudo mv $HOME/.linkerd2/bin/linkerd /usr/local/bin/linkerd
+$ linkerd version --client
+Client version: stable-2.x
+```
+- step 설치
+```bash
+# step 설치
+$ wget https://dl.smallstep.com/gh-release/cli/docs-cli-install/v${STEP_VERSION}/step-cli_${STEP_VERSION}_amd64.deb
+$ sudo dpkg -i step-cli_${STEP_VERSION}_amd64.deb
+$ step version
+Smallstep CLI/0.24.4 (linux/amd64)
+Release Date: 2023-05-11T19:52:34Z
+```
 <br>
 
-## <div id='3'> 3. 인증서 생성
-Pod 간 mTLS 통신을 지원하기 위해 Linkerd는 trust anchor 인증서와 해당키의 issue 인증서가 필요하다.<br>
-Helm을 통한 Linkerd 설치의 경우 사용자가 수동으로 생성해야 한다.
+## <span id='3'>3. Linkerd 멀티 클러스터 설치
+### <span id='3.1'>3.1. 인증서 생성
+서비스 메시 형 Pod 간 [mTLS 통신](https://linkerd.io/2.14/tasks/generate-certificates/)을 지원하기 위해 Linkerd는 trust anchor 인증서와 해당 키가 포함된 issuer 인증서가 필요하다.<br>
+사전에 설치한 step을 통해 인증서 생성을 진행한다.
 ```bash
-## 디렉토리 생성
+# 디렉토리 생성 
 $ mkdir -p $HOME/linkerd/certs
 $ cd $HOME/linkerd/certs
 
-## 루트 인증서 및 키 생성
+# Trust anchor 인증서 생성
 $ step certificate create root.linkerd.cluster.local ca.crt ca.key \
 --profile root-ca --no-password --insecure
 
-## 중간 인증서 및 키 생성
+# issuer 인증서 및 키 생성
 $ step certificate create identity.linkerd.cluster.local issuer.crt issuer.key \
 --profile intermediate-ca --not-after 8760h --no-password --insecure \
 --ca ca.crt --ca-key ca.key
-```
 
+# 인증서 및 키 생성 확인
+$ ls
+ca.crt  ca.key  issuer.crt  issuer.key
+```
 <br>
 
-## <div id='4'> 4. Linkerd 설치
-
-### <div id='4.1'> 4.1. Linkerd-crds 설치
-Helm을 통해 Linkerd CRDS를 설치한다.
+### <span id='3.2'>3.2. linkerd-crds 설치
+Helm을 통해 `linkerd-crds`를 설치한다.
 ```bash
-## linkerd 레파지토리 등록
+# linkerd repo 등록
 $ helm repo add linkerd https://helm.linkerd.io/stable
 
 $ helm repo list
 NAME    URL
-linkerd https://helm.linkerd.io/stable
+linkerd https://helm.linkerd.io/stable (등록 확인)
 
-## cluster1(ctx-1)에 linkerd-crds 설치
-$ helm install linkerd-crds linkerd/linkerd-crds -n linkerd --create-namespace --kube-context=ctx-1
+# cluster1에 linkerd-crds 설치
+$ helm install linkerd-crds linkerd/linkerd-crds -n linkerd --create-namespace --kube-context="${CLUSTER1_CTX}"
 
-## cluster2(ctx-2)에 linkerd-crds 설치
-$ helm install linkerd-crds linkerd/linkerd-crds -n linkerd --create-namespace --kube-context=ctx-2
+# cluster2에 linkerd-crds 설치
+$ helm install linkerd-crds linkerd/linkerd-crds -n linkerd --create-namespace --kube-context="${CLUSTER2_CTX}"
 ```
 
-<br>
+<br> 
 
-### <div id='4.2'> 4.2.  Linkerd-control-plane 설치
-[3. 인증서 생성](#3) 과정에서 생성한 인증서과 함께 linkerd-control-plane을 설치한다.
+### <span id='3.3'>3.3. linkerd-control-plane 설치
+- [[3.1. 인증서 생성]](#3.1)에서 생성한 인증서, 키와 함께 `linkerd-control-plane`를 설치한다.
+
 ```bash
-## cluster1(ctx-1)에 linkerd-control-plane 설치
-$ helm install linkerd-control-plane -n linkerd \
+# 인증서, 키 파일 위치로 이동
+$ cd $HOME/linkerd/certs
+
+# cluster1에 linkerd-control-plane 설치
+$ helm install linkerd-control-plane linkerd/linkerd-control-plane -n linkerd \
   --set-file identityTrustAnchorsPEM=ca.crt \
   --set-file identity.issuer.tls.crtPEM=issuer.crt \
   --set-file identity.issuer.tls.keyPEM=issuer.key \
-  linkerd/linkerd-control-plane --kube-context=ctx-1
+  --kube-context="${CLUSTER1_CTX}"
 
-## cluster2(ctx-2)에 linkerd-control-plane 설치
-$ helm install linkerd-control-plane -n linkerd \
+# cluster2에 linkerd-control-plane 설치
+$ helm install linkerd-control-plane linkerd/linkerd-control-plane -n linkerd \
   --set-file identityTrustAnchorsPEM=ca.crt \
   --set-file identity.issuer.tls.crtPEM=issuer.crt \
   --set-file identity.issuer.tls.keyPEM=issuer.key \
-  linkerd/linkerd-control-plane --kube-context=ctx-2
+  --kube-context="${CLUSTER2_CTX}"
 ```
 
 <br>
 
-### <div id='4.3'> 4.3. Linkerd-viz 설치
-linkerd-viz Dashboard 를 설치한다.
+### <span id='3.4'>3.4. linkerd-multicluster 설치
+`linkerd-multicluster`를 설치한다.
 ```bash
-## cluster1(ctx-1)에 linkerd-viz 설치
-$ helm install linkerd-viz -n linkerd-viz --create-namespace linkerd/linkerd-viz --kube-context=ctx-1
+# cluster1에 linkerd-multicluster 설치
+$ helm install linkerd-multicluster linkerd/linkerd-multicluster -n linkerd-multicluster --create-namespace \
+--kube-context="${CLUSTER1_CTX}"
 
-## cluster2(ctx-2)에 linkerd-viz 설치
-$ helm install linkerd-viz -n linkerd-viz --create-namespace linkerd/linkerd-viz --kube-context=ctx-2
+# cluster2에 linkerd-multicluster 설치
+$ helm install linkerd-multicluster linkerd/linkerd-multicluster -n linkerd-multicluster --create-namespace \
+--kube-context="${CLUSTER2_CTX}"
+```
+<br>
+
+배포 후 각 클러스터 내 `linkerd-gateway` 서비스의 EXTERNAL-IP가 할당되었는지 확인한다.
+```bash
+# cluster1의 linkerd-gateway EXTERNAL-IP 할당 확인
+$ kubectl get svc linkerd-gateway -n linkerd-multicluster --context="${CLUSTER1_CTX}"
+NAME              TYPE           CLUSTER-IP     EXTERNAL-IP            PORT(S)                         AGE
+linkerd-gateway   LoadBalancer   10.233.17.96   192.xx.xx.xx (확인)    4143:31134/TCP,4191:32460/TCP   6m
+
+# cluster2의 linkerd-gateway EXTERNAL-IP 할당 확인
+$ kubectl get svc linkerd-gateway -n linkerd-multicluster --context="${CLUSTER2_CTX}"
+NAME              TYPE           CLUSTER-IP    EXTERNAL-IP           PORT(S)                         AGE
+linkerd-gateway   LoadBalancer   10.233.7.15   172.xx.xx.xx (확인)   4143:31114/TCP,4191:31573/TCP   6m
 ```
 
 <br>
 
-### <div id='4.4'> 4.4. Linkerd-viz Dashboard 접속
-Linkerd-viz Dashboard 접속을 위해 Ingress를 생성한다.
+#### 클러스터 cluster1, cluster2가 서로 연결되도록 link 설정
+Linkerd 멀티 클러스터 통신은 클러스터 간 서비스 정보를 <b>'미러링'</b>하는 방식으로 작동한다. 클러스터 간 link 설정을 통해 해당 클러스터의 credentials 및 서비스 미러 구성 요소들을
+상대 클러스터에 구성한다.
 ```bash
-## 디렉토리 생성
-$ mkdir -p $HOME/linkerd/yaml
-$ cd $HOME/linkerd/yaml
+# cluster1의 credentials 추출 후 cluster2에 리소스 생성
+linkerd multicluster link --context="${CLUSTER1_CTX}" --cluster-name "${CLUSTER1_NAME}" \
+| kubectl --context="${CLUSTER2_CTX}" apply -f -
 
-$ vi linkerd-viz-ingress.yaml
-```
-
-```yaml
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: web-ingress-auth
-  namespace: linkerd-viz
-data:
-  auth: YWRtaW46JGFwcjEkbjdDdTZnSGwkRTQ3b2dmN0NPOE5SWWpFakJPa1dNLgoK
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: web-ingress
-  namespace: linkerd-viz
-  annotations:
-    nginx.ingress.kubernetes.io/upstream-vhost: $service_name.$namespace.svc.cluster.local:8084
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header Origin "";
-      proxy_hide_header l5d-remote-ip;
-      proxy_hide_header l5d-server-id;
-    nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/auth-secret: web-ingress-auth
-    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web
-            port:
-              number: 8084
+# cluster2의 credentials 추출 후 cluster1에 리소스 생성
+linkerd multicluster link --context="${CLUSTER2_CTX}" --cluster-name "${CLUSTER2_NAME}" \
+| kubectl --context="${CLUSTER1_CTX}" apply -f -
 ```
 
 ```bash
-## cluster1(ctx-1)에 ingress 생성
-$ kubectl apply -f linkerd-viz-ingress.yaml --context=ctx-1
+# 생성되는 리소스 목록
+secret/cluster-credentials-cluster1 created (linkerd)
+secret/cluster-credentials-cluster1 created (linkerd-multicluster)
+link.multicluster.linkerd.io/cluster1 created
+clusterrole.rbac.authorization.k8s.io/linkerd-service-mirror-access-local-resources-cluster1 created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-service-mirror-access-local-resources-cluster1 created
+role.rbac.authorization.k8s.io/linkerd-service-mirror-read-remote-creds-cluster1 created
+rolebinding.rbac.authorization.k8s.io/linkerd-service-mirror-read-remote-creds-cluster1 created
+serviceaccount/linkerd-service-mirror-cluster1 created
+deployment.apps/linkerd-service-mirror-cluster1 created
+service/probe-gateway-cluster1 created
+```
+<br>
 
-## cluster2(ctx-2)에 ingress 생성
-$ kubectl apply -f linkerd-viz-ingress.yaml --context=ctx-2
+#### linkerd-multicluster 리소스 배포 현황
+```bash
+# cluster1의 linkerd-multicluster 리소스 배포 현황 확인 
+$ kubectl get all -n linkerd-multicluster --context="${CLUSTER1_CTX}"
+NAME                                                   READY   STATUS    RESTARTS   AGE
+pod/linkerd-gateway-847b97dd4c-djmx2                   2/2     Running   0          12m
+pod/linkerd-service-mirror-cluster2-846b6cbc66-7kkql   2/2     Running   0          51s
+
+NAME                             TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                         AGE
+service/linkerd-gateway          LoadBalancer   10.233.17.96   192.xx.xx.xx   4143:31134/TCP,4191:32460/TCP   12m
+service/probe-gateway-cluster2   ClusterIP      10.233.28.44   <none>         4191/TCP                        51s
+
+NAME                                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/linkerd-gateway                   1/1     1            1           12m
+deployment.apps/linkerd-service-mirror-cluster2   1/1     1            1           51s
+
+NAME                                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/linkerd-gateway-847b97dd4c                   1         1         1       12m
+replicaset.apps/linkerd-service-mirror-cluster2-846b6cbc66   1         1         1       51s
+```
+```bash
+# cluster2의 linkerd-multicluster 리소스 배포 현황 확인  
+$ kubectl get all -n linkerd-multicluster --context="${CLUSTER2_CTX}"
+NAME                                                   READY   STATUS    RESTARTS   AGE
+pod/linkerd-gateway-847b97dd4c-m5zw7                   2/2     Running   0          12m
+pod/linkerd-service-mirror-cluster1-84cf9df486-hpnhc   2/2     Running   0          4m39s
+
+NAME                             TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)                         AGE
+service/linkerd-gateway          LoadBalancer   10.233.7.15   172.xx.xx.xx   4143:31114/TCP,4191:31573/TCP   12m
+service/probe-gateway-cluster1   ClusterIP      10.233.9.15   <none>         4191/TCP                        4m40s
+
+NAME                                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/linkerd-gateway                   1/1     1            1           12m
+deployment.apps/linkerd-service-mirror-cluster1   1/1     1            1           4m40s
+
+NAME                                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/linkerd-gateway-847b97dd4c                   1         1         1       12m
+replicaset.apps/linkerd-service-mirror-cluster1-84cf9df486   1         1         1       4m40s
+```
+<br>
+
+### <span id='3.5'>3.5. iptable 정책 추가
+MetalLB를 통해 할당된 서비스 `linkerd-gateway`의 EXTERNAL-IP는 각 클러스터 노드의 네트워크 서브넷 대역 Private IP로, 독립적인 두 클러스터 간 서비스 통신이 가능하기 위해서는 iptable 정책 추가 작업이 필요하다.
+
+```bash
+# cluster1의 linkerd-gateway EXTERNAL-IP 확인 
+$ kubectl get svc linkerd-gateway -n linkerd-multicluster --context="${CLUSTER1_CTX}"
+NAME              TYPE           CLUSTER-IP     EXTERNAL-IP           PORT(S)                         AGE
+linkerd-gateway   LoadBalancer   10.233.17.96   192.xx.xx.xx (확인)   4143:31134/TCP,4191:32460/TCP   16m
+
+# cluster2의 linkerd-gateway EXTERNAL-IP 확인 
+$ kubectl get svc linkerd-gateway -n linkerd-multicluster --context="${CLUSTER2_CTX}"
+NAME              TYPE           CLUSTER-IP    EXTERNAL-IP          PORT(S)                         AGE
+linkerd-gateway   LoadBalancer   10.233.7.15   172.xx.xx.xx (확인)  4143:31114/TCP,4191:31573/TCP   16m
+```
+
+#### 인터페이스 생성 및 플로팅 IP 할당
+아래 가이드를 참고하여 각 클러스터의 `linkerd-gateway` 의 EXTERNAL-IP를 신규 인터페이스로 생성하고 플로팅 IP와 연결한다.
+> [[쿠버네티스 서비스 External IP 설정]](../install-guide/standalone/cp-cluster-install-single.md#2.1.6)
+
+<br>
+
+#### iptable 정책 추가
+각 클러스터의 전체 노드에 상대 클러스터의 `linkerd-gateway` EXTERNAL-IP가 연결한 플로팅 IP로 변경되어 통신될 수 있도록 **PREROUTING** 설정을 진행한다.
+```bash
+# * cluster1 전체 노드에서 진행
+## cluster2의 인터페이스 PREROUTING 설정 추가
+$ sudo iptables -t nat -I PREROUTING -d {CLUSTER2_LINKERD_GATEWAY_EXTERNAL_PRIVATE_IP} -j DNAT --to-destination {CLUSTER2_EXTERNAL_PUBLIC_IP}
+
+## PREROUTING 설정 확인
+$ sudo iptables -nL PREROUTING -t nat
+Chain PREROUTING (policy ACCEPT)
+target     prot     opt                  source               destination
+DNAT       all  --  0.0.0.0/0            172.xx.xx.xx         to:103.xxx.xxx.xxx
+```
+
+```bash
+# * cluster2 전체 노드에서 진행
+## cluster1의 인터페이스 PREROUTING 설정 추가
+$ sudo iptables -t nat -I PREROUTING -d {CLUSTER1_LINKERD_GATEWAY_EXTERNAL_PRIVATE_IP} -j DNAT --to-destination {CLUSTER1_EXTERNAL_PUBLIC_IP}
+
+## PREROUTING 설정 확인
+$ sudo iptables -nL PREROUTING -t nat
+Chain PREROUTING (policy ACCEPT)
+target     prot     opt                  source               destination
+DNAT       all  --  0.0.0.0/0            192.xx.xx.xx         to:180.xxx.xxx.xxx
 ```
 
 <br>
 
-ingress-nginx-controller 서비스의 NodePort를 통해 linkerd viz dashboard 에 접속한다.
-ex) http://{node-ip}:32699
+#### 멀티 클러스터 연결 상태 확인
+각 클러스터에서 상대 클러스터의 연결 상태를 확인한다.
 ```bash
-$ kubectl get svc -n ingress-nginx
-NAME                                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-ingress-nginx-controller             NodePort    10.233.37.246   <none>        80:32699/TCP,443:30590/TCP   19d
-ingress-nginx-controller-admission   ClusterIP   10.233.28.54    <none>        443/TCP                      19d
-```
-
-<br>
-
-기본 로그인 정보 (`id: admin`, `password: admin`)
-
-![image 001]
-
-![image 002]
-
-<br>
-
-## <div id='5'> 5. Linkerd Multi Cluster 구성
-
-### <div id='5.1'> 5.1. Linkerd-multicluster 설치
-Helm을 통해 Linkerd-multicluster를 설치한다.
-```bash
-## cluster1(ctx-1)에 linkerd-multicluster 설치
-$ helm install linkerd-multicluster -n linkerd-multicluster --create-namespace linkerd/linkerd-multicluster --kube-context=ctx-1
-
-## cluster2(ctx-2)에 linkerd-multicluster 설치
-$ helm install linkerd-multicluster -n linkerd-multicluster --create-namespace linkerd/linkerd-multicluster --kube-context=ctx-2
-```
-
-<br>
-
-자격 증명을 위한 Secret 및 미러 컨트롤러를 생성한다.
-```bash
-## cluster1(ctx-1) 자격증명 추출 후 cluster2(ctx-2)에 생성
-$ linkerd multicluster link --gateway-addresses {CLUSTER2_EXTERNAL_PUBLIC_IP} --context=ctx-1  --cluster-name cluster1  |  kubectl --context=ctx-2 apply -f -
-
-## cluster2(ctx-2) 자격증명 추출 후 cluster1(ctx-1)에 생성
-$ linkerd multicluster link --gateway-addresses {CLUSTER1_EXTERNAL_PUBLIC_IP} --context=ctx-2  --cluster-name cluster2  |  kubectl --context=ctx-1 apply -f -
-```
-
-```bash
-## 생성되는 리소스 목록
-secret/cluster-credentials-cluster2 created
-link.multicluster.linkerd.io/cluster2 created
-clusterrole.rbac.authorization.k8s.io/linkerd-service-mirror-access-local-resources-cluster2 created
-clusterrolebinding.rbac.authorization.k8s.io/linkerd-service-mirror-access-local-resources-cluster2 created
-role.rbac.authorization.k8s.io/linkerd-service-mirror-read-remote-creds-cluster2 created
-rolebinding.rbac.authorization.k8s.io/linkerd-service-mirror-read-remote-creds-cluster2 created
-serviceaccount/linkerd-service-mirror-cluster2 created
-deployment.apps/linkerd-service-mirror-cluster2 created
-service/probe-gateway-cluster2 created
-```
-
-<br>
-
-Multi Cluster 통신을 위한 Gateway 서비스에 External IP 할당, 인터페이스 추가, iptable 정책을 추가한다.
-
-```bash
-## cluster1 linkerd-gateway external ip 정보 확인
-$ kubectl get svc linkerd-gateway -n linkerd-multicluster --context=ctx-1
-
-## cluster2 linkerd-gateway external ip 정보 확인
-$ kubectl get svc linkerd-gateway -n linkerd-multicluster --context=ctx-2
-```
-
-<br>
-
-아래 가이드를 참고하여 MetalLB에 할당한 IP 대역으로 신규 인터페이스를 생성하여 진행한다.
-
-> [쿠버네티스 서비스 External IP 설정](https://github.com/K-PaaS/container-platform/blob/branch/1.5.x_origin/install-guide/standalone/cp-cluster-install-single.md#2.1.6)
-
-<br>
-
-```bash
-## cluster1 linkerd-gateway external ip 변경
-$ kubectl patch svc linkerd-gateway -p '{"spec":{"loadBalancerIP":"{CLUSTER1_EXTERNAL_PRIVATE_IP}"}}' -n linkerd-multicluster --context=ctx-1
-
-## cluster2 linkerd-gateway external ip 변경
-$ kubectl patch svc linkerd-gateway -p '{"spec":{"loadBalancerIP":"{CLUSTER2_EXTERNAL_PRIVATE_IP}"}}' -n linkerd-multicluster --context=ctx-2
-```
-
-<br>
-
-```bash
-## cluster1 전체 노드에서 실행
-## cluster2의 추가 인터페이스 IP 정보 입력
-$ sudo iptables -t nat -I PREROUTING -d {CLUSTER2_EXTERNAL_PRIVATE_IP} -j DNAT --to-destination {CLUSTER2_EXTERNAL_PUBLIC_IP}
-
-## cluster2 전체 노드에서 실행
-## cluster1의 추가 인터페이스 IP 정보 입력
-$ sudo iptables -t nat -I PREROUTING -d {CLUSTER1_EXTERNAL_PRIVATE_IP} -j DNAT --to-destination {CLUSTER1_EXTERNAL_PUBLIC_IP}
-```
-
-<br>
-
-Multi Cluster 연결 상태를 확인한다.
-```bash
-## ctx-1 에서 ctx-1 ↔ ctx2 연결상태 확인
-$ linkerd multicluster check --context=ctx-1
+# cluster1 -> cluster2 연결 상태 확인
+$ linkerd multicluster check --context="${CLUSTER1_CTX}"
 linkerd-multicluster
 --------------------
 √ Link CRD exists
@@ -446,9 +450,10 @@ linkerd-multicluster
 √ multicluster extension proxies and cli versions match
 
 Status check results are √
-
-## ctx-2 에서 ctx-1 ↔ ctx2 연결상태 확인
-$ linkerd multicluster check --context=ctx-2
+```
+```bash
+# cluster2 -> cluster1 연결 상태 확인
+$ linkerd multicluster check --context="${CLUSTER2_CTX}"
 linkerd-multicluster
 --------------------
 √ Link CRD exists
@@ -470,183 +475,124 @@ linkerd-multicluster
 
 Status check results are √
 ```
-
 <br>
 
-### <div id='5.2'> 5.2. Linkerd-smi 설치
-트래픽 분할을 위한 CRD `TrafficSplit`를 사용하기 위해선 Linkerd-smi extenstions 설치가 필요하다.
-
-> [[Getting started with Linkerd SMI extension]](https://linkerd.io/2.13/tasks/linkerd-smi/)
-
-<br>
+### <span id='3.6'>3.6. linkerd-smi 설치
+트래픽 분할을 위한 Linkerd CRD `TrafficSplit`를 사용하기 위해 `linkerd-smi` extenstion 설치한다.<br>
 
 ```bash
-## linkerd-smi extension 레파지토리 등록
+# linkerd-smi extension repo 등록
 $ helm repo add l5d-smi https://linkerd.github.io/linkerd-smi
 
 $ helm repo list
 NAME    URL
 linkerd https://helm.linkerd.io/stable
-l5d-smi https://linkerd.github.io/linkerd-smi
+l5d-smi https://linkerd.github.io/linkerd-smi (등록 확인)
 
-## cluster1(ctx-1)에 linkerd-smi 설치
-$ helm install linkerd-smi l5d-smi/linkerd-smi -n linkerd-smi --create-namespace --kube-context=ctx-1
+# cluster1에 linkerd-smi 설치
+helm install linkerd-smi l5d-smi/linkerd-smi -n linkerd-smi --create-namespace \
+--kube-context="${CLUSTER1_CTX}"
 
-## cluster1(ctx-2)에 linkerd-smi 설치
-$ helm install linkerd-smi l5d-smi/linkerd-smi -n linkerd-smi --create-namespace --kube-context=ctx-2
+# cluster2에 linkerd-smi 설치
+helm install linkerd-smi l5d-smi/linkerd-smi -n linkerd-smi --create-namespace \
+--kube-context="${CLUSTER2_CTX}"
 ```
 
 <br>
 
+## <span id='4'>4. 샘플 애플리케이션 배포
+클러스터 cluster1, cluster2에 멀티 클러스터 통신 샘플 애플리케이션 배포를 진행한다.
 
-## <div id='6'> 6. Sample App 배포 
-클러스터 `cluster1`, `cluster2`에 멀티 클러스터 통신 확인을 위한 샘플 앱을 배포한다.
+#### 애플리케이션 배포 위치
+| 애플리케이션| Cluster1 | Cluster2 | 정보 |
+| :---: |:---: | :---: | :---: |  
+| helloworld-v1 | :heavy_check_mark: | | 해당 버전<b>(v1)</b>과 호스트 명을 반환 |
+| helloworld-v2 |  | :heavy_check_mark: | 해당 버전<b>(v2)</b>과 호스트 명을 반환 |
+| sleep |  | :heavy_check_mark: | 다른 서비스를 호출하기 위한 요청 소스로 사용|
 
-![image 003]
 
-<br>
-
-### `cluster1`에 HelloWorld(v1) APP 배포
 ```bash
-## cluster1(ctx-1)에 helloworld(v1) deployment-svc 생성
-## mirror.linkerd.io/exported: "true" > 미러링을 통한 서비스 내보내기
-## linkerd.io/inject: enabled > pod에 linkerd-proxy 주입
-cat << EOF | kubectl apply --context=ctx-1 -f -
-apiVersion: v1
-kind: Service
-metadata:
-  name: helloworld
-  labels:
-    app: helloworld
-    service: helloworld
-    mirror.linkerd.io/exported: "true"
-spec:
-  ports:
-  - port: 5000
-    name: http
-  selector:
-    app: helloworld
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: helloworld-v1
-  labels:
-    app: helloworld
-    version: v1
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: helloworld
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: helloworld
-        version: v1
-      annotations:
-        linkerd.io/inject: enabled
-    spec:
-      containers:
-      - name: helloworld
-        image: docker.io/istio/examples-helloworld-v1
-        resources:
-          requests:
-            cpu: "100m"
-        imagePullPolicy: IfNotPresent #Always
-        ports:
-        - containerPort: 5000
-EOF
+# 디렉토리 생성 
+$ mkdir -p $HOME/linkerd/sample
+$ cd $HOME/linkerd/sample
+
+# helloworld 서비스 배포 스크립트 다운로드
+$ wget https://raw.githubusercontent.com/istio/istio/master/samples/helloworld/gen-helloworld.sh
+$ chmod +x gen-helloworld.sh
+
+# sleep 서비스 배포 yaml 다운로드
+$ wget https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml
+
+# cluster1에 sample 네임스페이스 생성 및 linkerd-proxy 주입 어노테이션 추가
+$ kubectl create namespace sample --context="${CLUSTER1_CTX}"
+$ kubectl annotate namespace sample "linkerd.io/inject=enabled" --context="${CLUSTER1_CTX}"
+
+# cluster2에 sample 네임스페이스 생성 및 linkerd-proxy 주입 어노테이션 추가
+$ kubectl create namespace sample --context="${CLUSTER2_CTX}"
+$ kubectl annotate namespace sample "linkerd.io/inject=enabled" --context="${CLUSTER2_CTX}"
 ```
 
 <br>
 
-`cluster1` 내 HelloWorld(v1) 배포를 확인한다.
+### <span id='4.1'>4.1. 클러스터 cluster1에 샘플 애플리케이션 배포
 ```bash
-$ kubectl get all -l app=helloworld --context=ctx-1
-NAME                                READY   STATUS    RESTARTS   AGE
-pod/helloworld-v1-994b78d57-vp86w   2/2     Running   0          26s
-
-NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
-service/helloworld   ClusterIP   10.233.11.77   <none>        5000/TCP   26s
-
-NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/helloworld-v1   1/1     1            1           26s
-
-NAME                                      DESIRED   CURRENT   READY   AGE
-replicaset.apps/helloworld-v1-994b78d57   1         1         1       26
+# cluster1에 helloworld-v1 애플리케이션 배포 
+$ ./gen-helloworld.sh --version v1 --includeService true --includeDeployment true  | \
+    kubectl --context="${CLUSTER1_CTX}" -n sample apply -f -
+```
+```bash
+# helloworld-v1 서비스 리소스 생성
+service/helloworld created
+deployment.apps/helloworld-v1 created
 ```
 
 <br>
 
-`cluster2` 내 서비스 미러링을 통한 cluster1 helloworld service 생성을 확인한다.
+#### 클러스터 cluster2에 서비스 미러링
+클러스터 cluster1에 생성된 서비스 `helloworld` 를 클러스터 cluster2로 미러링한다.
+> `mirror.linkerd.io/exported=true` 라벨 추가
 ```bash
-$ kubectl get all -l app=helloworld --context=ctx-2
-NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-service/helloworld-cluster1   ClusterIP   10.233.20.139   <none>        5000/TCP   57s
+$ kubectl label svc helloworld mirror.linkerd.io/exported=true --context="${CLUSTER1_CTX}" -n sample
 ```
 
 <br>
 
-### `cluster2`에 HelloWorld(v2) 배포
+클러스터 cluster2에 클러스터 cluster1 서비스 `helloworld`가 미러링되었는지 확인한다.
 ```bash
-## cluster2(ctx-2)에 helloworld(v2) deployment-svc 생성
-## linkerd.io/inject: enabled > pod에 linkerd-proxy 주입
-cat << EOF | kubectl apply --context=ctx-2 -f -
-apiVersion: v1
-kind: Service
-metadata:
-  name: helloworld
-  labels:
-    app: helloworld
-    service: helloworld
-spec:
-  ports:
-  - port: 5000
-    name: http
-  selector:
-    app: helloworld
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: helloworld-v2
-  labels:
-    app: helloworld
-    version: v2
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: helloworld
-      version: v2
-  template:
-    metadata:
-      labels:
-        app: helloworld
-        version: v2
-      annotations:
-        linkerd.io/inject: enabled
-    spec:
-      containers:
-      - name: helloworld
-        image: docker.io/istio/examples-helloworld-v2
-        resources:
-          requests:
-            cpu: "100m"
-        imagePullPolicy: IfNotPresent #Always
-        ports:
-        - containerPort: 5000
-EOF
+# cluster2에 `helloworld-{cluster1 명}`으로 서비스 생성되었는지 확인
+$ kubectl get svc --context="${CLUSTER2_CTX}" -n sample
+NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+helloworld-cluster1   ClusterIP   10.254.83.67   <none>        5000/TCP   3m11s
 ```
 
 <br>
 
-### `cluster2`에 `TrafficSplit` 배포
+### <span id='4.2'>4.2. 클러스터 cluster2에 샘플 애플리케이션 배포
 ```bash
-## 서비스 helloworld-cluster1(cluster1) weight 50, 서비스 helloworld(cluster2) weight 50으로 트래픽 분할
-cat << EOF | kubectl apply --context=ctx-2 -f -
+# cluster2에 helloworld-v2 애플리케이션 배포 
+$ ./gen-helloworld.sh --version v2 --includeService true --includeDeployment true  | \
+    kubectl --context="${CLUSTER2_CTX}" -n sample apply -f -
+
+# cluster2에 sleep 애플리케이션 배포
+$ kubectl --context="${CLUSTER2_CTX}" -n sample apply -f sleep.yaml
+```
+```bash
+# helloworld-v2 서비스 리소스 생성
+service/helloworld created
+deployment.apps/helloworld-v2 created
+
+# sleep 서비스 리소스 생성
+serviceaccount/sleep created
+service/sleep created
+deployment.apps/sleep created
+```
+<br>
+
+#### `TrafficSplit` 배포
+서비스 간의 트래픽 비율을 지정할 수 있는 리소스 `TrafficSplit`을 배포한다. <br>
+서비스 helloworld로 들어오는 트래픽의 50%를 `helloworld-cluster1`로, 50%를 `helloworld`로 라우팅하도록 설정한다.
+```yaml
+cat << EOF | kubectl apply --context="${CLUSTER2_CTX}" -n sample -f -
 apiVersion: split.smi-spec.io/v1alpha1
 kind: TrafficSplit
 metadata:
@@ -663,129 +609,44 @@ EOF
 
 <br>
 
-### `cluster2`에 Sleep APP 배포
+### <span id='4.3'>4.3. 멀티 클러스터 통신 테스트
+<b>TrafficSplit</b>을 통해 cluster1의 `helloworld-v1`, cluster2의 `helloworld-v2`로 트래픽 분할되어 통신되는 것을 확인할 수 있다.
 ```bash
-## linkerd.io/inject: enabled > pod에 linkerd-proxy 주입
-cat << EOF | kubectl apply --context=ctx-2 -f -
-apiVersion: v1
-kind: Service
-metadata:
-  name: sleep
-  labels:
-    app: sleep
-spec:
-  ports:
-  - port: 80
-    name: http
-  selector:
-    app: sleep
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sleep
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: sleep
-  template:
-    metadata:
-      labels:
-        app: sleep
-      annotations:
-        linkerd.io/inject: enabled
-    spec:
-      containers:
-      - name: sleep
-        image: curlimages/curl
-        command: ["/bin/sleep", "3650d"]
-        imagePullPolicy: IfNotPresent
-EOF
+# cluster1의 helloword-v1 pod 조회
+$ kubectl get pods -l app=helloworld --context="${CLUSTER1_CTX}" -n sample
+NAME                             READY   STATUS    RESTARTS   AGE
+helloworld-v1-665db7d464-lcl75   2/2     Running   0          3m29s
+
+# cluster2의 helloworld-v2 pod 조회
+$ kubectl get pods -l app=helloworld --context="${CLUSTER2_CTX}" -n sample
+NAME                            READY   STATUS    RESTARTS   AGE
+helloworld-v2-f58d4c8cb-mzpsb   2/2     Running   0          3m3s
+```
+
+```bash
+# cluster2의 sleep pod에 접속 
+$ kubectl exec -it -n sample --context="${CLUSTER2_CTX}" \
+"$(kubectl get pod -n sample --context="${CLUSTER2_CTX}" -l app=sleep -o jsonpath='{.items[0].metadata.name}')" -c sleep sh
+
+# helloworld 서비스 curl 통신
+~ $  curl helloworld:5000/hello
+Hello version: v1, instance: helloworld-v1-665db7d464-lcl75 (버전 v1, cluster1의 helloword-v1 pod명 출력 확인)
+~ $  curl helloworld:5000/hello
+Hello version: v2, instance: helloworld-v2-f58d4c8cb-mzpsb  (버전 v2, cluster2의 helloword-v2 pod명 출력 확인)
+~ $  curl helloworld:5000/hello
+Hello version: v1, instance: helloworld-v1-665db7d464-lcl75
+~ $  curl helloworld:5000/hello
+Hello version: v1, instance: helloworld-v1-665db7d464-lcl75
+~ $  curl helloworld:5000/hello
+Hello version: v2, instance: helloworld-v2-f58d4c8cb-mzpsb
+~ $  curl helloworld:5000/hello
+Hello version: v1, instance: helloworld-v1-665db7d464-lcl75
+~ $  curl helloworld:5000/hello
+Hello version: v2, instance: helloworld-v2-f58d4c8cb-mzpsb
+~ $  curl helloworld:5000/hello
+Hello version: v2, instance: helloworld-v2-f58d4c8cb-mzpsb
 ```
 
 <br>
 
-`cluster2` 내 HelloWorld(v2), TrafficSplit, Sleep 배포를 확인한다.
-```bash
-$ kubectl get all -l app=helloworld  --context=ctx-2
-NAME                                READY   STATUS    RESTARTS   AGE
-pod/helloworld-v2-8948bdcb5-z4pz6   2/2     Running   0          108s
-
-NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-service/helloworld            ClusterIP   10.233.3.145    <none>        5000/TCP   108s
-service/helloworld-cluster1   ClusterIP   10.233.20.139   <none>        5000/TCP   18m
-
-NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/helloworld-v2   1/1     1            1           108s
-
-NAME                                      DESIRED   CURRENT   READY   AGE
-replicaset.apps/helloworld-v2-8948bdcb5   1         1         1       108s
-```
-
-```bash
-$ kubectl get trafficsplits.split.smi-spec.io  --context=ctx-2
-NAME         SERVICE
-helloworld   helloworld
-```
-
-```bash
-$ kubectl get all -l app=sleep  --context=ctx-2
-NAME                         READY   STATUS    RESTARTS   AGE
-pod/sleep-7b88956949-mtrpf   2/2     Running   0          58s
-
-NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
-service/sleep   ClusterIP   10.233.27.45   <none>        80/TCP    58s
-
-NAME                               DESIRED   CURRENT   READY   AGE
-replicaset.apps/sleep-7b88956949   1         1         1       58s
-```
-
-<br>
-
-### Sleep -> Helloworld 통신 테스트 
-`TrafficSplit`을 통해 `cluster1`의 helloworld-v1, `cluster2`의 helloworld-v2로 트래픽 분할되어 통신되는 것을 확인할 수 있다.
-```bash
-$ kubectl exec --context=ctx-2 "$(kubectl get pod --context=ctx-2 -l app=sleep -o jsonpath='{.items[0].metadata.name}')" \
--c sleep -- curl -sS helloworld:5000/hello
-Hello version: v1, instance: helloworld-v1-994b78d57-p6dvp
-
-## pod 접속해서 curl 통신
-~ $ curl helloworld:5000/hello
-Hello version: v1, instance: helloworld-v1-994b78d57-vp86w
-~ $ curl helloworld:5000/hello
-Hello version: v2, instance: helloworld-v2-8948bdcb5-z4pz6
-~ $ curl helloworld:5000/hello
-Hello version: v1, instance: helloworld-v1-994b78d57-vp86w
-~ $ curl helloworld:5000/hello
-Hello version: v1, instance: helloworld-v1-994b78d57-vp86w
-~ $ curl helloworld:5000/hello
-Hello version: v1, instance: helloworld-v1-994b78d57-vp86w
-~ $ curl helloworld:5000/hello
-Hello version: v2, instance: helloworld-v2-8948bdcb5-z4pz6
-```
-
-<br>
-
-Linkerd viz stat service 상태를 확인한다.
-```bash
-$ linkerd viz stat services
-NAME                  MESHED   SUCCESS      RPS   LATENCY_P50   LATENCY_P95   LATENCY_P99   TCP_CONN
-helloworld                 -   100.00%   0.1rps           0ms           0ms           0ms          0
-helloworld-cluster1        -   100.00%   0.1rps           0ms           0ms           0ms          0
-```
-
-<br>
-
-Linkerd Dashboard Service 상태를 확인한다.
-
-![image 004]
-
-<br>
-
-[image 001]:images/kpaas-cp-linkerd-1.png
-[image 002]:images/kpaas-cp-linkerd-2.png
-[image 003]:images/kpaas-cp-linkerd-3.png
-[image 004]:images/kpaas-cp-linkerd-4.png
-
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 Linkerd 멀티 클러스터 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md)  > K-PaaS 컨테이너 플랫폼 Linkerd 멀티 클러스터 설치 가이드
