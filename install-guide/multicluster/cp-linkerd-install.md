@@ -393,7 +393,7 @@ linkerd-gateway   LoadBalancer   10.233.7.15   172.xx.xx.xx (확인)  4143:31114
 
 #### 인터페이스 생성 및 플로팅 IP 할당
 아래 가이드를 참고하여 각 클러스터의 `linkerd-gateway` 의 EXTERNAL-IP를 신규 인터페이스로 생성하고 플로팅 IP와 연결한다.
-> [[쿠버네티스 서비스 External IP 설정]](../install-guide/standalone/cp-cluster-install-single.md#2.1.6)
+> [[쿠버네티스 서비스 External IP 설정]](/install-guide/standalone/cp-cluster-install-single.md#2.1.6)
 
 <br>
 
