@@ -161,7 +161,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 |Helm|3.12.3|
 |Istio|1.19.0|
 |Podman|3.4.4|
-|Terraform|1.3.4|
+|OpenTofu|1.6.0|
 |NFS Common|-|
 |nfs-provisioner|4.0.2|
 |Rook Ceph|1.12.3|

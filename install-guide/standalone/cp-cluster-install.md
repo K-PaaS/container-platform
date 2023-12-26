@@ -74,7 +74,7 @@ Kubespray 설치에 필요한 주요 소프트웨어 및 패키지 Version 정�
 |Helm|v3.12.0|jinja2|3.1.2|
 |Istio|1.16.0|netaddr|0.8.0|
 |Podman|3.4.2|pbr|5.11.1|
-|Terraform|1.3.4|jmespath|1.0.1|
+|OpenTofu|1.6.0|jmespath|1.0.1|
 |NFS Common||ruamel.yaml|0.17.21|
 |Rook Ceph|1.10.3|ruamel.yaml.clib|0.2.7|
 |Kubeflow|1.7.0|MarkupSafe|2.1.2|

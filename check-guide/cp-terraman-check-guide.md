@@ -43,7 +43,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 ## <div id='3'> 3. SSH Key 설정
 #### 들어가기 전
-- **Host Cluster**: Terraform을 생성하는 데 사용되는 클러스터
+- **Host Cluster**: 컨테이너플랫폼 배포 방식을 통해 설치된 클러스터
 - **Sub Cluster**: Terraman을 통해 배포되는 클러스터
 ### <div id='3.1'>  3.1. SSH Key 생성
 ##### 3.1.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성
