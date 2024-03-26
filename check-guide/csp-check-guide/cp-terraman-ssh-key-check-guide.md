@@ -62,7 +62,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 ### <div id='3.1'>  3.1. SSH Key 생성
 #### <div id='3.1.1'> 3.1.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성
-- Cloud Platform에서 발급 받은 PEM Key를 포털 SSH Kyes 메뉴에서 Key 파일을 등록해준다.
+- Cloud Platform에서 발급 받은 PEM Key를 포털 SSH Kyes 메뉴에 등록해준다.
 <kbd>
   <img src="../images/IMG_3_1_1.png">
 </kbd>
