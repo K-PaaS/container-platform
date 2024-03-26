@@ -11,9 +11,6 @@
 3. [SSH Key 설정](#3)  
  3.1. [SSH Key 생성](#3.1)  
 　3.1.1. [Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성](#3.1.1)   
-　3.1.2. [생성된 공개키는 해당 IaaS에 keypair로 등록](#3.1.2)   
- 3.2 [SSH Key 구성](#3.2)  
- 3.3 [SSH Key 복사](#3.3)  
 4. [Template 생성](#4)  
  4.1. [Template 작성](#4.1)  
 　4.1.1. [OpenStack](#4.1.1)   
@@ -65,89 +62,12 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 ### <div id='3.1'>  3.1. SSH Key 생성
 #### <div id='3.1.1'> 3.1.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성
-- 변수 {TERRAMAN_MASTER_NODE_NAME}은 Container Platform Portal Cluster 등록시 Cluster Name과 동일해야한다. 즉, Cluster 등록할 때 Cluster Name과 SSH Key 생성할 때 이름이 동일해야한다.  
+- Cloud Platform에서 발급 받은 PEM Key를 포털 SSH Kyes 메뉴에서 Key 파일을 등록해준다.
 <kbd>
   <img src="../images/IMG_3_1_1.png">
 </kbd>
 
 <br>
-
-```bash
-$ ssh-keygen -t rsa -m PEM -f /home/ubuntu/.ssh/{TERRAMAN_MASTER_NODE_NAME}-key
-```
-*예시*
-- Master Node의 이름: terraman-master 
-- SSH Key의 이름: terraman-master-key
-```bash
-$ ssh-keygen -t rsa -m PEM -f /home/ubuntu/.ssh/terraman-master-key
-Generating public/private rsa key pair.
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
-Your identification has been saved in /home/ubuntu/.ssh/terraman-master-key
-Your public key has been saved in /home/ubuntu/.ssh/terraman-master-key.pub
-The key fingerprint is:
-SHA256:YLTGX5o4P9IRvQbsSCFnicqQQ5SN9PKXBwd2KuWWaIY ubuntu@bami-dev-terraman-1
-The key's randomart image is:
-+---[RSA 3072]----+
-|+=+ .==o         |
-|+oo.***+ .       |
-| E B *B.+ o      |
-|  B o++* * .     |
-|   . o+.S o      |
-|    . .+ o       |
-|      . +        |
-|       . .       |
-|                 |
-+----[SHA256]-----+
-```
-####  <div id='3.1.2'> 3.1.2 생성된 공개키는 해당 IaaS에 keypair로 등록
-- 공개키 복사
-```bash
-$ cat /home/ubuntu/.ssh/terraman-master-key.pub
-ssh-rsa AAAAB3NzaC1yc2EAAA......ADAQABAAABgQCRfg1qOsA12PRCVE2GFNrsMyF+wA5J3H4eKpwsYfYV5ldAZOuC/n7vGYLIr+ykDFEAAC83lAxq.....b7rjoSVXqkYnn06kzjpKDt0WPnMaoRgdY8ZHiSNWnQAgyMzEZO5jPH6sfW6n......FJaPo7vyEn10Uy9Drd5+HNwkj7eYLoIry8kAiMfnWcsYC7f30JpW6ODSe........83fUu1B1aA7GRZTIRL0b55+MJNUwMN/L8ES/n7j.......syNykOtnF9tM= ubuntu@terramantest-1
-```
-*예시*
-- IaaS Dashboard 접속 - Openstack
-- 공개 키 등록
-
-<kbd>
-  <img src="../images/IMG_3_1_2.png">
-</kbd>
-
-### <div id='3.2'> 3.2 SSH Key 구성
-- **id_rsa**, **id_rsa.pub**
-	- Host Cluster 구성 시 생성된 RSA Key
-- **{MASTER_NODE_NAME}-key**, **{MASTER_NODE_NAME}-key.pub**
-	- Sub Cluster 구성을 위해 생성된 RSA Key
-
-### <div id='3.3'>3.3 SSH Key 복사
-- SSH Key 목적
-	- Terraman 실행 중에 Host Cluster 및 Sub Cluster의 각 Master 노드에 액세스하기 위함이다.
-- 각 공개키를 Terraman이 실행되는 Terraman Pod로 복사한다.
-	- Host Cluster의 Master 키 이름은 *반드시 'master-key'* 로 복사 되어야 한다.
-```bash
-## Host Cluster Key
-$ kubectl cp /home/ubuntu/.ssh/id_rsa {TERRAMAN_PDO_NAME}:/home/1000/.ssh/master-key -n cp-portal
-## Sub Cluster Key
-$ kubectl cp /home/ubuntu/.ssh/{TERRAMAN_MASTER_NODE_NAME}-key {TERRAMAN_PDO_NAME}:/home/1000/.ssh/{TERRAMAN_MASTER_NODE_NAME}-key -n cp-portal
-```
-*예시* 
-```bash
-## Terraman Pod Name 조회
-$ kubectl get pods -n cp-portal
-NAME                                               READY   STATUS    RESTARTS     AGE
-cp-portal-api-deployment-6485fc78d9-48cdl          1/1     Running   0            9d
-cp-portal-common-api-deployment-58b57cd8fb-txtdn   1/1     Running   0            9d
-cp-portal-metric-api-deployment-757b98d55c-v4psb   1/1     Running   3 (9d ago)   9d
-cp-portal-terraman-deployment-689585bc94-pq4bt     1/1     Running   0            9d
-cp-portal-ui-deployment-74d744cff4-qh7g2           1/1     Running   0            9d
-
-## Host Cluster Key Name: id_rsa
-$ kubectl cp /home/ubuntu/.ssh/id_rsa cp-portal-terraman-deployment-689585bc94-pq4bt:/home/1000/.ssh/master-key -n cp-portal
-
-## Sub Cluster Key Name: terraman-master-key
-$ kubectl cp /home/ubuntu/.ssh/terraman-master-key cp-portal-terraman-deployment-689585bc94-pq4bt:/home/1000/.ssh/terraman-master-key -n cp-portal
-```
 
 ## <div id='4'> 4. Template 생성
 ### <div id='4.1'> 4.1 Template 작성

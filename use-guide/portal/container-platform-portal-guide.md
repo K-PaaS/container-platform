@@ -21,6 +21,7 @@
    * [5.1.2. Clusters](#5-1-2)
    * [5.1.3. Cloud Accounts](#5-1-3)
    * [5.1.4. Instance Code Template](#5-1-4)
+   * [5.1.5. SSH Keys](#5-1-5)
    * [5.2. Clusters 메뉴](#5-2)
    * [5.2.1. Overview](#5-2-1)
    * [5.2.2. Nodes](#5-2-2)
@@ -437,6 +438,41 @@ Instance Code Template은 IaC를 통해 자동화된 VM 배포를 수행하는 �
   ![IMG_1_4_5]
 
 <br>
+
+### <div id='5-1-5'/> 5.1.5. SSH Keys
+멀티클러스터 생성을 위한 SSH Key로 K-PaaS 컨테이너플랫폼을 통해 서브 클러스터 Instance에 접속할 수 있는 Key를 등록할 수 있다.
+#### <div id='5-1-5-1'/> 5.1.5.1. SSH Keys 목록 조회
+- SSH Keys 목록을 조회한다.
+  ![IMG_1_5_1]
+
+<br>
+
+#### <div id='5-1-5-2'/> 5.1.5.2. SSH Keys 상세 조회
+- SSH Keys 정보를 상세 조회한다.
+  ![IMG_1_5_2]
+
+<br>
+
+#### <div id='5-1-5-3'/> 5.1.5.3. SSH Keys 생성
+- SSH Keys를 생성한다.
+  ![IMG_1_5_3]
+
+<br>
+
+#### <div id='5-1-5-4'/> 5.1.5.4. SSH Keys 수정
+- SSH Keys를 수정한다.
+- 수정이 가능한 항목일 경우 항목 옆의 Edit 버튼을 클릭하여 값 수정이 가능하다.
+- 내용 변경 후 하단 수정 버튼을 클릭하면 SSH Key 정보가 변경된다.
+  ![IMG_1_5_4]
+
+<br>
+
+#### <div id='5-1-5-5'/> 5.1.5.5. SSH Keys 삭제
+- SSH Keys를 삭제한다.
+- 상세화면의 하단 삭제 버튼을 클릭하면 해당 SSH Keys가 삭제된다.
+  ![IMG_1_5_5]
+
+<br>  
 
 ## <div id='5-2'/> 5.2. Clusters 메뉴
 ### <div id='5-2-1'/> 5.2.1. Overview
@@ -989,6 +1025,11 @@ Instance Code Template은 IaC를 통해 자동화된 VM 배포를 수행하는 �
 [IMG_1_4_3]:../images/portal/IMG_1_4_3.png
 [IMG_1_4_4]:../images/portal/IMG_1_4_4.png
 [IMG_1_4_5]:../images/portal/IMG_1_4_5.png
+[IMG_1_5_1]:../images/portal/IMG_1_5_1.png
+[IMG_1_5_2]:../images/portal/IMG_1_5_2.png
+[IMG_1_5_3]:../images/portal/IMG_1_5_3.png
+[IMG_1_5_4]:../images/portal/IMG_1_5_4.png
+[IMG_1_5_5]:../images/portal/IMG_1_5_5.png
 [IMG_2_1_1]:../images/portal/IMG_2_1_1.png
 [IMG_2_1_2_1]:../images/portal/IMG_2_1_2_1.png
 [IMG_2_1_2_2]:../images/portal/IMG_2_1_2_2.png
