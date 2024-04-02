@@ -10,7 +10,7 @@
  2.1. [방화벽 정보](#2.1)
 3. [SSH Key 설정](#3)  
  3.1. [SSH Key 생성](#3.1)  
-　3.1.1. [Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성](#3.1.1)   
+　3.1.1. [Terraman을 통한 SubCluster 배포를 위한 SSH Key 등록](#3.1.1)  
 4. [Template 생성](#4)  
  4.1. [Template 작성](#4.1)  
 　4.1.1. [OpenStack](#4.1.1)   
@@ -57,12 +57,35 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 ## <div id='3'> 3. SSH Key 설정
 #### 들어가기 전
-- **Host Cluster**: OpenTofu를 생성하는 데 사용되는 클러스터
-- **Sub Cluster**: Terraman을 통해 배포되는 클러스터
+- **Host Cluster**: 컨테이너플랫폼의 Kubernetes 메인 클러스터
+- **Sub Cluster**: 컨테이너 플랫폼 포털을 통해 신규 배포되거나, 등록된 관리 클러스터
 
 ### <div id='3.1'>  3.1. SSH Key 생성
-#### <div id='3.1.1'> 3.1.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 생성
-- Cloud Platform에서 발급 받은 PEM Key를 포털 SSH Kyes 메뉴에 등록해준다.
+- SSH Key 등록 목적
+  + 컨테이너 플랫폼 포털을 통해 신규 배포되는 Instance VM에 액세스하여 Cluster 구성을 위함이다.
+
+#### <div id='3.1.1'> 3.1.1 Terraman을 통한 SubCluster 배포를 위한 SSH Key 등록
+##### <div id='3.1.1.1.'> 3.1.1.1. 기존 SSH Key 사용
+- Cloud Platform에서 발급 받은 개인키를 포털 SSH Kyes 메뉴에 등록해준다.
+
+<kbd>
+  <img src="../images/IMG_3_1_1.png">
+</kbd>
+
+<br>
+
+##### <div id='3.1.1.2.'> 3.1.1.2. SSH Key 신규 생성
+- 신규로 SSH Key를 발급할 경우 Cloud Platform에 공개키를 등록하고 컨테이너 플랫폼의 SSH Keys 메뉴에 개인키를 등록한다.
+
+예시) Cloud Platform(OpenStack) 공개키 등록
+
+<kbd>
+  <img src="../images/IMG_3_1_2.PNG">
+</kbd>
+
+<br>
+
+예시) Container Platform 개인키 등록
 <kbd>
   <img src="../images/IMG_3_1_1.png">
 </kbd>
@@ -517,13 +540,13 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 #### <div id='5.1.1'> 5.1.1 OpenStack
 - 입력시 OpenStack Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
 
-  |Cloud Accounts 입력 창|OpenStack Cloud 정보|  
-  |:------:|:------:|
-  |auth_url 필드|auth_url 값|
-  |password 필드|password 값|
-  |user_name 필드|user_name 값|
-  |project 필드|tenant_name 값|
-  |region 필드|region 값|
+  |Cloud Accounts 입력 창|OpenStack Cloud 정보|위치|
+  |:------:|:------:|:------:|
+  |auth_url 필드|auth_url 값||
+  |password 필드|password 값||
+  |user_name 필드|user_name 값||
+  |project 필드|tenant_name 값||
+  |region 필드|region 값||
 
 <kbd>
   <img src="../images/IMG_5_1_1_OpenStack.png">
@@ -532,11 +555,11 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 #### <div id='5.1.2'> 5.1.2 AWS
 - 입력시 AWS Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
 
-  |Cloud Accounts 입력 창|AWS Cloud 정보|  
-  |:------:|:------:|
-  |accessKey 필드|access_key 값|
-  |secretKey 필드|secret_key 값|
-  |region 필드|region 값|
+  |Cloud Accounts 입력 창|AWS Cloud 정보|위치|
+  |:------:|:------:|:------:|
+  |accessKey 필드|access_key 값||
+  |secretKey 필드|secret_key 값||
+  |region 필드|region 값||
 
 <kbd>
   <img src="../images/IMG_5_1_2.png">
@@ -545,13 +568,13 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 #### <div id='5.1.3'> 5.1.3 NHN
 - 입력시 NHN Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
 
-  |Cloud Accounts 입력 창|OpenStack Cloud 정보|  
-  |:------:|:------:|
-  |auth_url 필드|auth_url 값|
-  |password 필드|password 값|
-  |user_name 필드|user_name 값|
-  |project 필드|tenant_id 값|
-  |region 필드|region 값|
+  |Cloud Accounts 입력 창|OpenStack Cloud 정보|위치|  
+  |:------:|:------:|:------:|
+  |auth_url 필드|auth_url 값|Instance 서비스 창 > API 엔드포인트 설정 > 신원 서비스(identity)|  
+  |password 필드|password 값|계정 비밀번호|  
+  |user_name 필드|user_name 값|계정 아이디|  
+  |project 필드|tenant_id 값|Instance 서비스 창 > API 엔드포인트 설정 > 테넌트 ID|    
+  |region 필드|region 값|[리전 이름 가이드 참고](https://docs.nhncloud.com/ko/Storage/Object%20Storage/ko/s3-api-guide/#signature)| 
 
 <kbd>
   <img src="../images/IMG_5_1_3.png">
