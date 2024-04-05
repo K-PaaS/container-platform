@@ -68,7 +68,7 @@
 컨테이너 플랫폼 소스 컨트롤 배포를 위해 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 :bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
 + 컨테이너 플랫폼 소스 컨트롤 Deployment 파일 다운로드 :  
-  [cp-source-control-deployment-v1.5.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/rdHLcsrG9KnZjcd/download)
+  [cp-source-control-deployment-v1.5.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/N7AxwSdQt7HzNTn/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -76,13 +76,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/rdHLcsrG9KnZjcd/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/N7AxwSdQt7HzNTn/download
 
 $ ls ~/workspace/container-platform
-  cp-source-control-deployment-v1.5.0.tar.gz ...
+  cp-source-control-deployment-v1.5.1.tar.gz ...
   
 # Deployment 파일 압축 해제
-$ tar -xvf cp-source-control-deployment-v1.5.0.tar.gz
+$ tar -xvf cp-source-control-deployment-v1.5.1.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성
@@ -120,7 +120,7 @@ PROVIDER_TYPE="standalone"
 |**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
 |**PROVIDER_TYPE**|컨테이너 플랫폼 소스 컨트롤 제공 타입 입력|본 가이드는 단독 배포 형 설치 가이드로<br> **standalone** 값 입력 필요|
-
+|**IS_MULTI_CLUSTER**|멀티 클러스터 환경 여부|멀티 클러스터 환경에 배포할 경우 "Y" 입력|
 <br>
 
 :bulb: Keycloak 기본 배포 프로토콜은 **HTTP**이며 인증서를 통한 **HTTPS**가 설정된 경우<br>

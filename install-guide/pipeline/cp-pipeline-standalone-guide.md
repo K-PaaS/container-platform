@@ -95,7 +95,7 @@ data-cp-pipeline-postgresql-postgresql-0   Bound    pvc-f61096ac-5e2b-4105-9ed3-
 :bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
 
 + 컨테이너 플랫폼 파이프라인 Deployment 파일 다운로드 :  
-  [cp-pipeline-deployment-v1.5.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/dp98nSAt2MmzN58/download)
+  [cp-pipeline-deployment-v1.5.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/LstLf2EHojkPEnE/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -103,13 +103,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/dp98nSAt2MmzN58/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/LstLf2EHojkPEnE/download
 
 $ ls ~/workspace/container-platform
-  cp-pipeline-deployment-v1.5.0.tar.gz ...
+  cp-pipeline-deployment-v1.5.1.tar.gz ...
   
 # Deployment 파일 압축 해제
-$ tar -xvf cp-pipeline-deployment-v1.5.0.tar.gz
+$ tar -xvf cp-pipeline-deployment-v1.5.1.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성
@@ -150,6 +150,7 @@ PROVIDER_TYPE="standalone"
 |**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
 |**PROVIDER_TYPE**|컨테이너 플랫폼 파이프라인 제공 타입 입력|본 가이드는 단독 배포 형 설치 가이드로<br> **standalone** 값 입력 필요|
+|**IS_MULTI_CLUSTER**|멀티 클러스터 환경 여부|멀티 클러스터 환경에 배포할 경우 "Y" 입력|
 |**CF_API_URL**|K-PaaS의 API Domain 입력|**단독 배포 형은 입력할 필요 없음**|
 
 <br>
