@@ -136,7 +136,8 @@ K8S_MASTER_NODE_IP="{k8s master node public ip}"                 # Kubernetes ma
 K8S_STORAGECLASS="cp-storageclass"                               # Kubernetes StorageClass Name (e.g. cp-storageclass)
 HOST_DOMAIN="{host domain}"                                      # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
 PROVIDER_TYPE="{container platform pipeline provider type}"      # Container platform pipeline provider type (Please enter 'standalone' or 'service')
-CF_API_URL="https://{api-domain}"                                # e.g) https://api.10.0.0.120.nip.io, API Domain, PROVIDER_TYPE=service 인 경우 입력   
+IS_MULTI_CLUSTER="N"                                             # Please enter "Y" if deploy in a multi-cluster environment
+CF_API_URL="https://{api-domain}"                                # e.g) https://api.10.0.0.120.nip.io, API Domain, PROVIDER_TYPE=service 인 경우 입력  
 ```
 ```bash
 # Example
@@ -144,6 +145,7 @@ K8S_MASTER_NODE_IP="103.xxx.xxx.xxx"
 K8S_STORAGECLASS="cp-storageclass"
 HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
 PROVIDER_TYPE="service"
+IS_MULTI_CLUSTER="N"
 CF_API_URL="https://api.xx.xxx.xxx.xx.nip.io"
 ```
 

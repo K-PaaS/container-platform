@@ -107,12 +107,14 @@ K8S_MASTER_NODE_IP="{k8s master node public ip}"                      # Kubernet
 K8S_STORAGECLASS="cp-storageclass"                                    # Kubernetes StorageClass Name (e.g. cp-storageclass)
 HOST_DOMAIN="{host domain}"                                           # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
 PROVIDER_TYPE="{container platform source control provider type}"     # Container platform source control provider type (Please enter 'standalone' or 'service')    
+IS_MULTI_CLUSTER="N"                                                  # Please enter "Y" if deploy in a multi-cluster environment
 ```
 ```bash  
 K8S_MASTER_NODE_IP="103.xxx.xxx.xxx"
 K8S_STORAGECLASS="cp-storageclass"
 HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
 PROVIDER_TYPE="standalone"
+IS_MULTI_CLUSTER="N"
 ```
 |변수|설명|상세 내용|
 |---|---|---|
