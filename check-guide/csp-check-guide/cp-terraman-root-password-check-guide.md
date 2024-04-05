@@ -24,7 +24,12 @@
 ## <div id='1'> 1. 문서 개요
 
 ### <div id='1.1'> 1.1. 목적
- Terraman IaC 스크립트 가이드는 OpenTofu를 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 스크립트를 작성하는 데 도움을 주기 위한 목적으로 제작되었다.
+#### 들어가기 전
+- **Host Cluster**: 컨테이너플랫폼의 Kubernetes 메인 클러스터
+- **Sub Cluster**: 컨테이너 플랫폼 포털을 통해 신규 배포되거나, 등록된 관리 클러스터
+
+Terraman Template 작성 및 배포 가이드는 OpenTofu를 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 Template을 작성하고 Terraman을 이용하여 Sub Cluster 배포하는데 도움을 주기 위한 목적으로 제작되었다.
+
 ### <div id='1.2'> 1.2. 범위
 Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 ### <div id='1.3'> 1.3. 참고자료
@@ -47,39 +52,17 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
     (예: OpenStack API - 8000, 8774, 5000, 9292, 9876, 9696, 8004, 8780, 8776)
 - 각 IaaS에서 생성되는 Instance는 원격 접속을 위한 포트가 열려 있어야 한다.
 
-## <div id='3'> 3. SSH Key 설정
-#### 들어가기 전
-- **Host Cluster**: OpenTofu를 생성하는 데 사용되는 클러스터
-- **Sub Cluster**: Terraman을 통해 배포되는 클러스터
+## <div id='3'> 3. Terraman 배포 설명
+- Terraman 배포 방식에 대한 설명으로 컨테이너 플랫폼 포털 Global 메뉴의 기능을 사용한다. 메뉴에는 총 5가지가 있으며 이중 [Clusters](#7), [Cloud Accounts](#6), [Instance Code Template](#5) 메뉴를 사용하여 Sub Cluster 배포를 진행한다.
+- Naver Cloud는 Instance에 Root Password 방식으로 접근하기 때문에 SSH Keys 등록을 하지 않는다.
+- 각 메뉴의 정보를 입력하는 순서는 상관 없으나 [Clusters](#7) 메뉴는 마지막에 등록한다. [Cloud Accounts](#6), [Instance Code Template](#5) 정보가 우선 등록 되어야 이 정보들을 기반으로 Clusters 생성을 진행할 수 있다.
+- 각 메뉴의 자세한 내용은 아래 내용을 참고한다.
 
-### <div id='3.1'> 3.1 SSH Key 구성
-- **id_rsa**, **id_rsa.pub**
-- Host Cluster 구성 시 생성된 RSA Key
->NAVER인 경우 Sub Cluster 접속시 Root Password 방식이며 Terraman API에서 Sub Cluster 접속 정보를 자동 조회 및 생성한다.
+<kbd>
+  <img src="../images/IMG_3_1_1_NAVER.png">
+</kbd>
 
-### <div id='3.2'>3.2 SSH Key 복사
-- SSH Key 목적
-	- Terraman 실행 중에 Host Cluster 및 Sub Cluster의 각 Master 노드에 액세스하기 위함이다.
-- 각 공개키를 Terraman이 실행되는 Terraman Pod로 복사한다.
-	- Host Cluster의 Master 키 이름은 *반드시 'master-key'* 로 복사 되어야 한다.
-```bash
-## Host Cluster Key
-$ kubectl cp /home/ubuntu/.ssh/id_rsa {TERRAMAN_PDO_NAME}:/home/1000/.ssh/master-key -n cp-portal
-```
-*예시* 
-```bash
-## Terraman Pod Name 조회
-$ kubectl get pods -n cp-portal
-NAME                                               READY   STATUS    RESTARTS     AGE
-cp-portal-api-deployment-6485fc78d9-48cdl          1/1     Running   0            9d
-cp-portal-common-api-deployment-58b57cd8fb-txtdn   1/1     Running   0            9d
-cp-portal-metric-api-deployment-757b98d55c-v4psb   1/1     Running   3 (9d ago)   9d
-cp-portal-terraman-deployment-689585bc94-pq4bt     1/1     Running   0            9d
-cp-portal-ui-deployment-74d744cff4-qh7g2           1/1     Running   0            9d
-
-## Host Cluster Key Name: id_rsa
-$ kubectl cp /home/ubuntu/.ssh/id_rsa cp-portal-terraman-deployment-689585bc94-pq4bt:/home/1000/.ssh/master-key -n cp-portal
-```
+<br>
 
 ## <div id='4'> 4. Template 생성
 ### <div id='4.1'> 4.1 Template 작성
@@ -304,12 +287,12 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
 #### <div id='5.1.1'> 5.1.1 NAVER
 - 입력시 NAVER Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
 
-  |Cloud Accounts 입력 창|NAVER Cloud 정보|  
-  |:------:|:------:|
-  |accessKey 필드|access_key 값|
-  |secretKey 필드|secret_key 값|
-  |site 필드|site 값|  
-  |region 필드|region 값|
+  |Cloud Accounts 입력 창|NAVER Cloud 정보|정보 위치|     
+  |:------:|:------:|:------:|
+  |accessKey 필드|access_key 값||
+  |secretKey 필드|secret_key 값||
+  |site 필드|site 값||
+  |region 필드|region 값||
 
 <kbd>
   <img src="../images/IMG_5_1_1_NAVER.png">
@@ -321,4 +304,28 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
 
 <kbd>
   <img src="../images/IMG_6_1.png">
+</kbd>
+
+- Cluster 생성시 Terraman API에 의해서 Sub Cluster 생성이 진행되며 우측 status 로딩 버튼을 누르게 되면 Cluster Logs 목록 페이지로 이동하게 된다.
+
+<kbd>
+  <img src="../images/IMG_6_2.png">
+</kbd>
+
+- Cluster Logs 목록 페이지에서 Sub Cluster 진행 사항을 실시간으로 확인할 수 있다.
+
+<kbd>
+  <img src="../images/IMG_6_3.png">
+</kbd>
+
+- Sub Cluster 구축이 완료되면 화면과 같이 status가 녹색불이 들어오게 된다.
+
+<kbd>
+  <img src="../images/IMG_6_4.png">
+</kbd>
+
+- Sub Cluster 구축이 완료되면 화면과 같이 Overview 페이지에 Sub Cluster 등록이 된 것을 확인할 수 있다.
+
+<kbd>
+  <img src="../images/IMG_6_5.png">
 </kbd>
