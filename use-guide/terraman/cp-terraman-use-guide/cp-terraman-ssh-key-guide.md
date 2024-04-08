@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > [Terraman 사용 가이드](../cp-terraman-check-index-guide.md) > Terraman Template 작성 및 배포 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](https://github.com/K-PaaS/container-platform/blob/master/use-guide/Readme.md) > [Terraman 사용 가이드](../cp-terraman-guide.md) > Terraman Template 작성 및 배포 가이드
 
 ## Table of Contents
 
@@ -9,11 +9,11 @@
 2. [Prerequisite](#2)  
  2.1. [방화벽 정보](#2.1)
 3. [Terraman 배포 설명](#3)  
-4. [SSH Key 설정](#4)  
- 4.1. [SSH Key 생성](#4.1)  
-　4.1.1. [Sub Cluster 배포를 위한 SSH Key 등록](#4.1.1)  
-    4.1.1.1. [4.1.1.1. 기존 SSH Key 사용](#4.1.1.1.)  
-    4.1.1.2. [4.1.1.2. SSH Key 신규 생성](#4.1.1.2.)  
+4. [SSH Keys 설정](#4)  
+ 4.1. [SSH Keys 생성](#4.1)  
+　4.1.1. [Sub Cluster 배포를 위한 SSH Keys 등록](#4.1.1)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.1.1.1. [기존 SSH Key 사용](#4.1.1.1.)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.1.1.2. [SSH Key 신규 생성](#4.1.1.2.)  
 5. [Template 생성](#5)  
  5.1. [Template 작성](#5.1)  
 　5.1.1. [OpenStack](#5.1.1)   
@@ -25,8 +25,8 @@
 　6.1.1. [OpenStack](#6.1.1)   
 　6.1.2. [AWS](#6.1.2)   
 　6.1.3. [NHN](#6.1.3)   
-7. [Cluster 생성](#7)  
- 7.1. [Cluster 작성](#7.1)  
+7. [Clusters 생성](#7)  
+ 7.1. [Clusters 작성](#7.1)  
 
 ## <div id='1'> 1. 문서 개요
 
@@ -49,8 +49,8 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 > https://docs.nhncloud.com/ko/Compute/Instance/ko/terraform-guide/#tf
 
 ## <div id='2'> 2. Prerequisite
-- [Container Platform Cluster](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install.md) 설치가 사전에 진행 되어야한다.
-- [Container Platform Portal](https://github.com/K-PaaS/container-platform/blob/master/install-guide/container-platform-portal/cp-portal-deployment-standalone-guide.md) 설치가 사전에 진행 되어야한다.
+- [Container Platform Cluster](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md) 설치가 사전에 진행 되어야한다.
+- [Container Platform Portal](https://github.com/K-PaaS/container-platform/blob/master/install-guide/portal/cp-portal-standalone-guide.md) 설치가 사전에 진행 되어야한다.
 - 아래는 Terraman을 실행하기 전 필요한 사전 작업에 대한 설명이다.
 
 #### <div id='2.1'> 2.1 방화벽 정보
@@ -65,36 +65,36 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 - 각 IaaS에서 생성되는 Instance는 원격 접속을 위한 포트가 열려 있어야 한다.
 
 ## <div id='3'> 3. Terraman 배포 설명
-- Terraman 배포 방식에 대한 설명으로 컨테이너 플랫폼 포털 Global 메뉴의 기능을 사용한다. 메뉴에는 총 5가지가 있으며 이중 [Clusters](#7), [Cloud Accounts](#6), [Instance Code Template](#5), [SSH Keys](#4) 메뉴를 사용하여 Sub Cluster 배포를 진행한다.
+- Terraman 배포 방식에 대한 설명으로 컨테이너 플랫폼 포털 Global 메뉴의 기능을 사용한다. [Clusters](#7), [Cloud Accounts](#6), [Instance Code Template](#5), [SSH Keys](#4) 메뉴를 사용하여 Sub Cluster 배포를 진행한다.
 - 각 메뉴의 정보를 입력하는 순서는 상관 없으나 [Clusters](#7) 메뉴는 마지막에 등록한다. [Cloud Accounts](#6), [Instance Code Template](#5), [SSH Keys](#4) 정보가 우선 등록 되어야 이 정보들을 기반으로 Clusters 생성을 진행할 수 있다.
 - 각 메뉴의 자세한 내용은 아래 내용을 참고한다.
 
 <kbd>
-  <img src="../images/IMG_3_1_1.png">
+  <img src="../../images/terraman/IMG_3_1_1.png">
 </kbd>
 
 <br>
 
-## <div id='4'> 4. SSH Key 설정
-### <div id='4.1'>  4.1. SSH Key 생성
-- SSH Key 등록 목적
-  + 컨테이너 플랫폼 Terraman을 통해 신규 배포되는 Instance VM에 액세스하여 Sub Cluster 구성을 위함이다.
+## <div id='4'> 4. SSH Keys 설정
+### <div id='4.1'>  4.1. SSH Keys 생성
+- SSH Key 목적
+  + 컨테이너 플랫폼 Terraman을 통해 신규 배포되는 Instance에 액세스하여 Sub Cluster 구성을 위함이다.
 
-#### <div id='4.1.1'> 4.1.1 Sub Cluster 배포를 위한 SSH Key 등록
+#### <div id='4.1.1'> 4.1.1 Sub Cluster 배포를 위한 SSH Keys 등록
 - Container Platform Portal 화면에서 Global > SSH Keys 메뉴에서 SSH Key 등록이 가능하다. 
 ##### <div id='4.1.1.1.'> 4.1.1.1. 기존 SSH Key 사용
 - Cloud Platform에서 발급 받은 개인키를 소유하고 있다면 해당 개인키를 포털 SSH Kyes 메뉴에 등록해준다.
-- Key Name은 사용하고자하는 명으로 입력한다.
+- SSH Key Name은 사용하고자하는 이름으로 입력한다.
 
 <kbd>
-  <img src="../images/IMG_4_1_1.png">
+  <img src="../../images/terraman/IMG_4_1_1.png">
 </kbd>
 
 <br>
 
 ##### <div id='4.1.1.2.'> 4.1.1.2. SSH Key 신규 생성
-- 신규로 SSH Key를 발급할 경우 Cloud Platform에 공개키를 등록하고 컨테이너 플랫폼의 SSH Keys 메뉴에 개인키를 등록한다.
-- Key Name은 사용하고자하는 명으로 입력한다.
+- 신규로 SSH Key를 발급할 경우 Cloud Platform에 공개키를 등록하고 컨테이너 플랫폼 포털의 SSH Keys 메뉴에 개인키를 등록한다.
+- Key Name은 사용하고자하는 이름으로 입력한다.
 ```sh
 # ssh-keygen을 이용한 rsa key pair 생성
 $ ssh-keygen -t rsa -m PEM
@@ -137,7 +137,7 @@ MIIEogIBAAKCAQEAo5SBzzNzZ4fugit5JZw9JeHqQtkRhTJ8Zdl3CCVKdIWfOI79...
 - 예시) Cloud Platform(OpenStack) 공개키(id_rsa.pub) 등록
 
 <kbd>
-  <img src="../images/IMG_4_1_2.PNG">
+  <img src="../../images/terraman/IMG_4_1_2.PNG">
 </kbd>
 
 <br>
@@ -145,7 +145,7 @@ MIIEogIBAAKCAQEAo5SBzzNzZ4fugit5JZw9JeHqQtkRhTJ8Zdl3CCVKdIWfOI79...
 - 예시) Container Platform 개인키(id_rsa) 등록
 
 <kbd>
-  <img src="../images/IMG_4_1_1.png">
+  <img src="../../images/terraman/IMG_4_1_1.png">
 </kbd>
 
 <br>
@@ -588,7 +588,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 - Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 Template 등록이 가능하다. 
 
 <kbd>
-  <img src="../images/IMG_5_2.png">
+  <img src="../../images/terraman/IMG_5_2.png">
 </kbd>
 
 ## <div id='6'> 6. Cloud Accounts 생성
@@ -597,75 +597,76 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 
 #### <div id='6.1.1'> 6.1.1 OpenStack
 - 입력시 OpenStack Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+- OpenStack RC 파일은 OpenStack 대시보드 우측 상단의 계정을 클릭하면 다운로드 받을 수 있다.
 
-  |Cloud Accounts 입력 창|OpenStack Cloud 정보| 정보 위치|
+  |Cloud Accounts 입력|OpenStack Cloud 정보| 정보 위치|
   |:------:|:------:|:------:|
-  |auth_url 필드|auth_url 값||
-  |password 필드|password 값|계정 비밀번호|
-  |user_name 필드|user_name 값|계정 아이디|
-  |project 필드|tenant_name 값||
-  |region 필드|region 값||
+  |auth_url 필드|OS_AUTH_URL|OpenStack RC 파일 참고|
+  |password 필드|계정 비밀번호|계정 비밀번호|
+  |user_name 필드|계정 아이디|계정 아이디|
+  |project 필드|OS_PROJECT_ID|OpenStack RC 파일 참고|
+  |region 필드|OS_REGION_NAME|OpenStack RC 파일 참고|
 
 <kbd>
-  <img src="../images/IMG_6_1_1.png">
+  <img src="../../images/terraman/IMG_6_1_1.png">
 </kbd>
 
 #### <div id='6.1.2'> 6.1.2 AWS
 - 입력시 AWS Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
-
-  |Cloud Accounts 입력 창|AWS Cloud 정보|정보 위치|
+- 자격증명은 IAM 대시보드에서 발급 받을 수 있다. (분실시 재발급 필요)
+  |Cloud Accounts 입력|AWS Cloud 정보|정보 위치|
   |:------:|:------:|:------:|
-  |accessKey 필드|access_key 값||
-  |secretKey 필드|secret_key 값||
-  |region 필드|region 값||
+  |accessKey 필드|엑세스 키 ID|IAM 대시보드에서 발급|
+  |secretKey 필드|비밀 엑세스 키|IAM 대시보드에서 발급|
+  |region 필드|사용 리전|계정 정보 확인[(리전 이름 가이드 참고)](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)|
 
 <kbd>
-  <img src="../images/IMG_6_1_2.png">
+  <img src="../../images/terraman/IMG_6_1_2.png">
 </kbd>
 
 #### <div id='6.1.3'> 6.1.3 NHN
 - 입력시 NHN Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
 
-  |Cloud Accounts 입력 창|NHN Cloud 정보|정보 위치|  
+  |Cloud Accounts 입력|NHN Cloud 정보|정보 위치|  
   |:------:|:------:|:------:|
-  |auth_url 필드|auth_url 값|Instance 서비스 창 > API 엔드포인트 설정 > 신원 서비스(identity)|  
-  |password 필드|password 값|계정 비밀번호|  
-  |user_name 필드|user_name 값|계정 아이디|  
-  |project 필드|tenant_id 값|Instance 서비스 창 > API 엔드포인트 설정 > 테넌트 ID|    
-  |region 필드|region 값|[리전 이름 가이드 참고](https://docs.nhncloud.com/ko/Storage/Object%20Storage/ko/s3-api-guide/#signature)| 
+  |auth_url 필드|신원 서비스(identity)|Instance 서비스 페이지 > API 엔드포인트 설정 > 신원 서비스(identity)|  
+  |password 필드|계정 비밀번호|계정 비밀번호|  
+  |user_name 필드|계정 아이디|계정 아이디|  
+  |project 필드|테넌트 ID|Instance 서비스 페이지 > API 엔드포인트 설정 > 테넌트 ID|    
+  |region 필드|사용 리전|계정 정보 확인[(리전 이름 가이드 참고)](https://docs.nhncloud.com/ko/Storage/Object%20Storage/ko/s3-api-guide/#signature)| 
 
 <kbd>
-  <img src="../images/IMG_6_1_3.png">
+  <img src="../../images/terraman/IMG_6_1_3.png">
 </kbd>
 
-## <div id='7'> 7. Cluster 생성
-### <div id='7.1'> 7.1 Cluster 작성
+## <div id='7'> 7. Clusters 생성
+### <div id='7.1'> 7.1 Clusters 작성
 - Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster 생성이 가능하다. 
 
 <kbd>
-  <img src="../images/IMG_7_1.png">
+  <img src="../../images/terraman/IMG_7_1.png">
 </kbd>
 
 - Cluster 생성시 Terraman API에 의해서 Sub Cluster 생성이 진행되며 우측 status 로딩 버튼을 누르게 되면 Cluster Logs 목록 페이지로 이동하게 된다.
 
 <kbd>
-  <img src="../images/IMG_7_2.png">
+  <img src="../../images/terraman/IMG_7_2.png">
 </kbd>
 
 - Cluster Logs 목록 페이지에서 Sub Cluster 진행 사항을 실시간으로 확인할 수 있다.
 
 <kbd>
-  <img src="../images/IMG_7_3.png">
+  <img src="../../images/terraman/IMG_7_3.png">
 </kbd>
 
 - Sub Cluster 구축이 완료되면 화면과 같이 status가 녹색불이 들어오게 된다.
 
 <kbd>
-  <img src="../images/IMG_7_4.png">
+  <img src="../../images/terraman/IMG_7_4.png">
 </kbd>
 
 - Sub Cluster 구축이 완료되면 화면과 같이 Overview 페이지에 Sub Cluster 등록이 된 것을 확인할 수 있다.
 
 <kbd>
-  <img src="../images/IMG_7_5.png">
+  <img src="../../images/terraman/IMG_7_5.png">
 </kbd>

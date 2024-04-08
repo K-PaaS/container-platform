@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > [Terraman IaC Index](../cp-terraman-check-index-guide.md) > Terraman IaC 스크립트 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](https://github.com/K-PaaS/container-platform/blob/master/use-guide/Readme.md) > [Terraman 사용 가이드](../cp-terraman-guide.md) > Terraman Template 작성 및 배포 가이드
 
 ## Table of Contents
 
@@ -8,9 +8,7 @@
 	1.3. [참고자료](#1.3)
 2. [Prerequisite](#2)  
   2.1. [방화벽 정보](#2.1)
-3. [SSH Key 설정](#3)  
-	3.1 [SSH Key 구성](#3.1)  
-	3.2 [SSH Key 복사](#3.2)  
+3. [Terraman 배포 설명](#3)  	
 4. [Template 생성](#4)  
   4.1. [Template 작성](#4.1)  
   　4.1.1. [NAVER](#4.1.1)   
@@ -18,8 +16,8 @@
 5. [Cloud Accounts 생성](#5)  
  5.1. [Cloud Accounts 작성](#5.1)  
 　5.1.1. [NAVER](#5.1.1)   
-6. [Cluster 생성](#6)  
- 6.1. [Cluster 작성](#6.1)  
+6. [Clusters 생성](#6)  
+ 6.1. [Clusters 작성](#6.1)  
 
 ## <div id='1'> 1. 문서 개요
 
@@ -37,8 +35,8 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 > https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs
 
 ## <div id='2'> 2. Prerequisite
-- [Container Platform Cluster](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install.md) 설치가 사전에 진행 되어야한다.
-- [Container Platform Portal](https://github.com/K-PaaS/container-platform/blob/master/install-guide/container-platform-portal/cp-portal-deployment-standalone-guide.md) 설치가 사전에 진행 되어야한다.
+- [Container Platform Cluster](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md) 설치가 사전에 진행 되어야한다.
+- [Container Platform Portal](https://github.com/K-PaaS/container-platform/blob/master/install-guide/portal/cp-portal-standalone-guide.md) 설치가 사전에 진행 되어야한다.
 - Terraman을 실행하기 전 필요한 사전 작업에 대한 설명이다.
 
 ### <div id='2.1'> 2.1 방화벽 정보
@@ -53,13 +51,13 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 - 각 IaaS에서 생성되는 Instance는 원격 접속을 위한 포트가 열려 있어야 한다.
 
 ## <div id='3'> 3. Terraman 배포 설명
-- Terraman 배포 방식에 대한 설명으로 컨테이너 플랫폼 포털 Global 메뉴의 기능을 사용한다. 메뉴에는 총 5가지가 있으며 이중 [Clusters](#7), [Cloud Accounts](#6), [Instance Code Template](#5) 메뉴를 사용하여 Sub Cluster 배포를 진행한다.
+- Terraman 배포 방식에 대한 설명으로 컨테이너 플랫폼 포털 Global 메뉴의 기능을 사용한다. [Clusters](#6), [Cloud Accounts](#5), [Instance Code Template](#4) 메뉴를 사용하여 Sub Cluster 배포를 진행한다.
 - Naver Cloud는 Instance에 Root Password 방식으로 접근하기 때문에 SSH Keys 등록을 하지 않는다.
-- 각 메뉴의 정보를 입력하는 순서는 상관 없으나 [Clusters](#7) 메뉴는 마지막에 등록한다. [Cloud Accounts](#6), [Instance Code Template](#5) 정보가 우선 등록 되어야 이 정보들을 기반으로 Clusters 생성을 진행할 수 있다.
+- 각 메뉴의 정보를 입력하는 순서는 상관 없으나 [Clusters](#6) 메뉴는 마지막에 등록한다. [Cloud Accounts](#5), [Instance Code Template](#4) 정보가 우선 등록 되어야 이 정보들을 기반으로 Clusters 생성을 진행할 수 있다.
 - 각 메뉴의 자세한 내용은 아래 내용을 참고한다.
 
 <kbd>
-  <img src="../images/IMG_3_1_1_NAVER.png">
+  <img src="../../images/terraman/IMG_3_1_1_NAVER.png">
 </kbd>
 
 <br>
@@ -278,7 +276,7 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
 - Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 Template 등록이 가능하다. 
 
 <kbd>
-  <img src="../images/IMG_4_2.png">
+  <img src="../../images/terraman/IMG_4_2.png">
 </kbd>
 
 ## <div id='5'> 5. Cloud Accounts 생성
@@ -286,46 +284,56 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
 - Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보 등록이 가능하다. 
 #### <div id='5.1.1'> 5.1.1 NAVER
 - 입력시 NAVER Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+- 네이버 클라우드 플랫폼 포털의 마이페이지 > 계정 관리 > 인증키 관리에서 인증키 생성, 관리 및 확인을 할 수 있다.
+- Ncloud Site 값은 기본적으로 "public"이며 사용하고 있는 Ncloud 도메인에 따라 "public", "gov", "fin" 중 하나를 입력하면 된다.
 
-  |Cloud Accounts 입력 창|NAVER Cloud 정보|정보 위치|     
+  |도메인|입력 값|
+  |:------:|:------:|
+  |www.ncloud.com|public|
+  |www.gov-ncloud.com|gov|
+  |www.fin-ncloud.com|fin|
+
+  <br>
+
+  |Cloud Accounts 입력|NAVER Cloud 정보|정보 위치|     
   |:------:|:------:|:------:|
-  |accessKey 필드|access_key 값||
-  |secretKey 필드|secret_key 값||
-  |site 필드|site 값||
-  |region 필드|region 값||
+  |accessKey 필드|Access Key|마이페이지 > 계정 관리 > 인증키 관리|
+  |secretKey 필드|Secret Key|마이페이지 > 계정 관리 > 인증키 관리|
+  |site 필드|Site|[가이드 참고](https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs#argument-reference)|
+  |region 필드|Region|대시보드 확인[(리전 이름 가이드 참고)](https://guide.ncloud-docs.com/docs/ko/environment-environment-1-1#%EC%A1%B4zone%EC%9D%98-%EC%A2%85%EB%A5%98%EC%99%80-%ED%8A%B9%EC%A7%95)|
 
 <kbd>
-  <img src="../images/IMG_5_1_1_NAVER.png">
+  <img src="../../images/terraman/IMG_5_1_1_NAVER.png">
 </kbd>
 
-## <div id='6'> 6. Cluster 생성
-### <div id='6.1'> 6.1 Cluster 작성
+## <div id='6'> 6. Clusters 생성
+### <div id='6.1'> 6.1 Clusters 작성
 - Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster 생성이 가능하다. 
 
 <kbd>
-  <img src="../images/IMG_6_1.png">
+  <img src="../../images/terraman/IMG_6_1.png">
 </kbd>
 
 - Cluster 생성시 Terraman API에 의해서 Sub Cluster 생성이 진행되며 우측 status 로딩 버튼을 누르게 되면 Cluster Logs 목록 페이지로 이동하게 된다.
 
 <kbd>
-  <img src="../images/IMG_6_2.png">
+  <img src="../../images/terraman/IMG_6_2.png">
 </kbd>
 
 - Cluster Logs 목록 페이지에서 Sub Cluster 진행 사항을 실시간으로 확인할 수 있다.
 
 <kbd>
-  <img src="../images/IMG_6_3.png">
+  <img src="../../images/terraman/IMG_6_3.png">
 </kbd>
 
 - Sub Cluster 구축이 완료되면 화면과 같이 status가 녹색불이 들어오게 된다.
 
 <kbd>
-  <img src="../images/IMG_6_4.png">
+  <img src="../../images/terraman/IMG_6_4.png">
 </kbd>
 
 - Sub Cluster 구축이 완료되면 화면과 같이 Overview 페이지에 Sub Cluster 등록이 된 것을 확인할 수 있다.
 
 <kbd>
-  <img src="../images/IMG_6_5.png">
+  <img src="../../images/terraman/IMG_6_5.png">
 </kbd>

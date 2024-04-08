@@ -69,7 +69,7 @@
 ## <div id='2-1'>2.1. Terraman IaC 설정
 컨테이너 플랫폼 포털을 통해 서브 클러스터를 생성하기 위해서는 대상 클라우드(IaaS)의 추가 설정이 필요하다. <br>
 아래 가이드를 참조하여 설정 완료 후 서브 클러스터 생성을 진행한다.
-> [Terraman IaC 스크립트 가이드](../../check-guide/cp-terraman-check-index-guide.md)
+> [Terraman IaC 스크립트 가이드](../../use-guide/terraman/cp-terraman-guide.md)
 
 <br>
 
