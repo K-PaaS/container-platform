@@ -52,7 +52,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 ## <div id='3'> 3. Terraman 배포 설명
 - Terraman 배포 방식에 대한 설명으로 컨테이너 플랫폼 포털 Global 메뉴의 기능을 사용한다. [Clusters](#6), [Cloud Accounts](#5), [Instance Code Template](#4) 메뉴를 사용하여 Sub Cluster 배포를 진행한다.
-- Naver Cloud는 Instance에 Root Password 방식으로 접근하기 때문에 SSH Keys 등록을 하지 않는다.
+- Ncloud는 Instance에 Root Password 방식으로 접근하기 때문에 SSH Keys 등록을 하지 않는다.
 - 각 메뉴의 정보를 입력하는 순서는 상관 없으나 [Clusters](#6) 메뉴는 마지막에 등록한다. [Cloud Accounts](#5), [Instance Code Template](#4) 정보가 우선 등록 되어야 이 정보들을 기반으로 Clusters 생성을 진행할 수 있다.
 - 각 메뉴의 자세한 내용은 아래 내용을 참고한다.
 
@@ -283,7 +283,7 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
 ### <div id='5.1'> 5.1 Cloud Accounts 작성
 - Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보 등록이 가능하다. 
 #### <div id='5.1.1'> 5.1.1 NAVER
-- 입력시 NAVER Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+- 입력시 Ncloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
 - 네이버 클라우드 플랫폼 포털의 마이페이지 > 계정 관리 > 인증키 관리에서 인증키 생성, 관리 및 확인을 할 수 있다.
 - Ncloud Site 값은 기본적으로 "public"이며 사용하고 있는 Ncloud 도메인에 따라 "public", "gov", "fin" 중 하나를 입력하면 된다.
 
@@ -295,7 +295,7 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
 
   <br>
 
-  |Cloud Accounts 입력|NAVER Cloud 정보|정보 위치|     
+  |Cloud Accounts 입력|Ncloud 정보|정보 위치|     
   |:------:|:------:|:------:|
   |accessKey 필드|Access Key|마이페이지 > 계정 관리 > 인증키 관리|
   |secretKey 필드|Secret Key|마이페이지 > 계정 관리 > 인증키 관리|

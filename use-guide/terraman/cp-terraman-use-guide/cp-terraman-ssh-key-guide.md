@@ -84,7 +84,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 - Container Platform Portal 화면에서 Global > SSH Keys 메뉴에서 SSH Key 등록이 가능하다. 
 ##### <div id='4.1.1.1.'> 4.1.1.1. 기존 SSH Key 사용
 - Cloud Platform에서 발급 받은 개인키를 소유하고 있다면 해당 개인키를 포털 SSH Kyes 메뉴에 등록해준다.
-- SSH Key Name은 사용하고자하는 이름으로 입력한다.
+- SSH Key Name은 사용하고자 하는 이름으로 입력한다.
 
 <kbd>
   <img src="../../images/terraman/IMG_4_1_1.png">
@@ -94,7 +94,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 ##### <div id='4.1.1.2.'> 4.1.1.2. SSH Key 신규 생성
 - 신규로 SSH Key를 발급할 경우 Cloud Platform에 공개키를 등록하고 컨테이너 플랫폼 포털의 SSH Keys 메뉴에 개인키를 등록한다.
-- Key Name은 사용하고자하는 이름으로 입력한다.
+- Key Name은 사용하고자 하는 이름으로 입력한다.
 ```sh
 # ssh-keygen을 이용한 rsa key pair 생성
 $ ssh-keygen -t rsa -m PEM
@@ -137,7 +137,7 @@ MIIEogIBAAKCAQEAo5SBzzNzZ4fugit5JZw9JeHqQtkRhTJ8Zdl3CCVKdIWfOI79...
 - 예시) Cloud Platform(OpenStack) 공개키(id_rsa.pub) 등록
 
 <kbd>
-  <img src="../../images/terraman/IMG_4_1_2.PNG">
+  <img src="../../images/terraman/IMG_4_1_2.png">
 </kbd>
 
 <br>
@@ -596,7 +596,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 - Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보 등록이 가능하다. 
 
 #### <div id='6.1.1'> 6.1.1 OpenStack
-- 입력시 OpenStack Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+- 입력시 OpenStack Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
 - OpenStack RC 파일은 OpenStack 대시보드 우측 상단의 계정을 클릭하면 다운로드 받을 수 있다.
 
   |Cloud Accounts 입력|OpenStack Cloud 정보| 정보 위치|
@@ -612,7 +612,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 </kbd>
 
 #### <div id='6.1.2'> 6.1.2 AWS
-- 입력시 AWS Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+- 입력시 AWS Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
 - 자격증명은 IAM 대시보드에서 발급 받을 수 있다. (분실시 재발급 필요)
   |Cloud Accounts 입력|AWS Cloud 정보|정보 위치|
   |:------:|:------:|:------:|
@@ -625,7 +625,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 </kbd>
 
 #### <div id='6.1.3'> 6.1.3 NHN
-- 입력시 NHN Cloud 정보를 아래와 같이 Cloud Accounts 등록 UI에 입력하면 된다.  
+- 입력시 NHN Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
 
   |Cloud Accounts 입력|NHN Cloud 정보|정보 위치|  
   |:------:|:------:|:------:|
