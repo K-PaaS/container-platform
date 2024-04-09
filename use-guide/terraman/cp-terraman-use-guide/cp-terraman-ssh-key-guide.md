@@ -83,7 +83,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 #### <div id='4.1.1'> 4.1.1 Sub Cluster 배포를 위한 SSH Keys 등록
 - Container Platform Portal 화면에서 Global > SSH Keys 메뉴에서 SSH Key 등록이 가능하다. 
 ##### <div id='4.1.1.1.'> 4.1.1.1. 기존 SSH Key 사용
-- Cloud Platform에서 발급 받은 개인키를 소유하고 있다면 해당 개인키를 포털 SSH Kyes 메뉴에 등록해준다.
+- Cloud Platform에서 발급 받은 개인키를 소유하고 있다면 해당 개인키를 포털 SSH Keys 메뉴에 등록해준다.
 - SSH Key Name은 사용하고자 하는 이름으로 입력한다.
 
 <kbd>
@@ -597,7 +597,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 
 #### <div id='6.1.1'> 6.1.1 OpenStack
 - 입력시 OpenStack Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
-- OpenStack RC 파일은 OpenStack 대시보드 우측 상단의 계정을 클릭하면 다운로드 받을 수 있다.
+- OpenStack은 RC 파일이라는 클라이언트 환경 스크립트를 지원하며 OpenStack RC 파일은 OpenStack 대시보드 우측 상단의 계정을 클릭하면 다운로드 받을 수 있다.
 
   |Cloud Accounts 입력|OpenStack Cloud 정보| 정보 위치|
   |:------:|:------:|:------:|
@@ -613,7 +613,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 
 #### <div id='6.1.2'> 6.1.2 AWS
 - 입력시 AWS Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
-- 자격증명은 IAM 대시보드에서 발급 받을 수 있다. (분실시 재발급 필요)
+- AWS 자격증명은 IAM 대시보드에서 발급 받을 수 있다. (분실시 재발급 필요)
   |Cloud Accounts 입력|AWS Cloud 정보|정보 위치|
   |:------:|:------:|:------:|
   |accessKey 필드|엑세스 키 ID|IAM 대시보드에서 발급|
@@ -626,13 +626,13 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 
 #### <div id='6.1.3'> 6.1.3 NHN
 - 입력시 NHN Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
-
+- NHN Cloud는 Compute > Instance 페이지에서 인증 정보 확인이 가능하다.
   |Cloud Accounts 입력|NHN Cloud 정보|정보 위치|  
   |:------:|:------:|:------:|
-  |auth_url 필드|신원 서비스(identity)|Instance 서비스 페이지 > API 엔드포인트 설정 > 신원 서비스(identity)|  
+  |auth_url 필드|신원 서비스(identity)|Instance 페이지 > API 엔드포인트 설정 > 신원 서비스(identity)|  
   |password 필드|계정 비밀번호|계정 비밀번호|  
   |user_name 필드|계정 아이디|계정 아이디|  
-  |project 필드|테넌트 ID|Instance 서비스 페이지 > API 엔드포인트 설정 > 테넌트 ID|    
+  |project 필드|테넌트 ID|Instance 페이지 > API 엔드포인트 설정 > 테넌트 ID|    
   |region 필드|사용 리전|계정 정보 확인[(리전 이름 가이드 참고)](https://docs.nhncloud.com/ko/Storage/Object%20Storage/ko/s3-api-guide/#signature)| 
 
 <kbd>
