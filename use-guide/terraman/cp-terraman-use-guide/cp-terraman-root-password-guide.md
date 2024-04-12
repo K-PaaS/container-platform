@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](https://github.com/K-PaaS/container-platform/blob/master/use-guide/Readme.md) > [Terraman 사용 가이드](../cp-terraman-guide.md) > Terraman Template 작성 및 배포 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](https://github.com/K-PaaS/container-platform/blob/master/use-guide/Readme.md) > [Terraman 사용 가이드](../cp-terraman-guide.md) > Terraman 배포 가이드
 
 ## Table of Contents
 
@@ -9,13 +9,13 @@
 2. [Prerequisite](#2)  
   2.1. [방화벽 정보](#2.1)
 3. [Terraman 배포 설명](#3)  	
-4. [Template 생성](#4)  
-  4.1. [Template 작성](#4.1)  
-  　4.1.1. [NAVER](#4.1.1)   
-  4.2. [Instance Code Template 생성](#4.2)  
-5. [Cloud Accounts 생성](#5)  
- 5.1. [Cloud Accounts 작성](#5.1)  
-　5.1.1. [NAVER](#5.1.1)   
+4. [Cloud Accounts 생성](#4)  
+ 4.1. [Cloud Accounts 작성](#4.1)  
+　4.1.1. [NAVER](#4.1.1)   
+5. [Instance Code Template 생성](#5)  
+  5.1. [Instance Code Template 작성](#5.1)  
+  　5.1.1. [NAVER](#5.1.1)   
+  5.2. [Instance Code Template 생성](#5.2)  
 6. [Clusters 생성](#6)  
  6.1. [Clusters 작성](#6.1)  
 
@@ -26,7 +26,7 @@
 - **Host Cluster**: 컨테이너플랫폼의 Kubernetes 메인 클러스터
 - **Sub Cluster**: 컨테이너 플랫폼 포털을 통해 신규 배포되거나, 등록된 관리 클러스터
 
-Terraman Template 작성 및 배포 가이드는 OpenTofu를 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 Template을 작성하고 Terraman을 이용하여 Sub Cluster 배포하는데 도움을 주기 위한 목적으로 제작되었다.
+Terraman 배포 가이드는 OpenTofu를 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 IaC 코드를 작성하고 Terraman을 이용하여 Sub Cluster 배포하는데 도움을 주기 위한 목적으로 제작되었다.
 
 ### <div id='1.2'> 1.2. 범위
 Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
@@ -51,22 +51,48 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 - 각 IaaS에서 생성되는 Instance는 원격 접속을 위한 포트가 열려 있어야 한다.
 
 ## <div id='3'> 3. Terraman 배포 설명
-- Terraman 배포 방식에 대한 설명으로 컨테이너 플랫폼 포털 Global 메뉴의 기능을 사용한다. [Clusters](#6), [Cloud Accounts](#5), [Instance Code Template](#4) 메뉴를 사용하여 Sub Cluster 배포를 진행한다.
-- Ncloud는 Instance에 Root Password 방식으로 접근하기 때문에 SSH Keys 등록을 하지 않는다.
-- 각 메뉴의 정보를 입력하는 순서는 상관 없으나 [Clusters](#6) 메뉴는 마지막에 등록한다. [Cloud Accounts](#5), [Instance Code Template](#4) 정보가 우선 등록 되어야 이 정보들을 기반으로 Clusters 생성을 진행할 수 있다.
+- [Clusters](#6) 배포를 위한 [Cloud Accounts](#4)를 기반으로 [Instance Code Template](#5)을 활용해서 Sub Cluster를 배포한다.
+- [Cloud Accounts](#4) 등록 > [Instance Code Template](#5) 등록 또는 기본 IaC 코드 활용 > [Clusters](#6) 등록 순으로 Terraman 배포를 진행한다.
 - 각 메뉴의 자세한 내용은 아래 내용을 참고한다.
 
 <kbd>
-  <img src="../../images/terraman/IMG_3_1_1_NAVER.png">
+  <img src="../../images/terraman/IMG_3_NAVER.png">
 </kbd>
 
 <br>
 
-## <div id='4'> 4. Template 생성
-### <div id='4.1'> 4.1 Template 작성
+## <div id='4'> 4. Cloud Accounts 생성
+### <div id='4.1'> 4.1 Cloud Accounts 작성
+- Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보를 등록한다.
 #### <div id='4.1.1'> 4.1.1 NAVER
-- 이 Template는 Terraman을 사용하여 NAVER에서 인스턴스를 생성하는 방법을 설명한다. 기본 Template는 인스턴스 생성에 초점을 맞추고 있다.
-- [NAVER Template 작성시 변수 참고](https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs#argument-reference)
+- 입력시 Ncloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
+- 네이버 클라우드 플랫폼 포털의 마이페이지 > 계정 관리 > 인증키 관리에서 인증키 생성, 관리 및 확인을 할 수 있다.
+- Ncloud Site 값은 기본적으로 "public"이며 사용하고 있는 Ncloud 도메인에 따라 "public", "gov", "fin" 중 하나를 입력하면 된다.
+
+  |도메인|입력 값|
+  |:------:|:------:|
+  |www.ncloud.com|public|
+  |www.gov-ncloud.com|gov|
+  |www.fin-ncloud.com|fin|
+
+  <br>
+
+  |Cloud Accounts 입력|Ncloud 정보|정보 위치|     
+  |:------:|:------:|:------:|
+  |accessKey 필드|Access Key|마이페이지 > 계정 관리 > 인증키 관리|
+  |secretKey 필드|Secret Key|마이페이지 > 계정 관리 > 인증키 관리|
+  |site 필드|Site|[가이드 참고](https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs#argument-reference)|
+  |region 필드|Region|대시보드 확인[(리전 이름 가이드 참고)](https://guide.ncloud-docs.com/docs/ko/environment-environment-1-1#%EC%A1%B4zone%EC%9D%98-%EC%A2%85%EB%A5%98%EC%99%80-%ED%8A%B9%EC%A7%95)|
+
+<kbd>
+  <img src="../../images/terraman/IMG_4_1_1_NAVER.png">
+</kbd>
+
+## <div id='5'> 5. Instance Code Template 생성
+### <div id='5.1'> 5.1 Instance Code Template 작성
+#### <div id='5.1.1'> 5.1.1 NAVER
+- Terraman을 사용하여 NAVER에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 인스턴스 생성에 초점을 맞추고 있다.
+- [NAVER IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs#argument-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
 *예시*
   + 인스턴스 1개 생성시 
@@ -76,6 +102,11 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
     - resource "ncloud_server" "worker1" {...}
     - resource "ncloud_server" "worker2" {...}
     - resource "ncloud_server" "worker3" {...} ...
+
+<details>
+<summary>NAVER Instance Code Template </summary>
+<div markdown="1">
+
 ```
 variable server_name01 {
   default = "cp-master"
@@ -272,68 +303,44 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
   }
 }
 ```
-### <div id='4.2'> 4.2 Instance Code Template 생성
-- Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 Template 등록이 가능하다. 
+</div>
+</details>
+
+### <div id='5.2'> 5.2 Instance Code Template 생성
+- Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 Instance Code Template을 등록한다. 
 
 <kbd>
-  <img src="../../images/terraman/IMG_4_2.png">
-</kbd>
-
-## <div id='5'> 5. Cloud Accounts 생성
-### <div id='5.1'> 5.1 Cloud Accounts 작성
-- Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보 등록이 가능하다. 
-#### <div id='5.1.1'> 5.1.1 NAVER
-- 입력시 Ncloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
-- 네이버 클라우드 플랫폼 포털의 마이페이지 > 계정 관리 > 인증키 관리에서 인증키 생성, 관리 및 확인을 할 수 있다.
-- Ncloud Site 값은 기본적으로 "public"이며 사용하고 있는 Ncloud 도메인에 따라 "public", "gov", "fin" 중 하나를 입력하면 된다.
-
-  |도메인|입력 값|
-  |:------:|:------:|
-  |www.ncloud.com|public|
-  |www.gov-ncloud.com|gov|
-  |www.fin-ncloud.com|fin|
-
-  <br>
-
-  |Cloud Accounts 입력|Ncloud 정보|정보 위치|     
-  |:------:|:------:|:------:|
-  |accessKey 필드|Access Key|마이페이지 > 계정 관리 > 인증키 관리|
-  |secretKey 필드|Secret Key|마이페이지 > 계정 관리 > 인증키 관리|
-  |site 필드|Site|[가이드 참고](https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs#argument-reference)|
-  |region 필드|Region|대시보드 확인[(리전 이름 가이드 참고)](https://guide.ncloud-docs.com/docs/ko/environment-environment-1-1#%EC%A1%B4zone%EC%9D%98-%EC%A2%85%EB%A5%98%EC%99%80-%ED%8A%B9%EC%A7%95)|
-
-<kbd>
-  <img src="../../images/terraman/IMG_5_1_1_NAVER.png">
+  <img src="../../images/terraman/IMG_5_2_NAVER.png">
 </kbd>
 
 ## <div id='6'> 6. Clusters 생성
 ### <div id='6.1'> 6.1 Clusters 작성
-- Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster 생성이 가능하다. 
+- Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster를 생성한다. 
 
 <kbd>
-  <img src="../../images/terraman/IMG_6_1.png">
+  <img src="../../images/terraman/IMG_6_1_1_NAVER.png">
 </kbd>
 
 - Cluster 생성시 Terraman API에 의해서 Sub Cluster 생성이 진행되며 우측 status 로딩 버튼을 누르게 되면 Cluster Logs 목록 페이지로 이동하게 된다.
 
 <kbd>
-  <img src="../../images/terraman/IMG_6_2.png">
+  <img src="../../images/terraman/IMG_6_1_2_NAVER.png">
 </kbd>
 
 - Cluster Logs 목록 페이지에서 Sub Cluster 진행 사항을 실시간으로 확인할 수 있다.
 
 <kbd>
-  <img src="../../images/terraman/IMG_6_3.png">
+  <img src="../../images/terraman/IMG_6_1_3_NAVER.png">
 </kbd>
 
 - Sub Cluster 구축이 완료되면 화면과 같이 status가 녹색불이 들어오게 된다.
 
 <kbd>
-  <img src="../../images/terraman/IMG_6_4.png">
+  <img src="../../images/terraman/IMG_6_1_4_NAVER.png">
 </kbd>
 
 - Sub Cluster 구축이 완료되면 화면과 같이 Overview 페이지에 Sub Cluster 등록이 된 것을 확인할 수 있다.
 
 <kbd>
-  <img src="../../images/terraman/IMG_6_5.png">
+  <img src="../../images/terraman/IMG_6_1_5_NAVER.png">
 </kbd>
