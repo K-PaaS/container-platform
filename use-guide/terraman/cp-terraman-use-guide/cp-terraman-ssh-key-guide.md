@@ -8,25 +8,25 @@
  1.3. [참고자료](#1.3)
 2. [Prerequisite](#2)  
  2.1. [방화벽 정보](#2.1)
-3. [Terraman 배포 설명](#3)  
-4. [Cloud Accounts 생성](#4)  
- 4.1. [Cloud Accounts 작성](#4.1)  
+3. [클러스터 배포 프로세스 설명](#3)  
+4. [Cloud Accounts](#4)  
+ 4.1. [Cloud Accounts 등록](#4.1)  
 　4.1.1. [OpenStack](#4.1.1)   
 　4.1.2. [AWS](#4.1.2)   
 　4.1.3. [NHN](#4.1.3)   
-5. [SSH Keys 설정](#5)  
- 5.1. [SSH Keys 생성](#5.1)  
+5. [SSH Keys](#5)  
+ 5.1. [SSH Keys 등록](#5.1)  
 　5.1.1. [Sub Cluster 배포를 위한 SSH Keys 등록](#5.1.1)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.1.1.1. [기존 SSH Key 사용](#5.1.1.1.)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.1.1.2. [SSH Key 신규 생성](#5.1.1.2.)  
-6. [Instance Code Template 생성](#6)  
- 6.1. [Instance Code Template 작성](#6.1)  
+6. [Instance Code Template](#6)  
+ 6.1. [Instance Code Template 예제](#6.1)  
 　6.1.1. [OpenStack](#6.1.1)   
 　6.1.2. [AWS](#6.1.2)   
 　6.1.3. [NHN](#6.1.3)   
- 6.2. [Instance Code Template 생성](#6.2)  
-7. [Clusters 생성](#7)  
- 7.1. [Clusters 작성](#7.1)  
+ 6.2. [Instance Code Template 등록](#6.2)  
+7. [Clusters](#7)  
+ 7.1. [Clusters 생성](#7.1)  
 
 ## <div id='1'> 1. 문서 개요
 
@@ -64,7 +64,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
     (예: OpenStack API - 8000, 8774, 5000, 9292, 9876, 9696, 8004, 8780, 8776)
 - 각 IaaS에서 생성되는 Instance는 원격 접속을 위한 포트가 열려 있어야 한다.
 
-## <div id='3'> 3. Terraman 배포 설명
+## <div id='3'> 3. 클러스터 배포 프로세스 설명
 - [Clusters](#7) 배포를 위한 [SSH Keys](#5)와 [Cloud Accounts](#4)를 기반으로 [Instance Code Template](#6)을 활용해서 Sub Cluster를 배포한다.
 - [Cloud Accounts](#4) 등록 > [SSH Keys](#5) 등록 > [Instance Code Template](#6) 등록 또는 기본 IaC 코드 활용 > [Clusters](#7) 등록 순으로 Terraman 배포를 진행한다.
 - 각 메뉴의 자세한 내용은 아래 내용을 참고한다.
@@ -75,8 +75,8 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 <br>
 
-## <div id='4'> 4. Cloud Accounts 생성
-### <div id='4.1'> 4.1 Cloud Account 작성
+## <div id='4'> 4. Cloud Accounts
+### <div id='4.1'> 4.1 Cloud Account 등록
 - Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보를 등록한다.
 
 #### <div id='4.1.1'> 4.1.1 OpenStack
@@ -123,8 +123,8 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
   <img src="../../images/terraman/IMG_4_1_3.png">
 </kbd>
 
-## <div id='5'> 5. SSH Keys 설정
-### <div id='5.1'>  5.1. SSH Keys 생성
+## <div id='5'> 5. SSH Keys
+### <div id='5.1'>  5.1. SSH Keys 등록
 - SSH Key 목적
   + 컨테이너 플랫폼 Terraman을 통해 신규 배포되는 Instance에 접근하여 Sub Cluster 배포를 하기 위해 등록한다.
 
@@ -145,26 +145,23 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 - Key Name은 사용하고자 하는 이름으로 입력한다.
 ```sh
 # ssh-keygen을 이용한 rsa key pair 생성
-$ ssh-keygen -t rsa -m PEM
+$ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
 Generating public/private rsa key pair.
-Enter file in which to save the key (/home/ubuntu/.ssh/id_rsa): [엔터키 입력]
-Enter passphrase (empty for no passphrase): [엔터키 입력]
-Enter same passphrase again: [엔터키 입력]
-Your identification has been saved in /home/ubuntu/.ssh/id_rsa.
-Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub.
+Your identification has been saved in /home/ubuntu/.ssh/id_rsa
+Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub
 The key fingerprint is:
-SHA256:pIG4/G309Dof305mWjdNz1OORx9nQgQ3b8yUP5DzC3w ubuntu@cp-master
+SHA256:odWdv3PDIEpkPuoS53yM0hrsEQZL4mHvM0KwLK2uC57 ubuntu@cp-master
 The key's randomart image is:
-+---[RSA 2048]----+
-|            ..= o|
-|   . .       * B |
-|  . . . .   . = *|
-| . .   +     + E.|
-|  o   o S     +.O|
-|   . o o .     XB|
-|    . o . o   *oO|
-|     .  .. o B oo|
-|        .o. o.o  |
++---[RSA 3072]----+
+|                 |
+|         . . .   |
+|.+ o    = . o    |
+|++= o  * .   .   |
+|oo+o .. S . . .  |
+|.+..o  o o . + . |
+|o +o O. .     *  |
+|=o.o=o*        o |
+|E++o ++          |
 +----[SHA256]-----+
 ```
 ```sh
@@ -198,8 +195,12 @@ MIIEogIBAAKCAQEAo5SBzzNzZ4fugit5JZw9JeHqQtkRhTJ8Zdl3CCVKdIWfOI79...
 
 <br>
 
-## <div id='6'> 6. Instance Code Template 생성
-### <div id='6.1'> 6.1 Instance Code Template 작성
+## <div id='6'> 6. Instance Code Template
+
+> 기본적으로 Terraman을 이용한 인스턴스 생성에 필요한 IaC 가 각 CSP당 한 종류씩 등록되어 있다.   
+추가로 필요한 Code Template를 등록하여 클러스터 생성 시 사용이 가능하다.
+
+### <div id='6.1'> 6.1 Instance Code Template 예제
 #### <div id='6.1.1'> 6.1.1 OpenStack
 - Terraman을 사용하여 OpenStack에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
 - [OpenStack IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
@@ -657,22 +658,28 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 </div>
 </details>
 
-### <div id='6.2'> 6.2 Instance Code Template 생성
+### <div id='6.2'> 6.2 Instance Code Template 등록
 - Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 IaC 코드를 등록한다.
 
 <kbd>
   <img src="../../images/terraman/IMG_6_2.png">
 </kbd>
 
-## <div id='7'> 7. Clusters 생성
-### <div id='7.1'> 7.1 Clusters 작성
+## <div id='7'> 7. Clusters
+### <div id='7.1'> 7.1 Cluster 생성
 - Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster를 생성한다.
+  + Cluster Name :: SubCluster로 생성할 클러스터의 이름
+  + Provider :: CSP 선택(AWS, OpenStack, NHN Cloud, Naver Cloud, KT Cloud)
+  + Cloud Account :: CSP별로 등록한 계정정보를 선택
+  + Template :: 템플릿으로 등록된 IaC를 선택
+  + Description :: 생성할 SubCluster의 세부내용 기입(Option)
+  + Template Detail :: 선택한 IaC 템플릿이 표시되고, 수정이 가능함.
 
 <kbd>
   <img src="../../images/terraman/IMG_7_1_1.png">
 </kbd>
 
-- Cluster 생성시 Terraman API에 의해서 Sub Cluster 생성이 진행되며 우측 status 로딩 버튼을 누르게 되면 Cluster Logs 목록 페이지로 이동하게 된다.
+- Cluster 생성시 Terraman API에 의해서 Sub Cluster 생성이 진행되며 우측 status 아이콘 클릭 시 Cluster의 생성상황 확인이 가능하다.
 
 <kbd>
   <img src="../../images/terraman/IMG_7_1_2.png">
@@ -684,7 +691,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
   <img src="../../images/terraman/IMG_7_1_3.png">
 </kbd>
 
-- Sub Cluster 구축이 완료되면 화면과 같이 status가 녹색불이 들어오게 된다.
+- Sub Cluster 구축이 완료되면 화면과 같이 status의 상태아이콘이 녹색으로 변경 된다.
 
 <kbd>
   <img src="../../images/terraman/IMG_7_1_4.png">

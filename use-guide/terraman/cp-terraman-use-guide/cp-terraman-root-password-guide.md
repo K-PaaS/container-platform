@@ -8,16 +8,16 @@
 	1.3. [참고자료](#1.3)
 2. [Prerequisite](#2)  
   2.1. [방화벽 정보](#2.1)
-3. [Terraman 배포 설명](#3)  	
-4. [Cloud Accounts 생성](#4)  
- 4.1. [Cloud Accounts 작성](#4.1)  
+3. [클러스터 배포 프로세스 설명](#3)  	
+4. [Cloud Accounts](#4)  
+ 4.1. [Cloud Accounts 등록](#4.1)  
 　4.1.1. [NAVER](#4.1.1)   
-5. [Instance Code Template 생성](#5)  
-  5.1. [Instance Code Template 작성](#5.1)  
+5. [Instance Code Template](#5)  
+  5.1. [Instance Code Template 예제](#5.1)  
   　5.1.1. [NAVER](#5.1.1)   
-  5.2. [Instance Code Template 생성](#5.2)  
-6. [Clusters 생성](#6)  
- 6.1. [Clusters 작성](#6.1)  
+  5.2. [Instance Code Template 등록](#5.2)  
+6. [Clusters](#6)  
+ 6.1. [Clusters 생성](#6.1)  
 
 ## <div id='1'> 1. 문서 개요
 
@@ -50,7 +50,7 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
     (예: OpenStack API - 8000, 8774, 5000, 9292, 9876, 9696, 8004, 8780, 8776)
 - 각 IaaS에서 생성되는 Instance는 원격 접속을 위한 포트가 열려 있어야 한다.
 
-## <div id='3'> 3. Terraman 배포 설명
+## <div id='3'> 3. 클러스터 배포 프로세스 설명
 - [Clusters](#6) 배포를 위한 [Cloud Accounts](#4)를 기반으로 [Instance Code Template](#5)을 활용해서 Sub Cluster를 배포한다.
 - [Cloud Accounts](#4) 등록 > [Instance Code Template](#5) 등록 또는 기본 IaC 코드 활용 > [Clusters](#6) 등록 순으로 Terraman 배포를 진행한다.
 - 각 메뉴의 자세한 내용은 아래 내용을 참고한다.
@@ -61,8 +61,8 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 
 <br>
 
-## <div id='4'> 4. Cloud Accounts 생성
-### <div id='4.1'> 4.1 Cloud Accounts 작성
+## <div id='4'> 4. Cloud Accounts
+### <div id='4.1'> 4.1 Cloud Accounts 등록
 - Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보를 등록한다.
 #### <div id='4.1.1'> 4.1.1 NAVER
 - 입력시 Ncloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
@@ -88,8 +88,10 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
   <img src="../../images/terraman/IMG_4_1_1_NAVER.png">
 </kbd>
 
-## <div id='5'> 5. Instance Code Template 생성
-### <div id='5.1'> 5.1 Instance Code Template 작성
+## <div id='5'> 5. Instance Code Template
+> 기본적으로 Terraman을 이용한 인스턴스 생성에 필요한 IaC 가 각 CSP당 한 종류씩 등록되어 있다.   
+추가로 필요한 Code Template를 등록하여 클러스터 생성 시 사용이 가능하다.
+### <div id='5.1'> 5.1 Instance Code Template 예제
 #### <div id='5.1.1'> 5.1.1 NAVER
 - Terraman을 사용하여 NAVER에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 인스턴스 생성에 초점을 맞추고 있다.
 - [NAVER IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/NaverCloudPlatform/ncloud/latest/docs#argument-reference)
@@ -306,15 +308,15 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
 </div>
 </details>
 
-### <div id='5.2'> 5.2 Instance Code Template 생성
+### <div id='5.2'> 5.2 Instance Code Template 등록
 - Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 Instance Code Template을 등록한다. 
 
 <kbd>
   <img src="../../images/terraman/IMG_5_2_NAVER.png">
 </kbd>
 
-## <div id='6'> 6. Clusters 생성
-### <div id='6.1'> 6.1 Clusters 작성
+## <div id='6'> 6. Clusters
+### <div id='6.1'> 6.1 Clusters 생성
 - Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster를 생성한다. 
 
 <kbd>
@@ -333,7 +335,7 @@ resource "ncloud_access_control_group_rule" "acg_rule_scn_01" {
   <img src="../../images/terraman/IMG_6_1_3_NAVER.png">
 </kbd>
 
-- Sub Cluster 구축이 완료되면 화면과 같이 status가 녹색불이 들어오게 된다.
+- Sub Cluster 구축이 완료되면 화면과 같이 status의 상태아이콘이 녹색으로 변경 된다.
 
 <kbd>
   <img src="../../images/terraman/IMG_6_1_4_NAVER.png">

@@ -96,7 +96,7 @@ $ sudo systemctl restart portmap
 
 <br>
 
-### <div id='2.2'> 2.2. 동작 확인
+### <div id='2.3'> 2.3. 동작 확인
 NFS Server 설정을 확인한다.
 ```
 $ sudo exportfs -v
