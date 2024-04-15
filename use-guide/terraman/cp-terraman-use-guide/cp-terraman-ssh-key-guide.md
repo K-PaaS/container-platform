@@ -681,7 +681,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
   <img src="../../images/terraman/IMG_7_1_3.png">
 </kbd>
 
-- Sub Cluster 구축이 완료되면 화면과 같이 status가 녹색불이 들어오게 된다.
+- Sub Cluster 구축이 완료되면 화면과 같이 status의 상태아이콘이 녹색으로 변경 된다.
 
 <kbd>
   <img src="../../images/terraman/IMG_7_1_4.png">
