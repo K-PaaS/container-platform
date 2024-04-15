@@ -145,26 +145,23 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 - Key Name은 사용하고자 하는 이름으로 입력한다.
 ```sh
 # ssh-keygen을 이용한 rsa key pair 생성
-$ ssh-keygen -t rsa -m PEM
+$ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
 Generating public/private rsa key pair.
-Enter file in which to save the key (/home/ubuntu/.ssh/id_rsa): [엔터키 입력]
-Enter passphrase (empty for no passphrase): [엔터키 입력]
-Enter same passphrase again: [엔터키 입력]
-Your identification has been saved in /home/ubuntu/.ssh/id_rsa.
-Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub.
+Your identification has been saved in /home/ubuntu/.ssh/id_rsa
+Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub
 The key fingerprint is:
-SHA256:pIG4/G309Dof305mWjdNz1OORx9nQgQ3b8yUP5DzC3w ubuntu@cp-master
+SHA256:odWdv3PDIEpkPuoS53yM0hrsEQZL4mHvM0KwLK2uC57 ubuntu@cp-master
 The key's randomart image is:
-+---[RSA 2048]----+
-|            ..= o|
-|   . .       * B |
-|  . . . .   . = *|
-| . .   +     + E.|
-|  o   o S     +.O|
-|   . o o .     XB|
-|    . o . o   *oO|
-|     .  .. o B oo|
-|        .o. o.o  |
++---[RSA 3072]----+
+|                 |
+|         . . .   |
+|.+ o    = . o    |
+|++= o  * .   .   |
+|oo+o .. S . . .  |
+|.+..o  o o . + . |
+|o +o O. .     *  |
+|=o.o=o*        o |
+|E++o ++          |
 +----[SHA256]-----+
 ```
 ```sh
