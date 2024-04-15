@@ -16,6 +16,7 @@
   2.1.2. [OS](#2.1.2)<br>
   2.1.3. [주요 소프트웨어](#2.1.3)<br>
   2.1.4. [방화벽](#2.1.4)<br>
+  2.1.5. [쿠버네티스 서비스 External IP](#2.1.5)<br>
   2.2. [K-PaaS 컨테이너 플랫폼 클러스터 설치](#2.2)<br>
   2.3. [K-PaaS 컨테이너 플랫폼 Edge 배포 준비](#2.3)<br>
   2.4. [K-PaaS 컨테이너 플랫폼 Edge 배포](#2.4)<br>
@@ -95,11 +96,11 @@ K-PaaS 컨테이너 플랫폼 Edge 배포에 필요한 주요 소프트웨어 �
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubernetes Native|v1.27.5|
-|Kubernetes Native (Edge Node)|v1.22.6|
-|CRI-O|v1.27.1|
-|CRI-O (Edge Node)|v1.22.0|
-|KubeEdge|v1.12.0|
+|Kubernetes Native|v1.28.6|
+|Kubernetes Native (Edge Node)|v1.24.17|
+|CRI-O|v1.28.1|
+|CRI-O (Edge Node)|v1.24.0|
+|KubeEdge|v1.14.4|
 |EdgeMesh|v1.12.0|
 
 <br>
@@ -167,6 +168,104 @@ Edge 노드
 
 <br>
 
+### <div id='2.1.6'> 2.1.6. 쿠버네티스 서비스 External IP (***필수 설정***)
+K-PaaS 컨테이너 플랫폼 서비스 구성을 위해서 특정 서비스에 로드밸런서 타입 설정 및 External IP 설정이 필요하다.
+
+K-PaaS 컨테이너 플랫폼 클러스터의 로드밸런서 타입 서비스에 필요한 External IP 설정 정보는 다음과 같다.
+
+|서비스|설명|비고|
+|---|---|---|
+|CloudCore|K-PaaS 컨테이너 플랫폼 Edge 배포의 CloudCore 서비스를<br> Ingress로 외부 노출하기 위한 서비스|각 클라우드에 1개 인터페이스 생성 필요<br>Public IP 할당 필요|
+<br>
+
+K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 External IP를 할당한다.<br>
+해당 External IP로 외부 통신 및 서비스를 지원하기 위해서는 다음과 같은 설정이 필요하다.
+
+<br>
+
+### NHN 클라우드 (예시)
+***"네트워크 인터페이스 생성" 버튼을 클릭***
+
+***Control Plane 노드와 동일한 네트워크 VPC, 서브넷 선택 후 사설 IP를 지정하여 생성***
+
+![image 008]
+
+<br>
+
+***생성한 인터페이스 선택 후 "플로팅 IP 관리" 버튼을 클릭***
+
+![image 009]
+
+<br>
+
+***플로팅 IP를 생성 및 할당***
+
+![image 010]
+
+<br>
+
+***Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭***
+
+![image 011]
+
+<br>
+
+***네트워크 탭에서 "네트워크 인터페이스 연결 추가" 버튼 클릭***
+
+![image 012]
+
+<br>
+
+***기존 네트워크 인터페이스 지정 클릭 후 인터페이스 선택***
+
+![image 013]
+
+<br>
+
+***"인스턴스 시작" 버튼 클릭***
+
+![image 014]
+
+<br>
+
+### KT 클라우드 (예시)
+***Virtual IP 메뉴에서 "Virtual IP 생성" 버튼을 클릭***
+
+***Control Plane 노드와 동일한 네트워크 Zone, Tier 선택 후 생성***
+
+![image 015]
+
+<br>
+
+***Virtual IP 선택 및 "연결" 버튼 클릭하여 Control Plane VM에 연결***
+
+![image 016]
+
+<br>
+
+***Networking 메뉴에서 "IP 생성" 버튼 클릭하여 Control Plane 노드와 동일한 네트워크 Zone에 공인 IP 생성***
+
+![image 017]
+
+<br>
+
+***"접속 설정" 버튼 클릭하여 Virtual IP 선택 후 Port Forwarding 설정***
+
+![image 018]
+![image 019]
+
+<br>
+
+***"방화벽 설정" 버튼 클릭하여 등록한 접속 설정으로 방화벽 설정***
+
+![image 020]
+
+<br>
+
+***Control Plane 노드에서 ```$ sudo ifconfig {인터페이스명}:1 {VIP} up``` 명령어 실행 (HA Control Plane 구성 시 VIP 연결한 Control Plane 노드에서 실행)***
+
+<br>
+
 ### <div id='2.2'> 2.2. K-PaaS 컨테이너 플랫폼 클러스터 설치
 K-PaaS 컨테이너 플랫폼 Edge 배포를 위해서는 클라우드 환경에 K-PaaS 컨테이너 플랫폼 클러스터가 배포되어있어야 하며, 이후 Edge 환경에 Edge 노드를 배포하여야 한다.
 
@@ -214,7 +313,8 @@ $ vi cp-edge-vars.sh
 
 |환경변수|설명|비고|
 |---|---|---|
-|CLOUDCORE_VIP|Control Plane 노드의 Public IP 정보 입력||
+|CLOUDCORE_PRIVATE_VIP|MetalLB를 통해 CloudCore Service에서 사용할 Private IP||
+|CLOUDCORE_VIP|CloudCore Service에서 사용할 인터페이스에 할당한 Public IP||
 |CLOUDCORE1_NODE_HOSTNAME|CloudCore가 설치될 노드의 호스트명|Control Plane 또는 Worker 노드 중 1개 노드 정보 입력|
 |CLOUDCORE2_NODE_HOSTNAME|CloudCore가 설치될 노드의 호스트명|Control Plane 또는 Worker 노드 중 1개 노드 정보 입력|
 |EDGE_NODE_CNT|Edge 노드의 갯수||
@@ -228,6 +328,7 @@ $ vi cp-edge-vars.sh
 ```
 #!/bin/bash
 
+export CLOUDCORE_PRIVATE_VIP=
 export CLOUDCORE_VIP=
 
 export CLOUDCORE1_NODE_HOSTNAME=
@@ -261,11 +362,11 @@ $ source deploy-cp-edge.sh
 ```
 $ kubectl get nodes
 NAME                 STATUS   ROLES                  AGE     VERSION
-cp-edge              Ready    agent,edge             5m40s   v1.22.6-kubeedge-v1.12.0
-cp-master            Ready    control-plane,master   39m     v1.27.5
-cp-worker-1          Ready    <none>                 38m     v1.27.5
-cp-worker-2          Ready    <none>                 38m     v1.27.5
-cp-worker-3          Ready    <none>                 38m     v1.27.5
+cp-edge              Ready    agent,edge             5m40s   v1.24.17-kubeedge-v1.14.4
+cp-master            Ready    control-plane,master   39m     v1.28.6
+cp-worker-1          Ready    <none>                 38m     v1.28.6
+cp-worker-2          Ready    <none>                 38m     v1.28.6
+cp-worker-3          Ready    <none>                 38m     v1.28.6
 
 $ kubectl get pods -n kube-system
 NAME                                       READY   STATUS    RESTARTS   AGE
@@ -336,5 +437,19 @@ $ source reset-cp-edge.sh
 <br>
 
 [image 001]:images/edge-v1.2.png
+
+[image 008]:../standalone/images/kpaas-cp-cluster-8.png
+[image 009]:../standalone/images/kpaas-cp-cluster-9.png
+[image 010]:../standalone/images/kpaas-cp-cluster-10.png
+[image 011]:../standalone/images/kpaas-cp-cluster-11.png
+[image 012]:../standalone/images/kpaas-cp-cluster-12.png
+[image 013]:../standalone/images/kpaas-cp-cluster-13.png
+[image 014]:../standalone/images/kpaas-cp-cluster-14.png
+[image 015]:../standalone/images/kpaas-cp-cluster-15.png
+[image 016]:../standalone/images/kpaas-cp-cluster-16.png
+[image 017]:../standalone/images/kpaas-cp-cluster-17.png
+[image 018]:../standalone/images/kpaas-cp-cluster-18.png
+[image 019]:../standalone/images/kpaas-cp-cluster-19.png
+[image 020]:../standalone/images/kpaas-cp-cluster-20.png
 
 ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 Edge 배포 가이드

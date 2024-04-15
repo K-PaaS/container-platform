@@ -31,6 +31,8 @@
 
 4. [Resource 생성 시 주의사항](#4)
 
+5. [Kubeflow 설치](#5)
+
 <br>
 
 ## <div id='1'> 1. 문서 개요
@@ -136,15 +138,15 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 
 |Python 패키지|버전|
 |---|---|
-|ansible|7.6.0|
-|cryptography|41.0.1|
+|ansible|8.5.0|
+|cryptography|41.0.4|
 |jinja2|3.1.2|
 |jmespath|1.0.1|
 |MarkupSafe|2.1.3|
-|netaddr|0.8.0|
+|netaddr|0.9.0|
 |pbr|5.11.1|
-|ruamel.yaml|0.17.31|
-|ruamel.yaml.clib|0.2.7|
+|ruamel.yaml|0.17.35|
+|ruamel.yaml.clib|0.2.8|
 
 <br>
 
@@ -153,15 +155,15 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubespray|2.23.0|
-|Kubernetes Native|1.27.5|
-|CRI-O|1.27.1|
+|Kubespray|2.24.1|
+|Kubernetes Native|1.28.6|
+|CRI-O|1.28.1|
 |MetalLB|0.13.9|
 |Ingress Nginx Controller|1.8.2|
-|Helm|3.12.3|
+|Helm|3.13.1|
 |Istio|1.19.0|
 |Podman|3.4.4|
-|OpenTofu|1.6.0|
+|OpenTofu|1.6.0-alpha5|
 |NFS Common|-|
 |nfs-provisioner|4.0.2|
 |Rook Ceph|1.12.3|
@@ -508,26 +510,23 @@ SSH Key 생성 및 배포 이후의 모든 설치과정은 **Install 인스턴�
 
 **Install 인스턴스 또는 Control Plane 노드**에서 RSA 공개키를 생성한다.
 ```
-$ ssh-keygen -t rsa -m PEM
+$ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
 Generating public/private rsa key pair.
-Enter file in which to save the key (/home/ubuntu/.ssh/id_rsa): [엔터키 입력]
-Enter passphrase (empty for no passphrase): [엔터키 입력]
-Enter same passphrase again: [엔터키 입력]
-Your identification has been saved in /home/ubuntu/.ssh/id_rsa.
-Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub.
+Your identification has been saved in /home/ubuntu/.ssh/id_rsa
+Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub
 The key fingerprint is:
-SHA256:pIG4/G309Dof305mWjdNz1OORx9nQgQ3b8yUP5DzC3w ubuntu@cp-master
+SHA256:odWdv3PDIEpkPuoS53yM0hrsEQZL4mHvM0KwLK2uC57 ubuntu@cp-master
 The key's randomart image is:
-+---[RSA 2048]----+
-|            ..= o|
-|   . .       * B |
-|  . . . .   . = *|
-| . .   +     + E.|
-|  o   o S     +.O|
-|   . o o .     XB|
-|    . o . o   *oO|
-|     .  .. o B oo|
-|        .o. o.o  |
++---[RSA 3072]----+
+|                 |
+|         . . .   |
+|.+ o    = . o    |
+|++= o  * .   .   |
+|oo+o .. S . . .  |
+|.+..o  o o . + . |
+|o +o O. .     *  |
+|=o.o=o*        o |
+|E++o ++          |
 +----[SHA256]-----+
 ```
 
@@ -714,10 +713,10 @@ $ source deploy-cp-cluster.sh
 ```
 $ kubectl get nodes
 NAME                 STATUS   ROLES                  AGE   VERSION
-cp-master            Ready    control-plane          12m   v1.27.5
-cp-worker-1          Ready    <none>                 10m   v1.27.5
-cp-worker-2          Ready    <none>                 10m   v1.27.5
-cp-worker-3          Ready    <none>                 10m   v1.27.5
+cp-master            Ready    control-plane          12m   v1.28.6
+cp-worker-1          Ready    <none>                 10m   v1.28.6
+cp-worker-2          Ready    <none>                 10m   v1.28.6
+cp-worker-3          Ready    <none>                 10m   v1.28.6
 
 $ kubectl get pods -n kube-system
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -775,6 +774,15 @@ $ source reset-cp-cluster.sh
 ||cp-high-limitrange|
 |Pod|nodes|
 ||resources|
+
+<br>
+
+## <div id='5'> 5. Kubeflow 설치
+`단일 클라우드` 환경 기준에서는 클러스터 배포 이후에 별도의 과정을 통해 Kubeflow 설치를 지원한다.
+
+```
+$ source deploy-cp-kubeflow.sh
+```
 
 <br>
 
