@@ -158,6 +158,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 |Kubespray|2.24.1|
 |Kubernetes Native|1.28.6|
 |CRI-O|1.28.1|
+|Calico|3.26.4|
 |MetalLB|0.13.9|
 |Ingress Nginx Controller|1.8.2|
 |Helm|3.13.1|
@@ -165,7 +166,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 |Podman|3.4.4|
 |OpenTofu|1.6.0-alpha5|
 |NFS Common|-|
-|nfs-provisioner|4.0.2|
+|nfs-subdir-external-provisioner|4.0.2|
 |Rook Ceph|1.12.3|
 |Kubeflow|1.7.0|
 
