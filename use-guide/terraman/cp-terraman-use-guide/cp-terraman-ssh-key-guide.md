@@ -1,5 +1,7 @@
 ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](https://github.com/K-PaaS/container-platform/blob/master/use-guide/Readme.md) > [Terraman 사용 가이드](../cp-terraman-guide.md) > Terraman 배포 가이드
 
+<br>
+
 ## Table of Contents
 
 1. [문서 개요](#1)  
@@ -8,7 +10,7 @@
  1.3. [참고자료](#1.3)
 2. [Prerequisite](#2)  
  2.1. [방화벽 정보](#2.1)
-3. [클러스터 배포 프로세스 설명](#3)  
+3. [클러스터 배포 프로세스](#3)  
 4. [Cloud Accounts](#4)  
  4.1. [Cloud Accounts 등록](#4.1)  
 　4.1.1. [OpenStack](#4.1.1)   
@@ -16,9 +18,8 @@
 　4.1.3. [NHN](#4.1.3)   
 5. [SSH Keys](#5)  
  5.1. [SSH Keys 등록](#5.1)  
-　5.1.1. [Sub Cluster 배포를 위한 SSH Keys 등록](#5.1.1)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.1.1.1. [기존 SSH Key 사용](#5.1.1.1.)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.1.1.2. [SSH Key 신규 생성](#5.1.1.2.)  
+　5.1.1. [기존 SSH Key 등록](#5.1.1)   
+　5.1.2. [SSH Key 신규 등록](#5.1.2)   
 6. [Instance Code Template](#6)  
  6.1. [Instance Code Template 예제](#6.1)  
 　6.1.1. [OpenStack](#6.1.1)   
@@ -28,32 +29,43 @@
 7. [Clusters](#7)  
  7.1. [Clusters 생성](#7.1)  
 
+<br>
+
 ## <div id='1'> 1. 문서 개요
 
 ### <div id='1.1'> 1.1. 목적
-#### 들어가기 전
-- **Host Cluster**: 컨테이너플랫폼의 Kubernetes 메인 클러스터
-- **Sub Cluster**: 컨테이너 플랫폼 포털을 통해 신규 배포되거나, 등록된 관리 클러스터
+본 문서(Terraman 배포 가이드)는 **OpenTofu**를 이용하여 서브 클러스터를 생성할 수 있도록 각 IaaS별 **HCL(Hashicorp Configuration Language)** 구문을 설명하고, 사용자가 **IaC(Infrastructure as Code)** 코드를 작성하여 서브 클러스터를 배포하는데 도움을 주기 위한 목적으로 작성되었다.
 
-Terraman 배포 가이드는 OpenTofu를 이용하여 Sub Cluster를 생성하기 위한 각 IaaS별 HCL(Hashicorp Configuration Language) 구문을 설명하여, 사용자가 실제 배포할 IaC 코드를 작성하고 Terraman을 이용하여 Sub Cluster 배포하는데 도움을 주기 위한 목적으로 제작되었다.
+|클러스터|설명|
+|---|---|
+|호스트 클러스터(Host Cluster)|컨테이너플랫폼의 Kubernetes 메인 클러스터|
+|서브 클러스터(Sub Cluster) |컨테이너 플랫폼 포털을 통해 신규 생성되거나, 등록된 관리 클러스터|
+
+
 ### <div id='1.2'> 1.2. 범위
 Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
-### <div id='1.3'> 1.3. 참고자료
-- OpenStack
-> https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs  
-- AWS
-> https://registry.terraform.io/providers/hashicorp/aws/latest/docs
-- NHN
-> https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs 
 
-> https://docs.nhncloud.com/ko/Compute/Instance/ko/terraform-guide/#tf
+
+### <div id='1.3'> 1.3. 참고자료
+**OpenStack** 
+> [OpenStack Provider](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs) <br>
+
+**AWS**
+> [AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) <br>
+
+**NHN**
+> [NHN Terraform 사용 가이드](https://docs.nhncloud.com/ko/Compute/Instance/ko/terraform-guide/#tf)<br>
+> [OpenStack Provider](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs) <br>
+
+
+<br>
 
 ## <div id='2'> 2. Prerequisite
-- [Container Platform Cluster](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md) 설치가 사전에 진행 되어야한다.
-- [Container Platform Portal](https://github.com/K-PaaS/container-platform/blob/master/install-guide/portal/cp-portal-standalone-guide.md) 설치가 사전에 진행 되어야한다.
-- 아래는 Terraman을 실행하기 전 필요한 사전 작업에 대한 설명이다.
+K-PaaS 컨테이너 플랫폼 클러스터, 포털 배포가 사전에 진행되어야한다.
+> [[K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드]](../../../install-guide/standalone/cp-cluster-install-single.md) <br>
+> [[K-PaaS 컨테이너 플랫폼 포털 배포 가이드]](../../../install-guide/portal/cp-portal-standalone-guide.md)
 
-#### <div id='2.1'> 2.1 방화벽 정보
+### <div id='2.1'> 2.1 방화벽 정보
 - Master Node
 
 |프로토콜|포트|비고|
@@ -61,89 +73,94 @@ Kubernetes Cluster를 배포하는 것을 기준으로 작성되었다.
 |TCP|22|SSH|
 |TCP|6443|Kubernetes API Server|
 - IaaS 별 API 방화벽 오픈  
-    (예: OpenStack API - 8000, 8774, 5000, 9292, 9876, 9696, 8004, 8780, 8776)
+    (예시: OpenStack API - 8000, 8774, 5000, 9292, 9876, 9696, 8004, 8780, 8776)
 - 각 IaaS에서 생성되는 Instance는 원격 접속을 위한 포트가 열려 있어야 한다.
 
-## <div id='3'> 3. 클러스터 배포 프로세스 설명
-- [Clusters](#7) 배포를 위한 [SSH Keys](#5)와 [Cloud Accounts](#4)를 기반으로 [Instance Code Template](#6)을 활용해서 Sub Cluster를 배포한다.
-- [Cloud Accounts](#4) 등록 > [SSH Keys](#5) 등록 > [Instance Code Template](#6) 등록 또는 기본 IaC 코드 활용 > [Clusters](#7) 등록 순으로 Terraman 배포를 진행한다.
-- 각 메뉴의 자세한 내용은 아래 내용을 참고한다.
+<br>
 
-<kbd>
-  <img src="../../images/terraman/IMG_3.png">
-</kbd>
+## <div id='3'> 3. 클러스터 배포 프로세스
+Terraman을 통한 `SSH Key` 방식의 클러스터 배포는 **Cloud Accounts**와 **SSH Keys** 설정을 통해 **Instance Code Template**을 활용하여 서브 클러스터를 배포한다.
+1. [Cloud Accounts 등록](#4)
+2. [SSH Keys 등록](#5)
+3. [Instance Code Template 등록 또는 기본 IaC 코드 활용](#6) 
+4. [Clusters 배포](#7)
+ 
 
+<img src="../../images/terraman/IMG_3.png">
+
+
+<br>
 <br>
 
 ## <div id='4'> 4. Cloud Accounts
 ### <div id='4.1'> 4.1 Cloud Account 등록
-- Container Platform Portal 화면에서 Global > Cloud Accounts 메뉴에서 Cloud Accounts 정보를 등록한다.
+컨테이너 플랫폼 포털 메뉴 Global > Cloud Accounts에서 Cloud Accounts 정보를 등록한다.
 
 #### <div id='4.1.1'> 4.1.1 OpenStack
-- 입력시 OpenStack Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
-- OpenStack은 RC 파일이라는 클라이언트 환경 스크립트를 지원하며 OpenStack RC 파일은 OpenStack 대시보드 우측 상단의 계정을 클릭하면 다운로드 받을 수 있다.
+아래 항목의 OpenStack Cloud 정보를 입력한다.
+- OpenStack은 RC 파일이라는 클라이언트 환경 스크립트를 지원하며, OpenStack RC 파일은 OpenStack 대시보드 우측 상단의 계정을 클릭하면 다운로드 받을 수 있다.
 
-  |Cloud Accounts 입력|OpenStack Cloud 정보| 정보 위치|
-  |:------:|:------:|:------:|
-  |auth_url 필드|OS_AUTH_URL|OpenStack RC 파일 참고|
-  |password 필드|계정 비밀번호|계정 비밀번호|
-  |user_name 필드|계정 아이디|계정 아이디|
-  |project 필드|OS_PROJECT_ID|OpenStack RC 파일 참고|
-  |region 필드|OS_REGION_NAME|OpenStack RC 파일 참고|
+|항목|OpenStack Cloud 정보| 정보 위치|
+|:------:|:------:|:------:|
+|auth_url 필드|OS_AUTH_URL|OpenStack RC 파일 참고|
+|password 필드|계정 비밀번호|계정 비밀번호|
+|user_name 필드|계정 아이디|계정 아이디|
+|project 필드|OS_PROJECT_ID|OpenStack RC 파일 참고|
+|region 필드|OS_REGION_NAME|OpenStack RC 파일 참고|
 
-<kbd>
-  <img src="../../images/terraman/IMG_4_1_1.png">
-</kbd>
+
+<img src="../../images/terraman/IMG_4_1_1.png">
+
 
 #### <div id='4.1.2'> 4.1.2 AWS
-- 입력시 AWS Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
+아래 항목의 AWS Cloud 정보를 입력한다.
 - AWS 자격증명은 IAM 대시보드에서 발급 받을 수 있다. (분실시 재발급 필요)
-  |Cloud Accounts 입력|AWS Cloud 정보|정보 위치|
-  |:------:|:------:|:------:|
-  |accessKey 필드|엑세스 키 ID|IAM 대시보드에서 발급|
-  |secretKey 필드|비밀 엑세스 키|IAM 대시보드에서 발급|
-  |region 필드|사용 리전|계정 정보 확인[(리전 이름 가이드 참고)](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)|
+  
+|항목|AWS Cloud 정보|정보 위치|
+|:------:|:------:|:------:|
+|accessKey 필드|엑세스 키 ID|IAM 대시보드에서 발급|
+|secretKey 필드|비밀 엑세스 키|IAM 대시보드에서 발급|
+|region 필드|사용 리전|계정 정보 확인[(리전 이름 가이드 참고)](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)|
 
-<kbd>
-  <img src="../../images/terraman/IMG_4_1_2.png">
-</kbd>
+<img src="../../images/terraman/IMG_4_1_2.png">
 
 #### <div id='4.1.3'> 4.1.3 NHN
-- 입력시 NHN Cloud 정보를 아래와 같이 Cloud Accounts 등록 화면에 입력하면 된다.  
+아래 항목의 NHN Cloud 정보를 입력한다.
 - NHN Cloud는 Compute > Instance 페이지에서 인증 정보 확인이 가능하다.
-  |Cloud Accounts 입력|NHN Cloud 정보|정보 위치|  
-  |:------:|:------:|:------:|
-  |auth_url 필드|신원 서비스(identity)|Instance 페이지 > API 엔드포인트 설정 > 신원 서비스(identity)|  
-  |password 필드|계정 비밀번호|계정 비밀번호|  
-  |user_name 필드|계정 아이디|계정 아이디|  
-  |project 필드|테넌트 ID|Instance 페이지 > API 엔드포인트 설정 > 테넌트 ID|    
-  |region 필드|사용 리전|계정 정보 확인[(리전 이름 가이드 참고)](https://docs.nhncloud.com/ko/Storage/Object%20Storage/ko/s3-api-guide/#signature)| 
+  
+|항목|NHN Cloud 정보|정보 위치|  
+|:------:|:------:|:------:|
+|auth_url 필드|신원 서비스(identity)|Instance 페이지 > API 엔드포인트 설정 > 신원 서비스(identity)|  
+|password 필드|계정 비밀번호|계정 비밀번호|  
+|user_name 필드|계정 아이디|계정 아이디|  
+|project 필드|테넌트 ID|Instance 페이지 > API 엔드포인트 설정 > 테넌트 ID|    
+|region 필드|사용 리전|계정 정보 확인[(리전 이름 가이드 참고)](https://docs.nhncloud.com/ko/Storage/Object%20Storage/ko/s3-api-guide/#signature)| 
 
-<kbd>
-  <img src="../../images/terraman/IMG_4_1_3.png">
-</kbd>
+
+<img src="../../images/terraman/IMG_4_1_3.png">
+
+
+<br>
+<br>
+
 
 ## <div id='5'> 5. SSH Keys
 ### <div id='5.1'>  5.1. SSH Keys 등록
-- SSH Key 목적
-  + 컨테이너 플랫폼 Terraman을 통해 신규 배포되는 Instance에 접근하여 Sub Cluster 배포를 하기 위해 등록한다.
+컨테이너 플랫폼 Terraman을 통해 신규 생성되는 인스턴스에 접근하기 위해서 SSH Key가 필요하다. <br>
+컨테이너 플랫폼 포털 메뉴 Global > SSH Keys 에서 SSH Key를 등록한다.
 
-#### <div id='5.1.1'> 5.1.1 Sub Cluster 배포를 위한 SSH Keys 등록
-- Container Platform Portal 화면에서 Global > SSH Keys 메뉴에서 SSH Key를 등록한다.
-##### <div id='5.1.1.1.'> 5.1.1.1. 기존 SSH Key 사용
-- Cloud Platform에서 발급 받은 개인키를 소유하고 있다면 해당 개인키를 포털 SSH Keys 메뉴에 등록해준다.
-- SSH Key Name은 사용하고자 하는 이름으로 입력한다.
+#### <div id='5.1.1'> 5.1.1. 기존 SSH Key 등록
+해당 클라우드 서비스에서 발급 받은 개인키를 소유하고 있다면 해당 키를 SSH Keys 메뉴에 등록한다.
+- SSH Key 명은 사용하고자 하는 이름으로 입력한다.
 
-<kbd>
-  <img src="../../images/terraman/IMG_5_1_1_1.png">
-</kbd>
+<img src="../../images/terraman/IMG_5_1_1_1.png">
 
-<br>
 
-##### <div id='5.1.1.2.'> 5.1.1.2. SSH Key 신규 생성
-- 신규로 SSH Key를 발급할 경우 Cloud Platform에 공개키를 등록하고 컨테이너 플랫폼 포털의 SSH Keys 메뉴에 개인키를 등록한다.
-- Key Name은 사용하고자 하는 이름으로 입력한다.
-```sh
+
+#### <div id='5.1.2'> 5.1.2. SSH Key 신규 등록
+신규로 SSH Key를 발급할 경우 해당 클라우드 서비스에 공개키를 등록하고 컨테이너 플랫폼 포털의 SSH Keys 메뉴에 개인키를 등록한다.
+
+```bash
 # ssh-keygen을 이용한 rsa key pair 생성
 $ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
 Generating public/private rsa key pair.
@@ -164,7 +181,7 @@ The key's randomart image is:
 |E++o ++          |
 +----[SHA256]-----+
 ```
-```sh
+```bash
 # rsa key pair 생성 확인
 $ ls .ssh/
 id_rsa  id_rsa.pub
@@ -179,31 +196,24 @@ $ cat .ssh/id_rsa
 MIIEogIBAAKCAQEAo5SBzzNzZ4fugit5JZw9JeHqQtkRhTJ8Zdl3CCVKdIWfOI79...
 -----END RSA PRIVATE KEY-----
 ```
-- 예시) Cloud Platform(OpenStack) 공개키(id_rsa.pub) 등록
 
-<kbd>
-  <img src="../../images/terraman/IMG_5_1_1_2.png">
-</kbd>
 
-<br>
+##### 예시) Cloud Platform(OpenStack) 공개키(id_rsa.pub) 등록
+<img src="../../images/terraman/IMG_5_1_1_2.png">
 
-- 예시) Container Platform 개인키(id_rsa) 등록
 
-<kbd>
-  <img src="../../images/terraman/IMG_5_1_1_1.png">
-</kbd>
+##### 예시) 컨테이너 플랫폼 포털 SSH Keys 개인키(id_rsa) 등록
+<img src="../../images/terraman/IMG_5_1_1_1.png">
 
 <br>
 
 ## <div id='6'> 6. Instance Code Template
-
-> 기본적으로 Terraman을 이용한 인스턴스 생성에 필요한 IaC 가 각 CSP당 한 종류씩 등록되어 있다.   
-추가로 필요한 Code Template를 등록하여 클러스터 생성 시 사용이 가능하다.
+> 기본적으로 인스턴스 생성에 필요한 Code Template은 각 CSP당 한 종류씩 등록되어 있다. 추가로 필요한 Code Template은 신규로 등록하여 클러스터 생성 시 사용이 가능하다.
 
 ### <div id='6.1'> 6.1 Instance Code Template 예제
 #### <div id='6.1.1'> 6.1.1 OpenStack
-- Terraman을 사용하여 OpenStack에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
-- [OpenStack IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
+Terraman을 사용하여 OpenStack에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 인스턴스 생성에 맞춰져 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
+> [OpenStack IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
 *예시*
   + 인스턴스 1개 생성시 
@@ -215,7 +225,7 @@ MIIEogIBAAKCAQEAo5SBzzNzZ4fugit5JZw9JeHqQtkRhTJ8Zdl3CCVKdIWfOI79...
     - resource "openstack_compute_instance_v2" "worker3" {...} ...
 
 <details>
-<summary>OpenStack Instance Code Template </summary>
+<summary> :page_facing_up: <b>OpenStack Instance Code Template</b> </summary>
 <div markdown="1">
 
 ```
@@ -330,8 +340,8 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 </details>
 
 #### <div id='6.1.2'> 6.1.2 AWS
-- Terraman을 사용하여 AWS에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 이미 등록된 키페어 및 OS 이미지를 활용하는 템플릿에 맞춰져 있다. 그러므로 키페어 및 OS 이미지는 사전에 생성되어 있어야 한다.
-- [AWS IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#aws-configuration-reference)
+Terraman을 사용하여 AWS에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 이미 등록된 키페어 및 OS 이미지를 활용하는 템플릿에 맞춰져 있다. 그러므로 키페어 및 OS 이미지는 사전에 생성되어 있어야 한다.
+> [AWS IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#aws-configuration-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
 *예시*
   + 인스턴스 1개 생성시 
@@ -343,7 +353,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
     - resource "aws_instance" "worker3" {...} ...
 
 <details>
-<summary>AWS Instance Code Template </summary>
+<summary> :page_facing_up: <b>AWS Instance Code Template</b></summary>
 <div markdown="2">
 
 ```
@@ -521,8 +531,8 @@ resource "aws_nat_gateway" "aws-nat" {
 </details>
 
 #### <div id='6.1.3'> 6.1.3 NHN
-- Terraman을 사용하여 NHN에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 인스턴스 생성에 집중되어 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
-- [NHN IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
+Terraman을 사용하여 NHN에서 인스턴스를 생성하는 방법을 설명한다. 기본 IaC 코드는 인스턴스 생성에 맞춰져 있으며, *네트워크, 키페어, 보안 그룹 등*은 이미 IaaS에 생성된 정보를 활용한다. 따라서 인스턴스 이외의 다른 리소스는 미리 생성되어 있어야 한다.
+> [NHN IaC 코드 작성시 변수 참고](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs#configuration-reference)
 - 인스턴스 생성시 "master"와 "worker" 명칭을 반드시 표기해야 한다.  
 *예시*
   + 인스턴스 1개 생성시 
@@ -534,7 +544,7 @@ resource "aws_nat_gateway" "aws-nat" {
     - resource "openstack_compute_instance_v2" "worker3" {...} ...
 
 <details>
-<summary>NHN Instance Code Template </summary>
+<summary> :page_facing_up: <b>NHN Instance Code Template</b></summary>
 <div markdown="3">
 
 ```
@@ -658,47 +668,43 @@ resource "openstack_compute_floatingip_associate_v2" "fip_2" {
 </div>
 </details>
 
-### <div id='6.2'> 6.2 Instance Code Template 등록
-- Container Platform Portal 화면에서 Global > Instance Code Template 메뉴에서 IaC 코드를 등록한다.
+<br>
 
-<kbd>
-  <img src="../../images/terraman/IMG_6_2.png">
-</kbd>
+### <div id='6.2'> 6.2 Instance Code Template 등록
+컨테이너 플랫폼 포털 메뉴 Global > Instance Code Template 에서 IaC 코드를 등록한다.
+
+<img src="../../images/terraman/IMG_6_2.png">
+
+<br>
 
 ## <div id='7'> 7. Clusters
 ### <div id='7.1'> 7.1 Cluster 생성
-- Container Platform Portal 화면에서 Global > Clusters 메뉴에서 Cluster를 생성한다.
-  + Cluster Name :: SubCluster로 생성할 클러스터의 이름
-  + Provider :: CSP 선택(AWS, OpenStack, NHN Cloud, Naver Cloud, KT Cloud)
-  + Cloud Account :: CSP별로 등록한 계정정보를 선택
-  + Template :: 템플릿으로 등록된 IaC를 선택
-  + Description :: 생성할 SubCluster의 세부내용 기입(Option)
-  + Template Detail :: 선택한 IaC 템플릿이 표시되고, 수정이 가능함.
+컨테이너 플랫폼 포털 메뉴  Global > Clusters 에서 Cluster 생성을 위한 아래 항목을 입력한다.
 
-<kbd>
-  <img src="../../images/terraman/IMG_7_1_1.png">
-</kbd>
+|항목|설명|
+|---|---|
+|Cluster Name|생성할 클러스터의 이름|
+|Provider|CSP 선택(AWS, OpenStack, NHN Cloud, Naver Cloud)|
+|Cloud Account|CSP 별 등록한 계정정보를 선택| 
+|Template|등록된 Code Template 선택| 
+|Description|생성할 클러스터의 세부내용 기입(Option)|
+|Template Detail|선택한 Code Template이 표시되고, 수정 가능함|
 
-- Cluster 생성시 Terraman API에 의해서 Sub Cluster 생성이 진행되며 우측 status 아이콘 클릭 시 Cluster의 생성상황 확인이 가능하다.
+<img src="../../images/terraman/IMG_7_1_1.png">
 
-<kbd>
-  <img src="../../images/terraman/IMG_7_1_2.png">
-</kbd>
 
-- Cluster Logs 목록 페이지에서 Sub Cluster 진행 사항을 실시간으로 확인할 수 있다.
+##### Cluster 생성시 Terraman API에 의해서 서브 클러스터 생성이 진행되며 우측 status 항목을 통해 클러스터 상태 확인이 가능한다. 
+<img src="../../images/terraman/IMG_7_1_2.png">
 
-<kbd>
-  <img src="../../images/terraman/IMG_7_1_3.png">
-</kbd>
+##### Cluster Logs 목록 페이지(status 아이콘 클릭)에서 클러스터 생성의 진행 상황을 로그로 확인 가능하다.
+<img src="../../images/terraman/IMG_7_1_3.png">
 
-- Sub Cluster 구축이 완료되면 화면과 같이 status의 상태아이콘이 녹색으로 변경 된다.
+##### 클러스터 배포가 완료되면 화면과 같이 status의 상태 아이콘이 녹색으로 변경된다.
+<img src="../../images/terraman/IMG_7_1_4.png">
 
-<kbd>
-  <img src="../../images/terraman/IMG_7_1_4.png">
-</kbd>
+##### 클러스터 배포가 완료되면 아래와 같이 Overview 페이지에 서브 클러스터로 등록 된 것을 확인할 수 있다.
+<img src="../../images/terraman/IMG_7_1_5.png">
 
-- Sub Cluster 구축이 완료되면 화면과 같이 Overview 페이지에 Sub Cluster 등록이 된 것을 확인할 수 있다.
+<br>
 
-<kbd>
-  <img src="../../images/terraman/IMG_7_1_5.png">
-</kbd>
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](https://github.com/K-PaaS/container-platform/blob/master/use-guide/Readme.md) > [Terraman 사용 가이드](../cp-terraman-guide.md) > Terraman 배포 가이드
