@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 단독 형 컨테이너 플랫폼 파이프라인 배포 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 컨테이너 플랫폼 파이프라인 배포 가이드
 
 <br>
 
@@ -30,7 +30,7 @@
 
 ## <div id='1'>1. 문서 개요
 ### <div id='1.1'>1.1. 목적
-본 문서(단독 형 컨테이너 플랫폼 파이프라인 배포 가이드)는 쿠버네티스 클러스터 및 단독 형 컨테이너 플랫폼 포털을 설치하고 단독 형 파이프라인 배포 방법을 기술하였다.
+본 문서(컨테이너 플랫폼 파이프라인 배포 가이드)는 쿠버네티스 클러스터 및 컨테이너 플랫폼 포털을 설치하고 파이프라인 배포 방법을 기술하였다.
 
 <br>
 
@@ -58,7 +58,7 @@ Kubespray를 통해 설치된 Kubernetes Cluster 환경에 컨테이너 플랫�
 ### <div id='2.1'>2.1. 컨테이너 플랫폼 포털 설치
 컨테이너 플랫폼 파이프라인에서 사용할 인프라로 인증서버 **KeyCloak**, 데이터베이스 **MariaDB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
 K-PaaS 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치하므로 아래 가이드를 참조하여 사전 설치를 진행한다.
-> [[단독 형 컨테이너 플랫폼 포털 배포]](../portal/cp-portal-standalone-guide.md)
+> [[컨테이너 플랫폼 포털 배포]](../portal/cp-portal-standalone-guide.md)
 
 <br>
 
@@ -67,21 +67,21 @@ K-PaaS 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설�
 컨테이너 플랫폼 파이프라인 설치 완료 시 idle 상태에서의 사용 resource는 다음과 같다.
 ```bash
 NAME                                                     CPU(cores)   MEMORY(bytes)
-cp-pipeline-api-deployment-bb6f7bd46-nl4j4               1m           224Mi
-cp-pipeline-common-api-deployment-54c646c95c-87k5g       2m           255Mi
-cp-pipeline-config-server-deployment-78675b565d-8kxf9    2m           170Mi
-cp-pipeline-inspection-api-deployment-6bf9c4479d-d6xgb   1m           158Mi
-cp-pipeline-jenkins-deployment-779c6d7bc9-pn782          3m           1319Mi
+cp-pipeline-api-deployment-6d99f4c7d7-88h64              1m           224Mi
+cp-pipeline-common-api-deployment-7488bc6d5d-q5wvt       2m           255Mi
+cp-pipeline-config-server-deployment-5f676b858c-vxd6d    2m           170Mi
+cp-pipeline-inspection-api-deployment-f5bfbdccc-pk5bk    1m           158Mi
+cp-pipeline-jenkins-deployment-5f75b74b6d-vc25p          3m           1319Mi
 cp-pipeline-postgresql-postgresql-0                      4m           58Mi
-cp-pipeline-sonarqube-sonarqube-6d9c6b579f-2xkkw         7m           1744Mi
-cp-pipeline-ui-deployment-5db955b77b-snkpl               1m           337Mi
+cp-pipeline-sonarqube-sonarqube-5f6c94bdbc-rqrf8         7m           1744Mi
+cp-pipeline-ui-deployment-845bb6999f-kr78p               1m           337Mi
 ```
 컨테이너 플랫폼 파이프라인을 설치할 클러스터 환경에는 클러스터 총합 최소 **4Gi**의 여유 메모리를 권장한다.
 
 컨테이너 플랫폼 파이프라인 설치 완료 시 Persistent Volume 사용 resource는 다음과 같다.
 ```bash
 NAME                                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS
-cp-pipeline-jenkins-pv                     Bound    pvc-4bf64900-d25c-482f-9aa3-baa07c11cdd1   20Gi       RWO            cp-storageclass
+cp-pipeline-jenkins-pvc                    Bound    pvc-4bf64900-d25c-482f-9aa3-baa07c11cdd1   20Gi       RWO            cp-storageclass
 data-cp-pipeline-postgresql-postgresql-0   Bound    pvc-f61096ac-5e2b-4105-9ed3-04a9a7d999cb   8Gi        RWX            cp-storageclass
 ```
 컨테이너 플랫폼 파이프라인을 설치할 클러스터 환경에는 NFS 스토리지 용량 **28Gi**의 여유 용량을 권장한다.<br>
@@ -95,7 +95,7 @@ data-cp-pipeline-postgresql-postgresql-0   Bound    pvc-f61096ac-5e2b-4105-9ed3-
 :bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
 
 + 컨테이너 플랫폼 파이프라인 Deployment 파일 다운로드 :  
-  [cp-pipeline-deployment-v1.5.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/LstLf2EHojkPEnE/download)
+  [cp-pipeline-deployment-v1.5.2.tar.gz](https://nextcloud.k-paas.org/index.php/s/2RA8xkXfFKT2L8c/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -103,13 +103,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/LstLf2EHojkPEnE/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/2RA8xkXfFKT2L8c/download
 
 $ ls ~/workspace/container-platform
-  cp-pipeline-deployment-v1.5.1.tar.gz ...
+  cp-pipeline-deployment-v1.5.2.tar.gz ...
   
 # Deployment 파일 압축 해제
-$ tar -xvf cp-pipeline-deployment-v1.5.1.tar.gz
+$ tar -xvf cp-pipeline-deployment-v1.5.2.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성
@@ -130,30 +130,23 @@ $ cd ~/workspace/container-platform/cp-pipeline-deployment/script
 $ vi cp-pipeline-vars.sh
 ```
 ```bash                                                  
-K8S_MASTER_NODE_IP="{k8s master node public ip}"                 # Kubernetes master node public ip
-K8S_STORAGECLASS="cp-storageclass"                               # Kubernetes StorageClass Name (e.g. cp-storageclass)
-HOST_DOMAIN="{host domain}"                                      # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
-PROVIDER_TYPE="{container platform pipeline provider type}"      # Container platform pipeline provider type (Please enter 'standalone' or 'service')
-IS_MULTI_CLUSTER="N"                                             # Please enter "Y" if deploy in a multi-cluster environment
-CF_API_URL="https://{api-domain}"                                # e.g) https://api.10.0.0.120.nip.io, API Domain, PROVIDER_TYPE=service 인 경우 입력   
+# COMMON VARIABLE (Please change the value of the variables below.)
+HOST_DOMAIN="{host domain}"                    # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
+K8S_STORAGECLASS="cp-storageclass"             # Kubernetes StorageClass Name (e.g. cp-storageclass)
+IS_MULTI_CLUSTER="N"                           # Please enter "Y" if deploy in a multi-cluster environment
 ```
 ```bash
 # Example
-K8S_MASTER_NODE_IP="103.xxx.xxx.xxx"
-K8S_STORAGECLASS="cp-storageclass"
 HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
-PROVIDER_TYPE="standalone"
+K8S_STORAGECLASS="cp-storageclass"
 IS_MULTI_CLUSTER="N"
 ```
 
 |변수|설명|상세 내용|
 |---|---|---|
-|**K8S_MASTER_NODE_IP**|Kubernetes Master Node Public IP 입력|Master Node에 접근하기 어려운 경우<br>[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `K8S_MASTER_NODE_IP` 값 입력| 
-|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
-|**PROVIDER_TYPE**|컨테이너 플랫폼 파이프라인 제공 타입 입력|본 가이드는 단독 배포 형 설치 가이드로<br> **standalone** 값 입력 필요|
+|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**IS_MULTI_CLUSTER**|멀티 클러스터 환경 여부|멀티 클러스터 환경에 배포할 경우 "Y" 입력|
-|**CF_API_URL**|K-PaaS의 API Domain 입력|**단독 배포 형은 입력할 필요 없음**|
 
 <br>
 
@@ -192,47 +185,47 @@ $ kubectl get all -n cp-pipeline
 ```
 
 ```bash
-NAME                                                         READY   STATUS    RESTARTS      AGE
-pod/cp-pipeline-api-deployment-bb6f7bd46-xmtxx               1/1     Running   0             71s
-pod/cp-pipeline-common-api-deployment-54c646c95c-pr8d4       1/1     Running   0             71s
-pod/cp-pipeline-config-server-deployment-78675b565d-jsg6z    1/1     Running   0             68s
-pod/cp-pipeline-inspection-api-deployment-6bf9c4479d-qvt2s   1/1     Running   0             69s
-pod/cp-pipeline-jenkins-deployment-779c6d7bc9-fphrv          1/1     Running   0             69s
-pod/cp-pipeline-postgresql-postgresql-0                      1/1     Running   0             65s
-pod/cp-pipeline-sonarqube-sonarqube-6d9c6b579f-ndjmj         1/1     Running   0             65s
-pod/cp-pipeline-ui-deployment-5db955b77b-6zgtg               1/1     Running   0             70s
+NAME                                                        READY   STATUS    RESTARTS      AGE
+pod/cp-pipeline-api-deployment-6d99f4c7d7-88h64             1/1     Running   0             100s
+pod/cp-pipeline-common-api-deployment-7488bc6d5d-q5wvt      1/1     Running   0             100s
+pod/cp-pipeline-config-server-deployment-5f676b858c-vxd6d   1/1     Running   0             100s
+pod/cp-pipeline-inspection-api-deployment-f5bfbdccc-pk5bk   1/1     Running   0             100s
+pod/cp-pipeline-jenkins-deployment-5f75b74b6d-vc25p         1/1     Running   0             103s
+pod/cp-pipeline-postgresql-postgresql-0                     1/1     Running   0             103s
+pod/cp-pipeline-sonarqube-sonarqube-5f6c94bdbc-rqrf8        1/1     Running   0             101s
+pod/cp-pipeline-ui-deployment-845bb6999f-kr78p              1/1     Running   0             100s
 
-NAME                                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-service/cp-pipeline-api-service              NodePort    10.233.33.178   <none>        8082:30082/TCP   71s
-service/cp-pipeline-common-api-service       NodePort    10.233.42.55    <none>        8081:30081/TCP   71s
-service/cp-pipeline-config-server-service    NodePort    10.233.29.96    <none>        8080:30088/TCP   68s
-service/cp-pipeline-inspection-api-service   NodePort    10.233.18.126   <none>        8085:30085/TCP   69s
-service/cp-pipeline-jenkins-service          NodePort    10.233.43.30    <none>        8080:30086/TCP   69s
-service/cp-pipeline-postgresql               ClusterIP   10.233.27.243   <none>        5432/TCP         67s
-service/cp-pipeline-postgresql-headless      ClusterIP   None            <none>        5432/TCP         67s
-service/cp-pipeline-sonarqube-sonarqube      NodePort    10.233.52.4     <none>        9000:30087/TCP   66s
-service/cp-pipeline-ui-service               NodePort    10.233.57.132   <none>        8084:30084/TCP   70s
+NAME                                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/cp-pipeline-api-service              ClusterIP   10.233.27.151   <none>        8082/TCP   100s
+service/cp-pipeline-common-api-service       ClusterIP   10.233.11.81    <none>        8081/TCP   100s
+service/cp-pipeline-config-server-service    ClusterIP   10.233.50.72    <none>        8080/TCP   100s
+service/cp-pipeline-inspection-api-service   ClusterIP   10.233.44.110   <none>        8085/TCP   100s
+service/cp-pipeline-jenkins-service          ClusterIP   10.233.33.33    <none>        8080/TCP   103s
+service/cp-pipeline-postgresql               ClusterIP   10.233.19.130   <none>        5432/TCP   103s
+service/cp-pipeline-postgresql-headless      ClusterIP   None            <none>        5432/TCP   103s
+service/cp-pipeline-sonarqube-sonarqube      ClusterIP   10.233.8.200    <none>        9000/TCP   101s
+service/cp-pipeline-ui-service               ClusterIP   10.233.8.123    <none>        8084/TCP   100s
 
 NAME                                                    READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/cp-pipeline-api-deployment              1/1     1            1           71s
-deployment.apps/cp-pipeline-common-api-deployment       1/1     1            1           71s
-deployment.apps/cp-pipeline-config-server-deployment    1/1     1            1           68s
-deployment.apps/cp-pipeline-inspection-api-deployment   1/1     1            1           69s
-deployment.apps/cp-pipeline-jenkins-deployment          1/1     1            1           69s
-deployment.apps/cp-pipeline-sonarqube-sonarqube         1/1     1            1           65s
-deployment.apps/cp-pipeline-ui-deployment               1/1     1            1           70s
+deployment.apps/cp-pipeline-api-deployment              1/1     1            1           100s
+deployment.apps/cp-pipeline-common-api-deployment       1/1     1            1           100s
+deployment.apps/cp-pipeline-config-server-deployment    1/1     1            1           100s
+deployment.apps/cp-pipeline-inspection-api-deployment   1/1     1            1           100s
+deployment.apps/cp-pipeline-jenkins-deployment          1/1     1            1           103s
+deployment.apps/cp-pipeline-sonarqube-sonarqube         1/1     1            1           101s
+deployment.apps/cp-pipeline-ui-deployment               1/1     1            1           100s
 
-NAME                                                               DESIRED   CURRENT   READY   AGE
-replicaset.apps/cp-pipeline-api-deployment-bb6f7bd46               1         1         1       71s
-replicaset.apps/cp-pipeline-common-api-deployment-54c646c95c       1         1         1       71s
-replicaset.apps/cp-pipeline-config-server-deployment-78675b565d    1         1         1       68s
-replicaset.apps/cp-pipeline-inspection-api-deployment-6bf9c4479d   1         1         1       69s
-replicaset.apps/cp-pipeline-jenkins-deployment-779c6d7bc9          1         1         1       69s
-replicaset.apps/cp-pipeline-sonarqube-sonarqube-6d9c6b579f         1         1         1       65s
-replicaset.apps/cp-pipeline-ui-deployment-5db955b77b               1         1         1       70s
+NAME                                                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/cp-pipeline-api-deployment-6d99f4c7d7             1         1         1       100s
+replicaset.apps/cp-pipeline-common-api-deployment-7488bc6d5d      1         1         1       100s
+replicaset.apps/cp-pipeline-config-server-deployment-5f676b858c   1         1         1       100s
+replicaset.apps/cp-pipeline-inspection-api-deployment-f5bfbdccc   1         1         1       100s
+replicaset.apps/cp-pipeline-jenkins-deployment-5f75b74b6d         1         1         1       103s
+replicaset.apps/cp-pipeline-sonarqube-sonarqube-5f6c94bdbc        1         1         1       101s
+replicaset.apps/cp-pipeline-ui-deployment-845bb6999f              1         1         1       100s
 
 NAME                                                 READY   AGE
-statefulset.apps/cp-pipeline-postgresql-postgresql   1/1     66s
+statefulset.apps/cp-pipeline-postgresql-postgresql   1/1     103s
 ```    
 <br>
 
@@ -245,28 +238,15 @@ statefulset.apps/cp-pipeline-postgresql-postgresql   1/1     66s
 $ cd ~/workspace/container-platform/cp-pipeline-deployment/script
 $ chmod +x uninstall-cp-pipeline.sh
 $ ./uninstall-cp-pipeline.sh
-Are you sure you want to delete the container platform pipeline? <y/n> # y 입력
-```
-
-```bash
-release "cp-pipeline-api" uninstalled
-release "cp-pipeline-common-api" uninstalled
-release "cp-pipeline-ui" uninstalled
-release "cp-pipeline-inspection-api" uninstalled
-release "cp-pipeline-jenkins" uninstalled
-release "cp-pipeline-config-server" uninstalled
-release "cp-pipeline-postgresql" uninstalled
-release "cp-pipeline-sonarqube" uninstalled
-namespace "cp-pipeline" deleted
-...
+Are you sure you want to delete the container platform pipeline? <y/n> y # y 입력
 ```
 
 <br>
 
 ## <div id='4'>4. 컨테이너 플랫폼 파이프라인 접속
 컨테이너 플랫폼 파이프라인에 접속한다.<br><br>
-**컨테이너 플랫폼 파이프라인 URL** : `http://{K8S_MASTER_NODE_IP}:30084`
-+ [[3.2. 컨테이너 플랫폼 파이프라인 변수 정의]](#3.2) 에서 정의한 `K8S_MASTER_NODE_IP` 값 입력
+**컨테이너 플랫폼 파이프라인 URL** : `http://pipeline.${HOST_DOMAIN}`
++ [[3.2. 컨테이너 플랫폼 파이프라인 변수 정의]](#3.2) 에서 정의한 `HOST_DOMAIN` 값 입력
 
 <br>
 
@@ -304,7 +284,7 @@ namespace "cp-pipeline" deleted
 
 <br>
 
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 단독 형 컨테이너 플랫폼 파이프라인 배포 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 컨테이너 플랫폼 파이프라인 배포 가이드
 
 [image 001]:../images/portal/cp-001.png
 [image 002]:../images/portal/cp-002.png

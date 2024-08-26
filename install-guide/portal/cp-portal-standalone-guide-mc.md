@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 멀티 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
+### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 멀티 클러스터 컨테이너 플랫폼 포털 배포 가이드
 
 <br>
 
@@ -33,7 +33,7 @@
 
 ## <span id='1'>1. 문서 개요
 ### <span id='1.1'>1.1. 목적
-본 문서(멀티 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드)는 쿠버네티스 멀티 클러스터 환경에 컨테이너 플랫폼 단독 형 포털 배포 방법을 기술하였다. <br><br>
+본 문서(멀티 클러스터 컨테이너 플랫폼 포털 배포 가이드)는 쿠버네티스 멀티 클러스터 환경에 컨테이너 플랫폼 포털 배포 방법을 기술하였다. <br><br>
 
 
 ### <span id='1.2'>1.2. 범위
@@ -108,7 +108,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 #### <span id='3.1.1'>3.1.1. 컨테이너 플랫폼 포털 Deployment 파일 다운로드
 컨테이너 플랫폼 포털 배포를 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-  [cp-portal-deployment-v1.5.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/2Sy2jzoJRx4aToM/download)
+  [cp-portal-deployment-v1.5.2.tar.gz](https://nextcloud.k-paas.org/index.php/s/2LeyyQTaCySmKzH/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -116,13 +116,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/2Sy2jzoJRx4aToM/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/2LeyyQTaCySmKzH/download
 
 $ ls ~/workspace/container-platform
-  cp-portal-deployment-v1.5.1.tar.gz
+  cp-portal-deployment-v1.5.2.tar.gz
 
 # Deployment 파일 압축 해제
-$ tar -xvf cp-portal-deployment-v1.5.1.tar.gz
+$ tar -xvf cp-portal-deployment-v1.5.2.tar.gz
 ```
 
 
@@ -192,7 +192,6 @@ CLUSTER2_CONFIG[STORAGECLASS]="cp-storageclass"                                 
 CLUSTER2_CONFIG[IAAS_TYPE]="1"                                                  # Cluster2 Cluster IaaS Type ([1] AWS, [2] OPENSTACK, [3] NAVER, [4] NHN, [5] KT)
 
 HOST_DOMAIN="{host domain}"                                                     # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
-PROVIDER_TYPE="{container platform portal provider type}"                       # Container Platform Portal Provider Type (Please enter 'standalone' or 'service')
 ```
 ```bash    
 # Example
@@ -211,18 +210,16 @@ CLUSTER2_CONFIG[STORAGECLASS]="block-storage"
 CLUSTER2_CONFIG[IAAS_TYPE]="4"
 
 HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
-PROVIDER_TYPE="standalone"
 ```
 
 |변수|설명|상세 내용|
 |---|---|---|
 |**CTX**|해당 클러스터 컨텍스트 명 입력|| 
 |**MASTER_NODE_IP**|Kubernetes Master Node<br> Public IP 입력|Master Node에 접근하기 어려운 경우<br>Worker Node Public IP 입력|
-|**API_SERVER**|Kubernetes API Server URL 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`https://${K8S_MASTER_NODE_IP}:6443`</b>이다. <br> Master Node의 6443번 포트 수신 형식이 아닐 경우 값을 수정한다.<br>:small_blue_diamond: HA Control Plane 구성일 경우<br> `https://{Load Balancer IP or Domain}:6443` 입력|
+|**API_SERVER**|Kubernetes API Server URL 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`https://${K8S_MASTER_NODE_IP}:6443`</b>이다. <br> Master Node의 6443번 포트 수신 형식이 아닐 경우 값을 수정한다.<br>:small_blue_diamond: **HA Control Plane 구성일 경우<br> `https://{Load Balancer IP or Domain}:6443`** 입력|
 |**STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**IAAS_TYPE**|Kubernetes Cluster IaaS 환경 입력|[1] AWS [2] OPENSTACK [3] NAVER [4] NHN [5] KT 번호 입력|
-|**HOST_DOMAIN**|Host Domain 값 입력 |<b>* 클러스터 Cluster1 *</b>의 <br> <b>`{ingress-nginx-controller 서비스의 EXTERNAL-IP}.nip.io`</b> 입력<br> [아래 내용 확인](#host_domain)|
-|**PROVIDER_TYPE**|컨테이너 플랫폼 포털 제공 타입 입력|본 가이드는 포털 단독 배포 형 설치 가이드로<br> **standalone** 값 입력 필요|
+|**HOST_DOMAIN**|Host Domain 값 입력 |<b>:small_blue_diamond: 클러스터 Cluster1 </b>의 <br> <b>`{ingress-nginx-controller 서비스의 EXTERNAL-IP}.nip.io`</b> 입력<br> [아래 내용 확인](#host_domain)|
 
 #### 조회
 ```bash
@@ -373,7 +370,7 @@ cp-portal-metric-api-deployment-5f99f8f7fb-mnmjs   2/2     Running   0          
 $ cd ~/workspace/container-platform/cp-portal-deployment/script_mc
 $ chmod +x uninstall-cp-portal-mc.sh
 $ ./uninstall-cp-portal-mc.sh
-Are you sure you want to delete the container platform portal? <y/n> y
+Are you sure you want to delete the container platform portal? <y/n> y # y 입력
 ```
 <br>    
 
@@ -495,7 +492,7 @@ Keycloak Admin Console에 접속 후 조회한 Keycloak Admin 계정으로 로�
 
 <br>
 
-### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 멀티 클러스터 단독 형 컨테이너 플랫폼 포털 배포 가이드
+### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 멀티 클러스터 컨테이너 플랫폼 포털 배포 가이드
 
 [image 001]:../images/portal/cp-001.png
 [image 002]:../images/portal/cp-002.png

@@ -60,10 +60,7 @@
 <br>
 
 ## Install
-
-### 단독형 배포
-
-#### Single Cloud
+### Single Cloud 배포
 - 클러스터 설치
   + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-single.md)
 - 포털 설치
@@ -71,54 +68,27 @@
   + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
   + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release)
 - 서비스 설치
-  + [Pipeline 설치 가이드](install-guide/pipeline/cp-pipeline-standalone-guide.md)
-  + [SourceControl 설치 가이드](install-guide/source-control/cp-source-control-standalone-guide.md)
+  + [파이프라인 설치 가이드](install-guide/pipeline/cp-pipeline-standalone-guide.md)
+  + [소스 컨트롤 설치 가이드](install-guide/source-control/cp-source-control-standalone-guide.md)
 - Kubeflow 튜토리얼
   + [Kubeflow 파이프라인 튜토리얼 가이드](install-guide/standalone/cp-kubeflow-sample-guide.md)
 
-#### Multi Cloud
+### Multi Cloud 배포
 - 클러스터 설치
   + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-multi.md)
 - 포털 설치
   + [포털 설치 가이드](install-guide/portal/cp-portal-standalone-guide-mc.md)
   + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
   + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release)
+- 서비스 설치
+  + [파이프라인 설치 가이드](install-guide/pipeline/cp-pipeline-standalone-guide.md)
+  + [소스 컨트롤 설치 가이드](install-guide/source-control/cp-source-control-standalone-guide.md)
 - 컨테이너플랫폼 Kubernetes 활용
   + [Linkerd 설치 가이드](install-guide/multicluster/cp-linkerd-install.md)
   + [Karmada 설치 가이드](install-guide/multicluster/cp-karmada-install.md)
 - CSP Kubernetes Service 활용
   + [Istio 설치 및 샘플](install-guide/csp/cp-csp-istio-guide.md)
   + [Linkerd 설치 및 샘플](install-guide/csp/cp-csp-linkerd-guide.md)
-
-<br>
-
-### 서비스형 배포
-> :speaker: 서비스형 배포는 애플리케이션 플랫폼 포털 연계 형입니다.
-
-#### Single Cloud
-
-- 클러스터 설치
-  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-single.md)
-- 포털 설치
-  + [포털 설치 가이드](install-guide/portal/cp-portal-service-guide.md)
-  + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart/tree/master)
-  + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release/tree/master)
-- 서비스 설치
-  + [Pipeline 설치 가이드](install-guide/pipeline/cp-pipeline-service-guide.md)
-  + [SourceControl 설치 가이드](install-guide/source-control/cp-source-control-service-guide.md)
-
-#### Multi Cloud
-
-- 클러스터 설치
-  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-multi.md)
-- 포털 설치
-  + [포털 설치 가이드](install-guide/portal/cp-portal-service-guide-mc.md)
-- 서비스 매시
-  + [Linkerd 설치 가이드](install-guide/multicluster/cp-linkerd-install.md)
-- 페더레이션
-  + [Karmada 설치 가이드](install-guide/multicluster/cp-karmada-install.md)
-
-<br>
 
 ### Edge 배포
 - Edge 설치
@@ -128,8 +98,8 @@
   + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart/tree/master)
   + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release/tree/master)
 - 서비스 설치
-  + [Pipeline 설치 가이드](install-guide/pipeline/cp-pipeline-standalone-guide.md)
-  + [SourceControl 설치 가이드](install-guide/source-control/cp-source-control-standalone-guide.md)
+  + [파이프라인 설치 가이드](install-guide/pipeline/cp-pipeline-standalone-guide.md)
+  + [소스 컨트롤 설치 가이드](install-guide/source-control/cp-source-control-standalone-guide.md)
 - 샘플 모델
   + [웹 카운팅 / 실시간 온도수집](install-guide/edge/cp-edge-sample-guide.md)
 
@@ -139,25 +109,24 @@
 ## Use
 
 ### 포털 이용 가이드
-  + [포털 사용 가이드](use-guide/portal/container-platform-portal-guide.md)
-  + [Terraman 사용 가이드](use-guide/terraman/cp-terraman-guide.md)
-  
++ [포털 사용 가이드](use-guide/portal/container-platform-portal-guide.md)
++ [Terraman 사용 가이드](use-guide/terraman/cp-terraman-guide.md)
+
 ### 서비스 이용 가이드
-- Pipeline 서비스
-  + [Pipeline 서비스 사용 가이드](use-guide/pipeline/cp-pipeline-use-guide.md)
-- Source Control 서비스
-  + [Source Control 서비스 사용 가이드](use-guide/source-control/cp-source-control-use-guide.md)
+- 파이프라인 서비스
+  + [파이프라인 서비스 사용 가이드](use-guide/pipeline/cp-pipeline-use-guide.md)
+- 소스 컨트롤 서비스
+  + [소스 컨트롤 서비스 사용 가이드](use-guide/source-control/cp-source-control-use-guide.md)
 
 
 <br>
 
 ## Project
 
-### 포털 프로젝트 
+### 포털 프로젝트
+- [cp-portal-ui](https://github.com/K-PaaS/cp-portal-ui)
 - [cp-portal-api](https://github.com/K-PaaS/cp-portal-api)
 - [cp-portal-common-api](https://github.com/K-PaaS/cp-portal-common-api)
-- [cp-portal-ui](https://github.com/K-PaaS/cp-portal-ui)
-- [cp-portal-service-broker](https://github.com/K-PaaS/cp-portal-service-broker)
 - [cp-metrics-api](https://github.com/K-PaaS/cp-metrics-api)
 - [cp-terraman](https://github.com/K-PaaS/cp-terraman)
 
@@ -197,8 +166,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
- 
+
 <br>
 
 ## 라이선스
-[Apache-2.0 License](http://www.apache.org/licenses/LICENSE-2.0)를 사용한다. 
+[Apache-2.0 License](http://www.apache.org/licenses/LICENSE-2.0)를 사용한다.

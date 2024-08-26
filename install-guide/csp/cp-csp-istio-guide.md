@@ -70,16 +70,16 @@
 설치되는 도구 목록은 아래와 같다.
 | 도구 | 버전 |
 | :---: | :---: |  
-| kubectl | 1.27.5 |
-| Helm | 3.12.3 |
+| kubectl | 1.29.5 |
+| Helm | 3.14.2 |
 | step | 0.24.4 |
 | Podman | - |
 | ca-certificates | - |
-| Istio | 1.19.1 |
+| Istio | 1.23.0 |
 
 | Istio 버전 | [Kubernetes 지원 버전](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases)|  
 | :---: | :---: |  
-| 1.19.1 |1.25, 1.26, 1.27, 1.28|  
+| 1.23 |1.27, 1.28, 1.29, 1.30|  
 
 <br>
 
@@ -98,7 +98,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 Istio 멀티 클러스터 설치를 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-  [cp-portal-deployment-v1.5.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/2Sy2jzoJRx4aToM/download)
+  [cp-portal-deployment-v1.5.2.tar.gz](https://nextcloud.k-paas.org/index.php/s/2LeyyQTaCySmKzH/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -106,13 +106,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/2Sy2jzoJRx4aToM/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/2LeyyQTaCySmKzH/download
 
 $ ls ~/workspace/container-platform
-  cp-portal-deployment-v1.5.1.tar.gz
+  cp-portal-deployment-v1.5.2.tar.gz
 
 # Deployment 파일 압축 해제
-$ tar -xvf cp-portal-deployment-v1.5.1.tar.gz
+$ tar -xvf cp-portal-deployment-v1.5.2.tar.gz
 ```
 
 <br>
@@ -130,12 +130,12 @@ $ vi istio-vars-mc.sh
 ```bash
 # 설치할 버전으로 변경 
 # TOOL
-KUBECTL_VERSION="1.27.5"
-HELM_VERSION="3.12.3"
+KUBECTL_VERSION="1.29.5"
+HELM_VERSION="3.14.2"
 STEP_VERSION="0.24.4"
 
 # ISTIO
-ISTIO_VERSION="1.19.1"
+ISTIO_VERSION="1.23.0"
 ```
 
 도구 설치 스크립트를 실행한다.
@@ -172,13 +172,13 @@ CURRENT   NAME    CLUSTER    AUTHINFO         NAMESPACE
 ```bash
 # cluster1 노드 조회 
 $ kubectl get nodes --context=ctx-1
-NAME                                  STATUS   ROLES    AGE     VERSION
-k8s-cluster-1-default-worker-node-0   Ready    <none>   5h44m   v1.27.3
+NAME                                  STATUS   ROLES    AGE    ···
+k8s-cluster-1-default-worker-node-0   Ready    <none>   5h44m
 
 # cluster2 노드 조회 
 $ kubectl get nodes --context=ctx-2
-NAME                                  STATUS   ROLES    AGE     VERSION
-k8s-cluster-2-default-worker-node-0   Ready    <none>   5h43m   v1.27.3
+NAME                                  STATUS   ROLES    AGE    ···
+k8s-cluster-2-default-worker-node-0   Ready    <none>   5h43m
 ```
 
 <br>
@@ -226,7 +226,8 @@ $ chmod +x deploy-istio-mc.sh
 $ ./deploy-istio-mc.sh
 ```
 ```bash
-Istio 1.19.1 Download Complete!
+Istio 1.23.0 Download Complete!
+Istio has been successfully downloaded into the istio-1.23.0 folder on your system.
 ...
 Your certificate has been saved in certs/root-cert.pem.
 Your private key has been saved in certs/root-ca.key.
@@ -235,11 +236,41 @@ Your certificate has been saved in certs/cluster1/ca-cert.pem.
 Your private key has been saved in certs/cluster1/ca-key.pem.
 namespace/istio-system created
 secret/cacerts created
-✔ Istio core installed
-✔ Istiod installed
+        |\
+        | \
+        |  \
+        |   \
+      /||    \
+     / ||     \
+    /  ||      \
+   /   ||       \
+  /    ||        \
+ /     ||         \
+/______||__________\
+____________________
+  \__       _____/
+     \_____/
+
+✔ Istio core installed ⛵️
+✔ Istiod installed 🧠
 ✔ Installation complete
-Made this installation the default for injection and validation.
-✔ Ingress gateways installed
+Made this installation the default for cluster-wide operations.
+        |\
+        | \
+        |  \
+        |   \
+      /||    \
+     / ||     \
+    /  ||      \
+   /   ||       \
+  /    ||        \
+ /     ||         \
+/______||__________\
+____________________
+  \__       _____/
+     \_____/
+
+✔ Ingress gateways installed 🛬
 ✔ Installation complete
 gateway.networking.istio.io/cross-network-gateway created
 customresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io created
@@ -251,11 +282,41 @@ Your certificate has been saved in certs/cluster2/ca-cert.pem.
 Your private key has been saved in certs/cluster2/ca-key.pem.
 namespace/istio-system created
 secret/cacerts created
-✔ Istio core installed
-✔ Istiod installed
+        |\
+        | \
+        |  \
+        |   \
+      /||    \
+     / ||     \
+    /  ||      \
+   /   ||       \
+  /    ||        \
+ /     ||         \
+/______||__________\
+____________________
+  \__       _____/
+     \_____/
+
+✔ Istio core installed ⛵️
+✔ Istiod installed 🧠
 ✔ Installation complete
-Made this installation the default for injection and validation.
-✔ Ingress gateways installed
+Made this installation the default for cluster-wide operations.
+        |\
+        | \
+        |  \
+        |   \
+      /||    \
+     / ||     \
+    /  ||      \
+   /   ||       \
+  /    ||        \
+ /     ||         \
+/______||__________\
+____________________
+  \__       _____/
+     \_____/
+
+✔ Ingress gateways installed 🛬
 ✔ Installation complete
 gateway.networking.istio.io/cross-network-gateway created
 customresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io created
@@ -268,14 +329,16 @@ secret/istio-remote-secret-cluster2 created
 --------------------------------------------------------------
 [cluster1 (ctx-1)] $ istioctl remote-clusters
 --------------------------------------------------------------
-NAME         SECRET                                        STATUS      ISTIOD
-cluster2     istio-system/istio-remote-secret-cluster2     syncing     istiod-6fbbdd4794-x284j
+NAME         SECRET                                        STATUS     ISTIOD
+cluster1                                                   synced     istiod-cc44979d7-dxlmv
+cluster2     istio-system/istio-remote-secret-cluster2     synced     istiod-cc44979d7-dxlmv
 
 --------------------------------------------------------------
 [cluster2 (ctx-2)] $ istioctl remote-clusters
 --------------------------------------------------------------
 NAME         SECRET                                        STATUS     ISTIOD
-cluster1     istio-system/istio-remote-secret-cluster1     synced     istiod-5fc66dc77-q9nxk
+cluster2                                                   synced     istiod-f6fdb4b6d-xcggm
+cluster1     istio-system/istio-remote-secret-cluster1     synced     istiod-f6fdb4b6d-xcggm
 ```
 <br>
 
@@ -287,46 +350,46 @@ $ source ~/workspace/container-platform/cp-portal-deployment/istio_mc/istio-vars
 > cluster1의 Istio 리소스 배포 현황 확인
 ```bash
 $ kubectl get all -n ${ISTIO_NAMESPACE} --context=${CLUSTER1_CONFIG[CTX]}
-NAME                                        READY   STATUS    RESTARTS   AGE
-pod/istio-ingressgateway-6b9585db67-g4kb7   1/1     Running   0          15m
-pod/istiod-6fbbdd4794-x284j                 1/1     Running   0          15m
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/istio-ingressgateway-bb99df87f-4gx8f   1/1     Running   0          13m
+pod/istiod-cc44979d7-dxlmv                 1/1     Running   0          13m
 
 NAME                           TYPE           CLUSTER-IP       EXTERNAL-IP       PORT(S)                                                                                                      AGE
-service/istio-ingressgateway   LoadBalancer   198.19.183.236   xxx.xxx.xxx.xxx   15021:31376/TCP,80:31611/TCP,443:32702/TCP,31400:32264/TCP,15443:32551/TCP,15012:32101/TCP,15017:30217/TCP   15m
-service/istiod                 ClusterIP      198.19.144.155   <none>            15010/TCP,15012/TCP,443/TCP,15014/TCP                                                                        15m
+service/istio-ingressgateway   LoadBalancer   10.254.4.25      xxx.xxx.xxx.xxx   15021:30484/TCP,80:30536/TCP,443:32330/TCP,31400:32446/TCP,15443:31096/TCP,15012:32526/TCP,15017:32471/TCP   13m
+service/istiod                 ClusterIP      10.254.252.186   <none>            15010/TCP,15012/TCP,443/TCP,15014/TCP                                                                        13m
 
 NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/istio-ingressgateway   1/1     1            1           15m
-deployment.apps/istiod                 1/1     1            1           15m
+deployment.apps/istio-ingressgateway   1/1     1            1           13m
+deployment.apps/istiod                 1/1     1            1           13m
 
-NAME                                              DESIRED   CURRENT   READY   AGE
-replicaset.apps/istio-ingressgateway-6b9585db67   1         1         1       15m
-replicaset.apps/istiod-6fbbdd4794                 1         1         1       15m
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/istio-ingressgateway-bb99df87f   1         1         1       13m
+replicaset.apps/istiod-cc44979d7                 1         1         1       13m
 
 NAME                                                       REFERENCE                         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/istio-ingressgateway   Deployment/istio-ingressgateway   3%/80%    1         5         1          15m
+horizontalpodautoscaler.autoscaling/istio-ingressgateway   Deployment/istio-ingressgateway   2%/80%    1         5         1          13m
 ```
 > cluster2의 Istio 리소스 배포 현황 확인
 ```bash
 $ kubectl get all -n ${ISTIO_NAMESPACE} --context=${CLUSTER2_CONFIG[CTX]}
 NAME                                        READY   STATUS    RESTARTS   AGE
-pod/istio-ingressgateway-5865966d59-sc9nt   1/1     Running   0          16m
-pod/istiod-5fc66dc77-q9nxk                  1/1     Running   0          16m
+pod/istio-ingressgateway-7f5fc44745-g8j6f   1/1     Running   0          13m
+pod/istiod-f6fdb4b6d-xcggm                  1/1     Running   0          13m
 
-NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP       PORT(S)                                                                                                      AGE
-service/istio-ingressgateway   LoadBalancer   10.254.154.61   xxx.xxx.xxx.xxx   15021:32740/TCP,80:32192/TCP,443:31917/TCP,31400:31048/TCP,15443:32579/TCP,15012:31579/TCP,15017:31694/TCP   16m
-service/istiod                 ClusterIP      10.254.12.197   <none>            15010/TCP,15012/TCP,443/TCP,15014/TCP                                                                        16m
+NAME                           TYPE           CLUSTER-IP       EXTERNAL-IP       PORT(S)                                                                                                      AGE
+service/istio-ingressgateway   LoadBalancer   10.254.212.161   xxx.xxx.xxx.xxx   15021:30640/TCP,80:31092/TCP,443:31067/TCP,31400:32578/TCP,15443:32039/TCP,15012:32204/TCP,15017:32521/TCP   13m
+service/istiod                 ClusterIP      10.254.73.110    <none>            15010/TCP,15012/TCP,443/TCP,15014/TCP                                                                        13m
 
 NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/istio-ingressgateway   1/1     1            1           16m
-deployment.apps/istiod                 1/1     1            1           16m
+deployment.apps/istio-ingressgateway   1/1     1            1           13m
+deployment.apps/istiod                 1/1     1            1           13m
 
 NAME                                              DESIRED   CURRENT   READY   AGE
-replicaset.apps/istio-ingressgateway-5865966d59   1         1         1       16m
-replicaset.apps/istiod-5fc66dc77                  1         1         1       16m
+replicaset.apps/istio-ingressgateway-7f5fc44745   1         1         1       13m
+replicaset.apps/istiod-f6fdb4b6d                  1         1         1       13m
 
 NAME                                                       REFERENCE                         TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/istio-ingressgateway   Deployment/istio-ingressgateway   3%/80%    1         5         1          16m
+horizontalpodautoscaler.autoscaling/istio-ingressgateway   Deployment/istio-ingressgateway   3%/80%    1         5         1          13m
 ```
 
 <br> 

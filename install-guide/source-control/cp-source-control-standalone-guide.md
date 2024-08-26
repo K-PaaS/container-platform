@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 단독 형 컨테이너 플랫폼 소스 컨트롤 배포 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 컨테이너 플랫폼 소스 컨트롤 배포 가이드
 
 <br>
 
@@ -29,7 +29,7 @@
 
 ## <div id='1'>1. 문서 개요
 ### <div id='1.1'>1.1. 목적
-본 문서(단독 형 컨테이너 플랫폼 소스 컨트롤 배포 가이드)는 쿠버네티스 클러스터 및 단독 형 컨테이너 플랫폼 포털을 설치하고 단독 형 소스 컨트롤 배포 방법을 기술하였다.
+본 문서(컨테이너 플랫폼 소스 컨트롤 배포 가이드)는 쿠버네티스 클러스터 및 컨테이너 플랫폼 포털을 설치하고 소스 컨트롤 배포 방법을 기술하였다.
 
 <br>
 
@@ -59,7 +59,7 @@
 ### <div id='2.1'>2.1. 컨테이너 플랫폼 포털 설치
 컨테이너 플랫폼 소스 컨트롤에서 사용할 인프라로 인증서버 **KeyCloak**, 데이터베이스 **MariaDB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치하므로 아래 가이드를 참조하여 사전 설치를 진행한다.
-> [[단독 형 컨테이너 플랫폼 포털 배포]](../portal/cp-portal-standalone-guide.md)
+> [[컨테이너 플랫폼 포털 배포]](../portal/cp-portal-standalone-guide.md)
 
 <br>
 
@@ -68,7 +68,7 @@
 컨테이너 플랫폼 소스 컨트롤 배포를 위해 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 :bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
 + 컨테이너 플랫폼 소스 컨트롤 Deployment 파일 다운로드 :  
-  [cp-source-control-deployment-v1.5.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/N7AxwSdQt7HzNTn/download)
+  [cp-source-control-deployment-v1.5.2.tar.gz](https://nextcloud.k-paas.org/index.php/s/gQ5dd4XadmP43MG/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -76,13 +76,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/N7AxwSdQt7HzNTn/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/gQ5dd4XadmP43MG/download
 
 $ ls ~/workspace/container-platform
-  cp-source-control-deployment-v1.5.1.tar.gz ...
+  cp-source-control-deployment-v1.5.2.tar.gz ...
   
 # Deployment 파일 압축 해제
-$ tar -xvf cp-source-control-deployment-v1.5.1.tar.gz
+$ tar -xvf cp-source-control-deployment-v1.5.2.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성
@@ -103,25 +103,20 @@ $ cd ~/workspace/container-platform/cp-source-control-deployment/script
 $ vi cp-source-control-vars.sh
 ```
 ```bash                                                    
-K8S_MASTER_NODE_IP="{k8s master node public ip}"                      # Kubernetes master node public ip
-K8S_STORAGECLASS="cp-storageclass"                                    # Kubernetes StorageClass Name (e.g. cp-storageclass)
-HOST_DOMAIN="{host domain}"                                           # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
-PROVIDER_TYPE="{container platform source control provider type}"     # Container platform source control provider type (Please enter 'standalone' or 'service')    
-IS_MULTI_CLUSTER="N"                                                  # Please enter "Y" if deploy in a multi-cluster environment
+# COMMON VARIABLE (Please change the value of the variables below.)
+HOST_DOMAIN="{host domain}"                    # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
+K8S_STORAGECLASS="cp-storageclass"             # Kubernetes StorageClass Name (e.g. cp-storageclass)
+IS_MULTI_CLUSTER="N"                           # Please enter "Y" if deploy in a multi-cluster environment
 ```
 ```bash  
-K8S_MASTER_NODE_IP="103.xxx.xxx.xxx"
-K8S_STORAGECLASS="cp-storageclass"
 HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
-PROVIDER_TYPE="standalone"
+K8S_STORAGECLASS="cp-storageclass"
 IS_MULTI_CLUSTER="N"
 ```
 |변수|설명|상세 내용|
 |---|---|---|
-|**K8S_MASTER_NODE_IP**|Kubernetes Master Node Public IP 입력|Master Node에 접근하기 어려운 경우<br>[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `K8S_MASTER_NODE_IP` 값 입력| 
-|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
-|**PROVIDER_TYPE**|컨테이너 플랫폼 소스 컨트롤 제공 타입 입력|본 가이드는 단독 배포 형 설치 가이드로<br> **standalone** 값 입력 필요|
+|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**IS_MULTI_CLUSTER**|멀티 클러스터 환경 여부|멀티 클러스터 환경에 배포할 경우 "Y" 입력|
 <br>
 
@@ -161,25 +156,25 @@ $ kubectl get all -n cp-source-control
 ```
 
 ```bash
-NAME                                                        READY   STATUS    RESTARTS   AGE
-pod/cp-source-control-api-deployment-588fdfbfd7-727w2       1/1     Running   0          54s
-pod/cp-source-control-manager-deployment-69b9b87cfd-kcv8l   1/1     Running   0          53s
-pod/cp-source-control-ui-deployment-867557b66d-pq5w9        1/1     Running   0          51s
+NAME                                                       READY   STATUS    RESTARTS   AGE
+pod/cp-source-control-api-deployment-8565cf8dd7-nz7ds      1/1     Running   0          27s
+pod/cp-source-control-manager-deployment-df5fd8bd8-2c2l4   1/1     Running   0          28s
+pod/cp-source-control-ui-deployment-5fd69d4b59-mv5w9       1/1     Running   0          27s
 
-NAME                                        TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-service/cp-source-control-api-service       NodePort   10.233.21.183   <none>        8091:30091/TCP   54s
-service/cp-source-control-manager-service   NodePort   10.233.22.163   <none>        8080:30092/TCP   53s
-service/cp-source-control-ui-service        NodePort   10.233.14.98    <none>        8094:30094/TCP   51s
+NAME                                        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/cp-source-control-api-service       ClusterIP   10.233.52.12    <none>        8091/TCP   27s
+service/cp-source-control-manager-service   ClusterIP   10.233.7.44     <none>        8080/TCP   28s
+service/cp-source-control-ui-service        ClusterIP   10.233.58.193   <none>        8094/TCP   27s
 
 NAME                                                   READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/cp-source-control-api-deployment       1/1     1            1           54s
-deployment.apps/cp-source-control-manager-deployment   1/1     1            1           53s
-deployment.apps/cp-source-control-ui-deployment        1/1     1            1           51s
+deployment.apps/cp-source-control-api-deployment       1/1     1            1           27s
+deployment.apps/cp-source-control-manager-deployment   1/1     1            1           28s
+deployment.apps/cp-source-control-ui-deployment        1/1     1            1           27s
 
-NAME                                                              DESIRED   CURRENT   READY   AGE
-replicaset.apps/cp-source-control-api-deployment-588fdfbfd7       1         1         1       54s
-replicaset.apps/cp-source-control-manager-deployment-69b9b87cfd   1         1         1       53s
-replicaset.apps/cp-source-control-ui-deployment-867557b66d        1         1         1       51s
+NAME                                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/cp-source-control-api-deployment-8565cf8dd7      1         1         1       27s
+replicaset.apps/cp-source-control-manager-deployment-df5fd8bd8   1         1         1       28s
+replicaset.apps/cp-source-control-ui-deployment-5fd69d4b59       1         1         1       27s
 ```    
 
 <br>
@@ -192,23 +187,15 @@ replicaset.apps/cp-source-control-ui-deployment-867557b66d        1         1   
 $ cd ~/workspace/container-platform/cp-source-control-deployment/script
 $ chmod +x uninstall-cp-source-control.sh
 $ ./uninstall-cp-source-control.sh
-```
-```bash
-Are you sure you want to delete the container platform source control? <y/n> # y 입력
-release "cp-source-control-api" uninstalled
-release "cp-source-control-manager" uninstalled
-release "cp-source-control-ui" uninstalled
-namespace "cp-source-control" deleted
-...
+Are you sure you want to delete the container platform source control? <y/n> y # y 입력
 ```
 
 <br>
 
 ## <div id='4'>4. 컨테이너 플랫폼 소스 컨트롤 접속
 컨테이너 플랫폼 소스 컨트롤에 접속한다.<br><br>
-**컨테이너 플랫폼 소스 컨트롤 URL** : `http://{K8S_MASTER_NODE_IP}:30094`
-+ [[3.2. 컨테이너 플랫폼 소스 컨트롤 변수 정의]](#3.2) 에서 정의한 `K8S_MASTER_NODE_IP` 값 입력
-
+**컨테이너 플랫폼 소스 컨트롤 URL** : `http://scm.${HOST_DOMAIN}`
++ [[3.2. 컨테이너 플랫폼 소스 컨트롤 변수 정의]](#3.2) 에서 정의한 `HOST_DOMAIN` 값 입력
 <br>
 
 ### <div id='4.1'/>4.1. 컨테이너 플랫폼 소스 컨트롤 관리자 로그인
@@ -245,7 +232,7 @@ namespace "cp-source-control" deleted
 
 <br>
 
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 단독 형 컨테이너 플랫폼 소스 컨트롤 배포 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 컨테이너 플랫폼 소스 컨트롤 배포 가이드
 
 [image 001]:../images/portal/cp-001.png
 [image 002]:../images/portal/cp-002.png
