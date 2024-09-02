@@ -25,7 +25,8 @@
   2.3. [K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드](#2.3)<br>
   2.4. [K-PaaS 컨테이너 플랫폼 클러스터 설치 준비](#2.4)<br>
   2.5. [K-PaaS 컨테이너 플랫폼 클러스터 설치](#2.5)<br>
-  2.6. [K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6)
+  2.6. [K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6)<br>
+  2.7. [Ingress Nginx, Istio Gateway 서비스 로드밸런서 생성](#2.7)
 
 3. [K-PaaS 컨테이너 플랫폼 클러스터 삭제 (참고)](#3)
 
@@ -62,7 +63,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에 필요한 인스턴스 환경으�
 |Control Plane|각 클라우드 당 1개 이상|테스트 환경 1개<br>운영 환경 3개 이상|
 |Worker|각 클라우드 당 1~3개 이상|NFS 스토리지 사용 시 1개 이상<br>Rook-Ceph 스토리지 사용시 3개 이상|
 |Storage|각 클라우드 당 1개|NFS 스토리지 사용 시 필요|
-|LoadBalancer|각 클라우드 당 1~2개|HA Control Plane 구성 시 필요|
+|LoadBalancer|각 클라우드 당 1~2개|Private 클라우드 HA Control Plane 구성 시 필요|
 
 <br>
 
@@ -151,15 +152,16 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 
 |Python 패키지|버전|
 |---|---|
-|ansible|8.5.0|
-|cryptography|41.0.4|
-|jinja2|3.1.2|
+|ansible|9.5.1|
+|cryptography|42.0.7|
+|jinja2|3.1.4|
 |jmespath|1.0.1|
-|MarkupSafe|2.1.3|
-|netaddr|0.9.0|
-|pbr|5.11.1|
-|ruamel.yaml|0.17.35|
+|MarkupSafe|2.1.5|
+|netaddr|1.2.1|
+|pbr|6.0.0|
+|ruamel.yaml|0.18.6|
 |ruamel.yaml.clib|0.2.8|
+|jsonchema|4.22.0|
 
 <br>
 
@@ -168,19 +170,19 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubespray|2.24.1|
-|Kubernetes Native|1.28.6|
-|CRI-O|1.28.1|
-|Calico|3.26.4|
+|Kubespray|2.25.0|
+|Kubernetes Native|1.29.4|
+|CRI-O|1.29.1|
+|Calico|3.27.3|
 |MetalLB|0.13.9|
-|Ingress Nginx Controller|1.8.2|
-|Helm|3.13.1|
-|Istio|1.19.0|
+|Ingress Nginx Controller|1.11.1|
+|Helm|3.14.2|
+|Istio|1.22.3|
 |Podman|3.4.4|
-|OpenTofu|1.6.0-alpha5|
+|OpenTofu|1.8.1|
 |NFS Common|-|
 |nfs-subdir-external-provisioner|4.0.2|
-|Rook Ceph|1.12.3|
+|Rook Ceph|1.14.9|
 |Kubeflow|1.7.0|
 
 <br>
@@ -204,8 +206,12 @@ Control Plane 노드
 |TCP|10251|kube-scheduler|
 |TCP|10252|kube-controller-manager|
 |TCP|10255|Read-Only Kubelet API|
+|TCP|30000-32767| NodePort Services|
 |UDP|4789|Calico networking VXLAN|
-|TCP|15443|Istio East-West Gateway|
+|TCP|15021|Istio East-West Gateway Status|
+|TCP|15443|Istio East-West Gateway mTLS|
+|TCP|15012|Istio East-West Gateway istiod|
+|TCP|15017|Istio East-West Gateway webhook|
 
 <br>
 
@@ -219,7 +225,10 @@ Worker 노드
 |TCP|10255|Read-Only Kubelet API|
 |TCP|30000-32767| NodePort Services|
 |UDP|4789|Calico networking VXLAN|
-|TCP|15443|Istio East-West Gateway|
+|TCP|15021|Istio East-West Gateway Status|
+|TCP|15443|Istio East-West Gateway mTLS|
+|TCP|15012|Istio East-West Gateway istiod|
+|TCP|15017|Istio East-West Gateway webhook|
 
 <br>
 
@@ -254,12 +263,12 @@ K-PaaS 컨테이너 플랫폼 클러스터의 로드밸런서 타입 서비스�
 
 |서비스|설명|비고|
 |---|---|---|
-|Ingress Nginx Controller|K-PaaS 컨테이너 플랫폼 포털의 서비스를<br>Ingress로 외부 노출하기 위한 서비스|각 클라우드에 1개 인터페이스 생성 필요<br>Public IP 할당 필요|
-|Istio EastWest Gateway|멀티 클라우드간 서비스 통신을 위한<br>게이트웨이 서비스|각 클라우드에 1개 인터페이스 생성 필요<br>Public IP 할당 필요|
+|Ingress Nginx Controller|K-PaaS 컨테이너 플랫폼 포털의 서비스를<br>Ingress로 외부 노출하기 위한 서비스|각 클라우드에 1개 인터페이스 또는 1개 로드밸런서 생성 필요<br>Public IP 할당 필요|
+|Istio EastWest Gateway|멀티 클라우드간 서비스 통신을 위한<br>게이트웨이 서비스|각 클라우드에 1개 인터페이스 또는 1개 로드밸런서 생성 필요<br>Public IP 할당 필요|
 
 <br>
 
-> 멀티 클라우드 배포에서 서비스에 할당할 인터페이스는 2개 클라우드 환경에 각각 별도로 구성한다.
+> 멀티 클라우드 배포에서 서비스에 할당할 인터페이스 또는 로드밸런서 서비스는 2개 클라우드 환경에 각각 별도로 구성한다.
 
 <br>
 
@@ -272,7 +281,10 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 External I
 
 <br>
 
-### NHN 클라우드 (예시)
+<details>
+<summary>인터페이스 생성할 경우</summary>
+
+### NHN 클라우드 인터페이스 생성 (예시)
 ***"네트워크 인터페이스 생성" 버튼을 클릭***
 
 ***Control Plane 노드와 동일한 네트워크 VPC, 서브넷 선택 후 사설 IP를 지정하여 생성***
@@ -317,7 +329,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 External I
 
 <br>
 
-### KT 클라우드 (예시)
+### KT 클라우드 인터페이스 생성 (예시)
 ***Virtual IP 메뉴에서 "Virtual IP 생성" 버튼을 클릭***
 
 ***Control Plane 노드와 동일한 네트워크 Zone, Tier 선택 후 생성***
@@ -355,6 +367,50 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 External I
 
 <br>
 
+### Naver 클라우드 인터페이스 생성
+Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할당이 불가능하다.<br>
+따라서, 아래 기술한 CSP의 로드밸런서 서비스 생성 및 설정 진행이 필요하다.
+
+<br>
+
+</details>
+
+<br>
+
+<details>
+<summary>로드밸런서 서비스 생성할 경우</summary>
+
+### CSP 로드밸런서 서비스 생성 (공통)
+각 CSP 로드밸런서 서비스를 생성하여 External IP 할당이 가능하며 [2.7. Ingress Nginx, Istio Gateway 서비스 로드밸런서 생성](#2.7) 에서 설정 방법을 기술하였다.<br>
+로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 Public IP를 우선 생성한 후 클러스터 배포 이후에 로드밸런서 서비스를 생성한다.
+
+<br>
+
+### NHN 클라우드 Public IP 생성
+***Floating IP 메뉴에서 "플로팅 IP 생성" 버큰 클릭하여 Public IP 생성***
+
+![image 025]
+
+<br>
+
+### KT 클라우드 Public IP 생성
+***Networking 메뉴에서 "IP 생성" 버튼 클릭하여 Public IP 생성***
+
+![image 017]
+
+<br>
+
+### Naver 클라우드 Public IP 생성
+***Public IP 메뉴에서 "공인 IP 신청" 버튼 클릭하여 Public IP 생성***
+
+![image 026]
+
+<br>
+
+</details>
+
+<br>
+
 ### <div id='2.1.7'> 2.1.7. 로드밸런서 (***HA Control Plane 구성 시 필수 설정***)
 > HA Control Plane 구성이 아닐 경우 로드밸런서 구성 과정은 생략하고 다음 과정을 진행한다.<br> [2.2. SSH Key 생성 및 배포](#2.2)
 
@@ -379,6 +435,7 @@ Public 클라우드 환경의 경우 각 CSP에서 제공하는 로드밸런서�
 <br>
 
 ***NHN 클라우드 환경 로드밸런서 생성 (예시)***
+
 Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.
 
 ![image 021]
@@ -419,7 +476,94 @@ Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.
 
 ***KT 클라우드 환경 로드밸런서 생성 (예시)***
 
-KT 클라우드 환경 D1 플랫폼에서 로드밸런서를 지원하지 않아 Private 클라우드 환경과 동일하게 Keepalived, HAProxy를 이용하여 로드밸런서를 구성한다.
+Load Balancer 관리 메뉴에서 "Load Balancer 생성" 버튼을 클릭한다.
+
+![image 027]
+
+<br>
+
+로드밸런서 정보를 입력한 후 생성을 진행한다.
+
+|항목|설명|비고|
+|---|---|---|
+|이름|로드밸런서 이름 입력||
+|Tier|사용할 네트워크 Tier 선택||
+|Name|로드밸런서 이름 입력||
+|Port|6443 입력||
+
+<br>
+
+![image 028]
+
+<br>
+
+"VM연결/해제" 버큰을 클릭하여 클러스터 Control Plane 노드를 등록한다.
+
+|항목|설명|비고|
+|---|---|---|
+|이름|로드밸런서 이름 입력||
+|Tier|사용할 네트워크 Tier 선택||
+|VM|Control Plane 인스턴스 선택||
+|Public Port|6443 입력||
+
+<br>
+
+![image 029]
+
+<br>
+
+Networking 메뉴에서 "접속 설정" 및 "방화벽 설정"을 진행한다.
+
+<br>
+
+***Naver 클라우드 환경 로드밸런서 생성 (예시)***
+
+Target Group 메뉴에서 "Target Group 생성" 버튼을 클릭한다.
+
+![image 030]
+
+<br>
+
+Target Group 정보를 입력한 후 생성을 진행한다.
+
+|항목|설명|비고|
+|---|---|---|
+|Target Group 이름|Target Group 이름 입력||
+|Target 유형|VPC Server 선택||
+|VPC|사용할 VPC 선택||
+|프로토콜|PROXY_TCP 선택||
+|포트|6443 입력||
+
+<br>
+
+![image 031]
+
+<br>
+
+Load Balancer 메뉴에서 "로드밸런서 생성", "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
+
+![image 032]
+
+<br>
+
+로드밸런서 정보를 입력한 후 생성을 진행한다.
+
+|항목|설명|비고|
+|---|---|---|
+|로드밸런서 이름|로드밸런서 이름 입력||
+|네트워크|Public 선택||
+|대상 VPC|VPC 선택||
+|서브넷 선택|서브넷 선택 선택||
+|공인 IP|공인 IP 신청 및 기 생성된 공인 IP 선택||
+|로드밸런서 포트|6443 입력||
+
+<br>
+
+![image 033]
+
+<br>
+
+![image 034]
 
 <br>
 
@@ -679,7 +823,7 @@ LoadBalancer Service
 |환경변수|설명|비고|
 |---|---|---|
 |METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역|Control Plane 노드와 동일한 네트워크 서브넷 대역 설정|
-|INGRESS_NGINX_PRIVATE_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 Private IP|`METALLB_IP_RANGE` 값과 중복되지 않도록 설정|
+|INGRESS_NGINX_PRIVATE_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)|`METALLB_IP_RANGE` 값과 중복되지 않도록 설정|
 
 <br>
 
@@ -690,8 +834,8 @@ Istio Service
 |환경변수|설명|비고|
 |---|---|---|
 |ISTIO_INGRESS_PRIVATE_IP|MetalLB를 통해 Istio Ingress Gateway Service에서 사용할 Private IP|`METALLB_IP_RANGE` 값과 중복되지 않도록 설정|
-|ISTIO_EASTWEST_PRIVATE_IP|MetalLB를 통해 Istio EastWest Gateway Service에서 사용할 Private IP|`METALLB_IP_RANGE` 값과 중복되지 않도록 설정|
-|ISTIO_EASTWEST_PUBLIC_IP|Istio EastWest Gateway Service에서 사용할 인터페이스에 할당한 Public IP||
+|ISTIO_EASTWEST_PRIVATE_IP|MetalLB를 통해 Istio EastWest Gateway Service에서 사용할 Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)|`METALLB_IP_RANGE` 값과 중복되지 않도록 설정|
+|ISTIO_EASTWEST_PUBLIC_IP|Istio EastWest Gateway Service에서 사용할 인터페이스에 할당한 Public IP (인터페이스, 로드밸런서 서비스)||
 
 <br>
 
@@ -779,10 +923,10 @@ $ source deploy-cp-cluster.sh
 ```
 $ kubectl get nodes --context=cluster1
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster1-master     Ready    control-plane          12m   v1.28.6
-cp-cluster1-worker-1   Ready    <none>                 10m   v1.28.6
-cp-cluster1-worker-2   Ready    <none>                 10m   v1.28.6
-cp-cluster1-worker-3   Ready    <none>                 10m   v1.28.6
+cp-cluster1-master     Ready    control-plane          12m   v1.29.5
+cp-cluster1-worker-1   Ready    <none>                 10m   v1.29.5
+cp-cluster1-worker-2   Ready    <none>                 10m   v1.29.5
+cp-cluster1-worker-3   Ready    <none>                 10m   v1.29.5
 
 $ kubectl get pods -n kube-system --context=cluster1
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -815,10 +959,10 @@ nodelocaldns-x7grn                            1/1     Running   0             8m
 ```
 $ kubectl get nodes --context=cluster2
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster2-master     Ready    control-plane          12m   v1.28.6
-cp-cluster2-worker-1   Ready    <none>                 10m   v1.28.6
-cp-cluster2-worker-2   Ready    <none>                 10m   v1.28.6
-cp-cluster2-worker-3   Ready    <none>                 10m   v1.28.6
+cp-cluster2-master     Ready    control-plane          12m   v1.29.5
+cp-cluster2-worker-1   Ready    <none>                 10m   v1.29.5
+cp-cluster2-worker-2   Ready    <none>                 10m   v1.29.5
+cp-cluster2-worker-3   Ready    <none>                 10m   v1.29.5
 
 $ kubectl get pods -n kube-system --context=cluster2
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -845,6 +989,51 @@ nodelocaldns-8dpnt                            1/1     Running   0             8m
 nodelocaldns-pvl6z                            1/1     Running   0             8m8s
 nodelocaldns-x7grn                            1/1     Running   0             8m8s
 ```
+
+<br>
+
+### <div id='2.7'> 2.7. Ingress Nginx, Istio Gateway 서비스 로드밸런서 생성 (선택)
+Ingress Nginx Service의 External IP 할당을 위해 인터페이스가 아닌 로드밸런서 서비스를 적용할 경우<br>
+배포된 서비스의 포트를 확인하여야 한다.
+
+<br>
+
+```
+$ kubectl get svc ingress-nginx-controller -n ingress-nginx
+
+NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                      AGE
+ingress-nginx-controller             LoadBalancer   10.233.58.196   x.x.x.x          80:32584/TCP,443:30966/TCP   3h58m
+
+$ kubectl get svc istio-eastwestgateway -n istio-system
+
+NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                      AGE
+istio-eastwestgateway                LoadBalancer   10.233.58.197   x.x.x.x          15021:32584/TCP,15443:30966/TCP,15012:30256/TCP,15017:31946/TCP   3h58m
+
+```
+
+<br>
+
+로드밸런서 생성에 대한 부분은 [2.1.7. 로드밸런서](#2.1.7) 내용을 참고하되 아래의 설정을 적용하여 생성한다.
+
+ingress-nginx-controller 서비스 일 경우 (예시)
+
+|항목|설명|비고|
+|---|---|---|
+|프로토콜|HTTP, HTTPS 선택||
+|로드밸런서 포트|80, 443 입력||
+|인스턴스 포트|80, 443에 할당된 노드포트 입력||
+|선택된 인스턴스|클러스터 전체 인스턴스 선택||
+
+<br>
+
+istio-eastwestgateway 서비스 일 경우 (예시)
+
+|항목|설명|비고|
+|---|---|---|
+|프로토콜|HTTP, HTTPS 선택||
+|로드밸런서 포트|15021, 15443, 15012, 15017 입력||
+|인스턴스 포트|15021, 15443, 15012, 15017에 할당된 노드포트 입력||
+|선택된 인스턴스|클러스터 전체 인스턴스 선택||
 
 <br>
 
