@@ -62,7 +62,15 @@
 ## Install
 ### Single Cloud 배포
 - 클러스터 설치
-  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-single.md)
+
+<table>
+  <tr>
+    <td colspan=2 align=center></td>
+    <td colspan=2 align=center><a href="install-guide/standalone/cp-cluster-install-single.md">Single Control Plane</a></td>
+    <td colspan=2 align=center><a href="install-guide/standalone/cp-cluster-install-single.md">Multi Control Plane</a></td>
+  </tr>
+</table>
+
 - 포털 설치
   + [포털 설치 가이드](install-guide/portal/cp-portal-standalone-guide.md)
   + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
