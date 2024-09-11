@@ -896,6 +896,7 @@ Target Group 정보
 |항목|변경사항|비고|
 |---|---|---|
 |포트|6443 입력||
+|적용 Target|Control Plane 인스턴스 추가||
 
 <br>
 
