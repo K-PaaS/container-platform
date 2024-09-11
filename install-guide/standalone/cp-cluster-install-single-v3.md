@@ -704,8 +704,8 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 |항목|설명|비고|
 |---|---|---|
-|프로토콜|||
-|포트|||
+|프로토콜|TCP 선택||
+|포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
 
 <br>
 
@@ -730,7 +730,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |로드밸런서 이름|로드밸런서 이름을 입력||
 |네트워크|Public 선택||
 |대상 VPC|Control Plane 노드와 동일한 네트워크 VPC 선택||
-|서브넷 선택|Control Plane 노드와 동일한 네트워크 VPC에 속한 로드밸런서용 서브넷 선택||
+|서브넷 선택|로드밸런서 서브넷 선택||
 |공인 IP|기존에 생성된 Public IP 선택(1번 과정에서 생성)||
 
 <br>
