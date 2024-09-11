@@ -1,6 +1,6 @@
 ### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드
 
-<br>
+<br><br>
 
 ## Table of Contents
 
@@ -17,104 +17,112 @@
   2.1.3. [주요 소프트웨어](#2.1.3)<br>
   2.1.4. [방화벽](#2.1.4)<br>
   2.1.5. [스토리지](#2.1.5)<br>
-  2.1.6. [쿠버네티스 서비스 External IP](#2.1.6)<br>
-  2.1.7. [로드밸런서](#2.1.7)<br>
-  2.1.7.1. [Public 클라우드](#2.1.7.1)<br>
-  2.1.7.2. [Private 클라우드](#2.1.7.2)<br>
+  2.1.6. [Ingress Nginx 서비스 설정](#2.1.6)<br>
+  2.1.6.1. [Control Plane 노드 추가 인터페이스](#2.1.6.1)<br>
+  2.1.6.2. [클라우드 로드밸런서 서비스](#2.1.6.2)<br>
+  2.1.7. [HA Control Plane 로드밸런서](#2.1.7)<br>
+  2.1.7.1. [클라우드 로드밸런서 서비스](#2.1.7.1)<br>
+  2.1.7.2. [HAProxy](#2.1.7.2)<br>
   2.2. [SSH Key 생성 및 배포](#2.2)<br>
   2.3. [K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드](#2.3)<br>
   2.4. [K-PaaS 컨테이너 플랫폼 클러스터 설치 준비](#2.4)<br>
   2.5. [K-PaaS 컨테이너 플랫폼 클러스터 설치](#2.5)<br>
-  2.6. [K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6)<br>
-  2.7. [Ingress Nginx 서비스 로드밸런서 생성](#2.7)
+  2.6. [K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6)
 
-3. [K-PaaS 컨테이너 플랫폼 클러스터 삭제 (참고)](#3)
+1. [K-PaaS 컨테이너 플랫폼 클러스터 삭제 (참고)](#3)
 
-4. [Resource 생성 시 주의사항](#4)
+2. [Resource 생성 시 주의사항](#4)
 
-5. [Kubeflow 설치](#5)
+3. [Kubeflow 설치](#5)
 
-<br>
+<br><br>
 
 ## <div id='1'> 1. 문서 개요
 
 ### <div id='1.1'> 1.1. 목적
 본 문서 (K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드) 는 기획자, 개발자, 운영자 지원 환경의 개방형 PaaS 플랫폼인 K-PaaS 컨테이너 플랫폼의 클러스터를 설치하는 방법을 기술하였다.
 
-<br>
+<br><br>
 
 ### <div id='1.2'> 1.2. 범위
 설치 범위는 K-PaaS 컨테이너 플랫폼 환경의 기반이 되는 클러스터 설치를 `단일 클라우드` 환경 기준으로 작성하였다.
 
-<br>
+<br><br>
 
 ### <div id='1.3'> 1.3. 시스템 구성도
 시스템 구성은 쿠버네티스 `단일 클러스터` (Control Plane, Worker) 환경으로 구성되어 있다.
 
+<br>
+
 K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 `단일 클러스터`를 구성하고 각 리소스를 통해 K-PaaS 컨테이너 플랫폼 포털 환경을 배포하여 대시보드, 데이터베이스, 레파지토리 등의 환경을 제공한다.
+
+<br>
 
 K-PaaS 컨테이너 플랫폼 클러스터에 필요한 인스턴스 환경으로는 아래 구성을 참고한다.
 
-|인스턴스 종류|인스턴스 갯수|비고|
-|---|---|---|
-|Install|1개|Install 인스턴스 구성을 권장<br>Control Plane 인스턴스로 대체 가능|
-|Control Plane|1개 이상|테스트 환경 1개<br>운영 환경 3개 이상|
-|Worker|1~3개 이상|NFS 스토리지 사용 시 1개 이상<br>Rook-Ceph 스토리지 사용시 3개 이상|
-|Storage|1개|NFS 스토리지 사용 시 필요|
-|LoadBalancer|1~2개|Private 클라우드 HA Control Plane 구성 시 필요|
+<br>
+
+|인스턴스 종류|인스턴스 갯수|필수|비고|
+|---|---|---|---|
+|Install|1개||Install 인스턴스 구성을 권장<br>Control Plane 인스턴스로 대체 가능|
+|Control Plane|1개 이상|O|테스트 환경 1개<br>운영 환경 3개 이상|
+|Worker|1~3개 이상|O|NFS 스토리지 사용 시 1개 이상<br>Rook-Ceph 스토리지 사용시 3개 이상|
+|Storage|1개||NFS 스토리지 사용 시 필요|
+|LoadBalancer|1~2개||Private 클라우드 HA Control Plane 구성 시 필요|
 
 <br>
 
 각 배포 유형 별 시스템 구성도는 다음과 같다.
 
+<br>
+
 <details>
 <summary>시스템 구성도</summary>
+<br>
 
 ***[ 단일 Control Plane, NFS 스토리지 구성 ]***
 
 ![image 001]
 
-<br>
+<br><br>
 
 ***[ 단일 Control Plane, Rook-Ceph 스토리지 구성 ]***
 
 ![image 002]
 
-<br>
+<br><br>
 
 ***[ HA Control Plane, ETCD Stacked, NFS 스토리지 구성 ]***
 
 ![image 003]
 
-<br>
+<br><br>
 
 ***[ HA Control Plane, ETCD External, NFS 스토리지 구성 ]***
 
 ![image 004]
 
-<br>
+<br><br>
 
 ***[ HA Control Plane, ETCD Stacked, Rook-Ceph 스토리지 구성 ]***
 
 ![image 005]
 
-<br>
+<br><br>
 
 ***[ HA Control Plane, ETCD External, Rook-Ceph 스토리지 구성 ]***
 
 ![image 006]
 
-<br>
-
 </details>
 
-<br>
+<br><br>
 
 ### <div id='1.4'> 1.4. 참고자료
 > https://kubespray.io<br>
 > https://github.com/kubernetes-sigs/kubespray
 
-<br>
+<br><br>
 
 ## <div id='2'> 2. K-PaaS 컨테이너 플랫폼 클러스터 설치
 
@@ -130,10 +138,12 @@ K-PaaS 컨테이너 플랫폼 클러스터에 필요한 인스턴스 환경으�
 
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위한 전제조건은 아래 기술하였다.
 
-<br>
+<br><br>
 
-### <div id='2.1.1'> 2.1.1. OS (***필수 확인***)
+### <div id='2.1.1'> 2.1.1. OS (***`필수 확인`***)
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보는 다음과 같다.
+
+<br>
 
 |지원 OS|버전|
 |---|---|
@@ -141,8 +151,93 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보�
 
 <br>
 
+각 CSP 별 Ubuntu 22.04 기준 인스턴스 생성 시 아래 사항을 진행한다.
+
+<br>
+
+<details>
+<summary>KT 클라우드</summary>
+<br>
+ubuntu 22.04 이미지로 인스턴스 생성 시 Last password change 일자가 2023-07-04 로 설정되어 일정시간 경과 후 ssh 접속 시 패스워드 변경 프롬프트가 출력된다.
+
+<br>
+
+ubuntu 계정에는 기본적으로 패스워드가 설정되어 있지 않기 때문에 인스턴스에 접근할수 없는 이슈가 발생하므로 현재일 기준으로 변경을 진행한다.
+
+```
+$ sudo chage -d 20xx-xx-xx ubuntu
+```
+
+<br>
+
+</details>
+
+<br>
+
+<details>
+<summary>Naver 클라우드</summary>
+<br>
+메인 계정으로 인스턴스 생성 시 root, 서브 계정으로 인스턴스 생성 시 ncloud 계정을 기본으로 사용한다.
+컨테이너 플랫폼의 경우 ubuntu 계정 사용을 기본값으로 하기때문에 ubuntu 계정 생성 절차를 진행한다.
+
+<br>
+
+Install 인스턴스 또는 첫번째 Control Plane 노드 인스턴스에서 아래 과정을 진행한다.
+
+```
+$ sudo useradd -m -s /bin/bash ubuntu
+$ echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
+
+$ sudo mkdir -p /home/ubuntu/.ssh
+$ sudo ssh-keygen -t rsa -m PEM -N '' -f /home/ubuntu/.ssh/id_rsa
+$ sudo cat /home/ubuntu/.ssh/id_rsa.pub | sudo tee -a /home/ubuntu/.ssh/authorized_keys
+$ sudo chown -R ubuntu:ubuntu /home/ubuntu/.ssh
+```
+
+<br>
+
+인스턴스에 접근할 로컬 환경에 개인키를 복사한다.
+
+```
+## 출력된 개인키 복사
+
+$ sudo cat /home/ubuntu/.ssh/id_rsa
+```
+
+<br>
+
+공개키를 조회 및 복사한다.
+
+```
+## 출력된 공개키 복사
+
+$ sudo cat /home/ubuntu/.ssh/id_rsa.pub
+```
+
+<br>
+
+
+그 외 인스턴스에서 아래 과정을 진행한다.
+
+```
+$ sudo useradd -m -s /bin/bash ubuntu
+$ echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
+
+$ sudo mkdir -p /home/ubuntu/.ssh
+$ echo "{ 공개키 }" | sudo tee -a /home/ubuntu/.ssh/authorized_keys
+$ sudo chown -R ubuntu:ubuntu /home/ubuntu/.ssh
+```
+
+<br>
+
+</details>
+
+<br><br>
+
 ### <div id='2.1.2'> 2.1.2. Python 패키지 (참고)
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패키지 정보는 다음과 같다.
+
+<br>
 
 |Python 패키지|버전|
 |---|---|
@@ -157,10 +252,12 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 |ruamel.yaml.clib|0.2.8|
 |jsonchema|4.22.0|
 
-<br>
+<br><br>
 
 ### <div id='2.1.3'> 2.1.3. 주요 소프트웨어 (참고)
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트웨어 정보는 다음과 같다.
+
+<br>
 
 |주요 소프트웨어|버전|
 |---|---|
@@ -179,10 +276,12 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 |Rook Ceph|1.14.9|
 |Kubeflow|1.7.0|
 
-<br>
+<br><br>
 
-### <div id='2.1.4'> 2.1.4. 방화벽 (***필수 설정***)
+### <div id='2.1.4'> 2.1.4. 방화벽 (***`필수 설정`***)
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 방화벽 정보는 다음과 같다.
+
+<br>
 
 Control Plane 노드
 
@@ -212,10 +311,12 @@ Worker 노드
 |TCP|30000-32767| NodePort Services|
 |UDP|4789|Calico networking VXLAN|
 
-<br>
+<br><br>
 
-### <div id='2.1.5'> 2.1.5. 스토리지 (***필수 설정***)
+### <div id='2.1.5'> 2.1.5. 스토리지 (***`필수 설정`***)
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 스토리지 정보는 다음과 같다.
+
+<br>
 
 |지원 스토리지|비고|
 |---|---|
@@ -232,113 +333,229 @@ NFS 스토리지 구성 시<br>
 Rook-Ceph 스토리지 구성 시<br>
 Root Volume 이외에 추가 Volume을 각 Worker 노드에 사전에 할당해야 한다.
 
+<br><br>
+
+### <div id='2.1.6'> 2.1.6. Ingress Nginx 서비스 설정 (***`필수 설정`***)
+K-PaaS 컨테이너 플랫폼 서비스 구성을 위해서 Ingress Nginx 서비스 설정이 필요하다.
+
+K-PaaS 컨테이너 플랫폼 클러스터의 Ingress Nginx 서비스 설정 정보는 다음과 같다.
+
 <br>
-
-### <div id='2.1.6'> 2.1.6. 쿠버네티스 서비스 External IP (***필수 설정***)
-K-PaaS 컨테이너 플랫폼 서비스 구성을 위해서 특정 서비스에 로드밸런서 타입 설정 및 External IP 설정이 필요하다.
-
-K-PaaS 컨테이너 플랫폼 클러스터의 로드밸런서 타입 서비스에 필요한 External IP 설정 정보는 다음과 같다.
 
 |서비스|설명|비고|
 |---|---|---|
-|Ingress Nginx Controller|K-PaaS 컨테이너 플랫폼 포털의 서비스를<br>Ingress로 외부 노출하기 위한 서비스|1개 인터페이스 또는 1개 로드밸런서 생성 필요<br>Public IP 할당 필요|
+|Ingress Nginx Controller|K-PaaS 컨테이너 플랫폼 서비스를<br>Ingress로 외부 노출하기 위한 서비스|1개 인터페이스 또는 1개 로드밸런서 생성 필요<br>Public IP 할당 필요|
 
 <br>
 
-K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 External IP를 할당한다.<br>
-해당 External IP로 외부 통신 및 서비스를 지원하기 위해서는 다음과 같은 설정이 필요하다.
+K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸런서 타입 서비스의 External IP를 할당한다.<br>
+해당 External IP로 외부 통신 및 서비스를 지원하기 위해 다음 두가지 중 한가지 방식을 선택하여 설정을 진행한다.
+
+<br>
+
+|방식|설명|비고|
+|---|---|---|
+|인터페이스 추가|1개 Control Plane 노드에 Public IP가 할당된 신규 인터페이스 추가|Public IP 사용에 대한 비용만 발생<br>HA 구성에서 해당 노드 장애 시 Ingress Nginx 서비스 외부 접근 불가|
+|로드밸런서 생성|Public IP가 할당된 로드밸런서 서비스 생성|로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
+
+<br><br>
+
+### <div id='2.1.6.1'> 2.1.6.1. Control Plane 노드 추가 인터페이스
 
 <br>
 
 <details>
-<summary>인터페이스 생성할 경우</summary>
+<summary>NHN 클라우드 인터페이스 추가</summary>
+<br>
 
-### NHN 클라우드 인터페이스 생성 (예시)
-***"네트워크 인터페이스 생성" 버튼을 클릭***
-
-***Control Plane 노드와 동일한 네트워크 VPC, 서브넷 선택 후 사설 IP를 지정하여 생성***
-
-![image 008]
+***1. Network > Network Interface 메뉴로 이동하여 "네트워크 인터페이스 생성" 버튼을 클릭한다.***
 
 <br>
 
-***생성한 인터페이스 선택 후 "플로팅 IP 관리" 버튼을 클릭***
-
-![image 009]
+***2. 이름 입력, Control Plane 노드와 동일한 네트워크 VPC, 서브넷 선택 후 "확인" 버튼을 클릭한다.***
 
 <br>
 
-***플로팅 IP를 생성 및 할당***
-
-![image 010]
+***3. 생성한 인터페이스 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.***
 
 <br>
 
-***Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭***
-
-![image 011]
+***4. 플로팅 IP 생성 또는 기존에 생성된 플로팅 IP 선택 후 "연결" 버튼을 클릭한다.***
 
 <br>
 
-***네트워크 탭에서 "네트워크 인터페이스 연결 추가" 버튼 클릭***
-
-![image 012]
+***5. Compute > Instance 메뉴로 이동하여 Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭한다.***
 
 <br>
 
-***기존 네트워크 인터페이스 지정 클릭 후 인터페이스 선택***
-
-![image 013]
+***6. 하단 네트워크 탭에서 "네트워크 인터페이스 연결 추가" 버튼 클릭한다.***
 
 <br>
 
-***"인스턴스 시작" 버튼 클릭***
-
-![image 014]
+***7. 기존 네트워크 인터페이스 지정 선택 후 생성한 인터페이스를 선택한다.***
 
 <br>
 
-### KT 클라우드 인터페이스 생성 (예시)
-***Virtual IP 메뉴에서 "Virtual IP 생성" 버튼을 클릭***
-
-***Control Plane 노드와 동일한 네트워크 Zone, Tier 선택 후 생성***
-
-![image 015]
+***8. "인스턴스 시작" 버튼을 클릭한다.***
 
 <br>
 
-***Virtual IP 선택 및 "연결" 버튼 클릭하여 Control Plane VM에 연결***
-
-![image 016]
+</details>
 
 <br>
 
-***Networking 메뉴에서 "IP 생성" 버튼 클릭하여 Control Plane 노드와 동일한 네트워크 Zone에 공인 IP 생성***
+<details>
+<summary>KT 클라우드 인터페이스 추가</summary>
+<br>
 
-![image 017]
+***1. Servers > Virtual IP 메뉴에서 "Virtual IP 생성" 버튼을 클릭한다.***
 
 <br>
 
-***"접속 설정" 버튼 클릭하여 Virtual IP 선택 후 Port Forwarding 설정***
-
-![image 018]
-![image 019]
+***2. Control Plane 노드와 동일한 네트워크 Zone, Tier 선택, Name 입력 후 "생성" 버튼을 클릭한다.***
 
 <br>
 
-***"방화벽 설정" 버튼 클릭하여 등록한 접속 설정으로 방화벽 설정***
-
-![image 020]
+***3. Virtual IP 선택 후 "연결" 버튼을 클릭하여 Control Plane VM에 Virtual IP를 연결한다.***
 
 <br>
 
-***Control Plane 노드에서 ```$ sudo ifconfig {인터페이스명}:1 {VIP} up``` 명령어 실행 (HA Control Plane 구성 시 VIP 연결한 Control Plane 노드에서 실행)***
+***4. Servers > Networking 메뉴에서 "IP 생성" 버튼 클릭하여 Control Plane 노드와 동일한 네트워크 Zone에 Public IP를 생성한다.***
 
 <br>
 
-### Naver 클라우드 인터페이스 생성
+***5. "접속 설정" 버튼 클릭하여 Virtual IP 선택 후 80, 443 포트에 대한 Port Forwarding 설정을 진행한다.***
+
+<br>
+
+***6. "방화벽 설정" 버튼 클릭하여 등록한 접속 설정으로 방화벽을 설정한다.***
+
+<br>
+
+***7. Control Plane 노드에서 <code>$ sudo ifconfig {인터페이스명}:1 {VIP} up</code> 명령어를 실행한다. (HA Control Plane 구성 시 VIP 연결한 Control Plane 노드에서 실행)***
+
+<br>
+
+</details>
+
+<br>
+
+<details>
+<summary>Naver 클라우드 인터페이스 추가</summary>
+<br>
 Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할당이 불가능하다.<br>
-따라서, 아래 기술한 CSP의 로드밸런서 서비스 생성 및 설정 진행이 필요하다.
+따라서, 아래 기술한 Public 클라우드의 로드밸런서 서비스 생성 및 설정 진행이 필요하다.
+
+<br>
+
+</details>
+
+<br><br>
+
+### <div id='2.1.6.2'> 2.1.6.2. 클라우드 로드밸런서 서비스
+
+<br>
+
+<details>
+<summary>NHN 클라우드 로드밸런서 서비스 생성</summary>
+<br>
+
+로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 `Public IP만 우선 생성`한 후, `클러스터 배포 완료 이후`에 `로드밸런서 서비스를 생성`한다.
+
+<br>
+
+***1. Network > Floating IP 메뉴에서 "플로팅 IP 생성" 버튼 클릭하여 Public IP를 생성한다.***
+
+<br>
+
+로드밸런서 생성 시 서비스에 할당된 포트와 노드포트 정보 확인 이후 로드밸런서 설정이 가능하기때문에, 아래 기술한 로드밸런서 생성 및 설정 과정은 [2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6) 단계 이후에 진행한다.
+
+<br>
+
+***2. Network > Load Balancer > 관리 메뉴에서 "로드 밸런서 생성" 버튼을 클릭, 로드 밸런서 생성 모드 선택 팝업에서 "L4 라우팅"을 선택한다.***
+
+<br>
+3. 설정 정보를 입력한다.
+
+<br>
+
+|항목|설명|비고|
+|---|---|---|
+|이름|로드밸런서 이름 입력||
+|VPC|Control Plane 노드와 동일한 네트워크 VPC 선택||
+|서브넷|Control Plane 노드와 동일한 Public 서브넷 선택||
+
+<br>
+4. 리스너, 맴버 그룹 정보를 입력한다.
+
+<br>
+
+리스너
+
+|항목|설명|비고|
+|---|---|---|
+|이름|리스너 이름 입력||
+|프로토콜|HTTP 선택||
+|로드 밸런서 포트|80 입력||
+
+<br>
+
+맴버 그룹
+
+|항목|설명|비고|
+|---|---|---|
+|이름|맴버 그룹 이름을 입력||
+|프로토콜|HTTP 선택||
+|포트|Ingress Nginx 서비스의 80 포트에 할당된 노드포트 값 입력||
+|상태 확인 프로토콜|TCP 선택||
+|상태 확인 포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
+|맴버 목록|전체 노드 인스턴스 추가||
+
+<br>
+
+> Ingress Nginx 서비스 포트 확인<br>
+
+```
+$ kubectl get svc ingress-nginx-controller -n ingress-nginx
+```
+
+<br>
+5. "리스너추가" 버튼을 클릭한다.
+
+<br>
+6. 리스너, 맴버 그룹 정보를 입력한다.
+
+<br>
+
+리스너
+
+|항목|설명|비고|
+|---|---|---|
+|이름|리스너 이름 입력||
+|프로토콜|HTTPS 선택||
+|로드 밸런서 포트|443 입력||
+
+<br>
+
+맴버 그룹
+
+|항목|설명|비고|
+|---|---|---|
+|이름|맴버 그룹 이름을 입력||
+|프로토콜|HTTPS 선택||
+|포트|Ingress Nginx 서비스의 443 포트에 할당된 노드포트 값 입력||
+|상태 확인 프로토콜|TCP 선택||
+|상태 확인 포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
+|맴버 목록|전체 노드 인스턴스 추가||
+
+<br>
+7. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
+
+<br>
+8. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
+
+<br>
+9. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.
 
 <br>
 
@@ -347,32 +564,77 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 <br>
 
 <details>
-<summary>로드밸런서 서비스 생성할 경우</summary>
+<summary>KT 클라우드 로드밸런서 서비스 생성</summary>
+<br>
 
-### CSP 로드밸런서 서비스 생성 (공통)
-각 CSP 로드밸런서 서비스를 생성하여 External IP 할당이 가능하며 [2.7. Ingress Nginx 서비스 로드밸런서 생성](#2.7) 에서 설정 방법을 기술하였다.<br>
-로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 Public IP를 우선 생성한 후 클러스터 배포 이후에 로드밸런서 서비스를 생성한다.
+로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 `Public IP만 우선 생성`한 후, `클러스터 배포 완료 이후`에 `로드밸런서 서비스를 생성`한다.
+
+<br>
+1. Servers > Networking 메뉴에서 "IP 생성" 버튼을 클릭하여 Public IP를 생성한다.
 
 <br>
 
-### NHN 클라우드 Public IP 생성
-***Floating IP 메뉴에서 "플로팅 IP 생성" 버큰 클릭하여 Public IP 생성***
+로드밸런서 생성 시 서비스에 할당된 포트와 노드포트 정보 확인 이후 로드밸런서 설정이 가능하기때문에, 아래 기술한 로드밸런서 생성 및 설정 과정은 [2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6) 단계 이후에 진행한다.
 
-![image 025]
+<br>
+2. Load Balancer > Load Balancer 관리 메뉴에서 "Load Balancer 생성" 버튼을 클릭한다.
+
+<br>
+3. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.
 
 <br>
 
-### KT 클라우드 Public IP 생성
-***Networking 메뉴에서 "IP 생성" 버튼 클릭하여 Public IP 생성***
+|항목|설명|비고|
+|---|---|---|
+|Zone|Control Plane 노드와 동일한 네트워크 Zone 선택|VPC와 동일 개념|
+|Tier|Control Plane 노드와 동일한 네트워크 Tier 선택|서브넷과 동일 개념|
+|Name|로드밸런서 이름 입력||
+|Service IP / Port|신규 IP 할당, 80 포트 입력||
+|Service Type|HTTP 선택||
 
-![image 017]
+<br>
+4. "Load Balancer 생성" 버튼을 클릭한다.
+
+<br>
+5. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.
 
 <br>
 
-### Naver 클라우드 Public IP 생성
-***Public IP 메뉴에서 "공인 IP 신청" 버튼 클릭하여 Public IP 생성***
+|항목|설명|비고|
+|---|---|---|
+|Zone|Control Plane 노드와 동일한 네트워크 Zone 선택|VPC와 동일 개념|
+|Tier|Control Plane 노드와 동일한 네트워크 Tier 선택|서브넷과 동일 개념|
+|Name|로드밸런서 이름 입력||
+|Service IP / Port|80 포트로 생성한 로드밸런서 Private IP 선택, 443 포트 입력||
+|Service Type|HTTPS 선택||
 
-![image 026]
+<br>
+6. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443 포트 로드밸런서 모두)
+
+<br>
+7. 정보를 입력 후 "추가" 버튼을 클릭한다.
+
+<br>
+
+|항목|설명|비고|
+|---|---|---|
+|Tier|Control Plane 노드와 동일한 네트워크 Tier 선택||
+|VM|클러스터 전체 노드를 순차적으로 선택||
+|Public Port|80, 443 포트에 할당된 노드포트 정보 입력||
+
+<br>
+
+> Ingress Nginx 서비스 포트 확인<br>
+
+```
+$ kubectl get svc ingress-nginx-controller -n ingress-nginx
+```
+
+<br>
+8. Servers > Networking 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
+
+<br>
+9. "방화벽 설정" 버튼 클릭하여 등록한 Static NAT 설정으로 방화벽을 등록한다.
 
 <br>
 
@@ -380,182 +642,119 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 
 <br>
 
-### <div id='2.1.7'> 2.1.7. 로드밸런서 (***HA Control Plane 구성 시 필수 설정***)
+<details>
+<summary>Naver 클라우드 로드밸런서 서비스 생성</summary>
+<br>
+
+로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 `Public IP만 우선 생성`한 후, `클러스터 배포 완료 이후`에 `로드밸런서 서비스를 생성`한다.
+
+<br>
+1. Server > Public IP 메뉴에서 "공인 IP 신청" 버튼 클릭하여 미할당 Public IP를 생성한다.
+
+<br>
+
+로드밸런서 생성 시 서비스에 할당된 포트와 노드포트 정보 확인 이후 로드밸런서 설정이 가능하기때문에, 아래 기술한 로드밸런서 생성 및 설정 과정은 [2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6) 단계 이후에 진행한다.
+
+<br>
+2. Load Balancer > Target Group 메뉴에서 "Target Group 생성" 버튼을 클릭한다.
+
+<br>
+3. 아래 Target Group 정보를 입력 후 "다음" 버튼을 클릭한다.
+
+<br>
+
+|항목|설명|비고|
+|---|---|---|
+|Target Group 이름|Target Group 이름 입력||
+|Target 유형|VPC Server 선택||
+|VPC|Control Plane 노드와 동일한 네트워크 VPC 선택||
+|프로토콜|PROXY_TCP 선택||
+|포트|80 포트에 할당된 노드포트 정보 입력||
+
+<br>
+
+> Ingress Nginx 서비스 포트 확인<br>
+
+```
+$ kubectl get svc ingress-nginx-controller -n ingress-nginx
+```
+
+<br>
+4. 아래 Helth Check 설정 정보를 입력 후 "다음" 버튼을 클릭한다.
+
+<br>
+
+|항목|설명|비고|
+|---|---|---|
+|프로토콜|||
+|포트|||
+
+<br>
+5. 전체 노드를 선택하여 Target Group을 생성한다.
+
+<br>
+6. 443 포트를 기준으로 Target Group을 추가 생성한다.
+
+<br>
+7. Load Balancer > Load Balancer 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
+
+<br>
+8. 아래 로드밸런서 정보를 입력 후 "다음" 버튼을 클릭한다.
+
+<br>
+
+|항목|설명|비고|
+|---|---|---|
+|로드밸런서 이름|로드밸런서 이름을 입력||
+|네트워크|Public 선택||
+|대상 VPC|Control Plane 노드와 동일한 네트워크 VPC 선택||
+|서브넷 선택|Control Plane 노드와 동일한 네트워크 VPC에 속한 로드밸런서용 서브넷 선택||
+|공인 IP|기존에 생성된 Public IP 선택(1번 과정에서 생성)||
+
+<br>
+9. 리스너 설정에서 프로토콜 TCP, 로드밸런서 포트 80 입력, "추가" 버튼 클릭 후 "다음" 버튼을 클릭한다.
+
+<br>
+10. Target Group 선택 에서 기존에 생성한 Target Group 선택 후 로드밸런서를 생성한다.
+
+<br>
+11. "리스너 설정 변경" 버튼을 클릭한 후, "리스너 추가" 버튼을 클릭한다.
+
+<br>
+12.  443 포트에 대한 리스너를 추가한다.
+
+<br>
+
+</details>
+
+<br><br>
+
+### <div id='2.1.7'> 2.1.7. HA Control Plane 로드밸런서 (***`HA Control Plane 구성 시 필수 설정`***)
 > HA Control Plane 구성이 아닐 경우 로드밸런서 구성 과정은 생략하고 다음 과정을 진행한다.<br> [2.2. SSH Key 생성 및 배포](#2.2)
 
 <br>
 
 K-PaaS 컨테이너 플랫폼 클러스터를 HA Control Plane으로 구성할 경우 필요한 로드밸런서 정보는 다음과 같다.
 
+<br>
+
 |클라우드|로드밸런서|비고|
 |---|---|---|
 |Public|각 CSP사에서 제공하는 로드밸런서 서비스 이용||
 |Private|Keepalived, HAProxy로 로드밸런서 인스턴스 구성||
 
-<br>
+<br><br>
 
-### <div id='2.1.7.1'> 2.1.7.1. Public 클라우드
-Public 클라우드 환경의 경우 각 CSP에서 제공하는 로드밸런서를 생성한다.
-
-<br>
-
-
-<details>
-<summary>NHN 클라우드 로드밸랜서</summary>
-
-***NHN 클라우드 환경 로드밸런서 생성 (예시)***
-
-Load Balancer 메뉴에서 "로드밸런서 생성" 버튼을 클릭한다.
-
-![image 021]
+### <div id='2.1.7.1'> 2.1.7.1. 클라우드 로드밸런서 서비스
+Public 클라우드 환경의 경우 각 CSP에서 제공하는 로드밸런서 서비스를 생성한다.
 
 <br>
 
-로드밸런서 정보를 입력한 후 생성을 진행한다.
+각 CSP의 로드밸런서 서비스 생성은 [2.1.6.2. 클라우드 로드밸런서 서비스](#2.1.6.2)를 참고하며, 설정 시 포트 정보를 `TCP 6443`으로 변경하여 진행한다.
 
-|항목|설명|비고|
-|---|---|---|
-|이름|로드밸런서 이름 입력||
-|VPC|사용할 VPC 선택||
-|서브넷|사용할 서브넷 선택||
-|프로토콜|TCP 선택||
-|로드밸런서 포트|6443 입력||
-|인스턴스 포트|6443 입력||
-|상태 확인 프로토콜|선택된 인스턴스 상태 확인에 사용할 프로토콜 입력||
-|상태 확인 포트|선택된 인스턴스 상태 확인에 사용할 포트 입력||
-|선택된 인스턴스|Control Plane 인스턴스 선택||
+<br><br>
 
-<br>
-
-![image 022]
-
-<br>
-
-생성된 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
-
-![image 023]
-
-<br>
-
-플로팅 IP 연결을 진행한다.
-
-![image 024]
-
-<br>
-
-</details>
-
-<br>
-
-
-<details>
-<summary>KT 클라우드 로드밸랜서</summary>
-
-***KT 클라우드 환경 로드밸런서 생성 (예시)***
-
-Load Balancer 관리 메뉴에서 "Load Balancer 생성" 버튼을 클릭한다.
-
-![image 027]
-
-<br>
-
-로드밸런서 정보를 입력한 후 생성을 진행한다.
-
-|항목|설명|비고|
-|---|---|---|
-|이름|로드밸런서 이름 입력||
-|Tier|사용할 네트워크 Tier 선택||
-|Name|로드밸런서 이름 입력||
-|Port|6443 입력||
-
-<br>
-
-![image 028]
-
-<br>
-
-"VM연결/해제" 버큰을 클릭하여 클러스터 Control Plane 노드를 등록한다.
-
-|항목|설명|비고|
-|---|---|---|
-|이름|로드밸런서 이름 입력||
-|Tier|사용할 네트워크 Tier 선택||
-|VM|Control Plane 인스턴스 선택||
-|Public Port|6443 입력||
-
-<br>
-
-![image 029]
-
-<br>
-
-Networking 메뉴에서 "접속 설정" 및 "방화벽 설정"을 진행한다.
-
-<br>
-
-</details>
-
-<br>
-
-<details>
-<summary>Naver 클라우드 로드밸런서</summary>
-
-***Naver 클라우드 환경 로드밸런서 생성 (예시)***
-
-Target Group 메뉴에서 "Target Group 생성" 버튼을 클릭한다.
-
-![image 030]
-
-<br>
-
-Target Group 정보를 입력한 후 생성을 진행한다.
-
-|항목|설명|비고|
-|---|---|---|
-|Target Group 이름|Target Group 이름 입력||
-|Target 유형|VPC Server 선택||
-|VPC|사용할 VPC 선택||
-|프로토콜|PROXY_TCP 선택||
-|포트|6443 입력||
-
-<br>
-
-![image 031]
-
-<br>
-
-Load Balancer 메뉴에서 "로드밸런서 생성", "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
-
-![image 032]
-
-<br>
-
-로드밸런서 정보를 입력한 후 생성을 진행한다.
-
-|항목|설명|비고|
-|---|---|---|
-|로드밸런서 이름|로드밸런서 이름 입력||
-|네트워크|Public 선택||
-|대상 VPC|VPC 선택||
-|서브넷 선택|서브넷 선택 선택||
-|공인 IP|공인 IP 신청 및 기 생성된 공인 IP 선택||
-|로드밸런서 포트|6443 입력||
-
-<br>
-
-![image 033]
-
-<br>
-
-![image 034]
-
-<br>
-
-</details>
-
-<br>
-
-### <div id='2.1.7.2'> 2.1.7.2. Private 클라우드
+### <div id='2.1.7.2'> 2.1.7.2. HAProxy
 Private 클라우드 환경의 경우 Keepalived, HAProxy를 이용하여 로드밸런서를 구성한다.
 
 |환경|구성|비고|
@@ -669,13 +868,15 @@ HAProxy 서비스를 재시작한다.
 # systemctl restart haproxy
 ```
 
-<br>
+<br><br>
 
 ### <div id='2.2'> 2.2. SSH Key 생성 및 배포
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위해서는 SSH Key가 인벤토리의 모든 서버들에 복사되어야 한다.<br>
 본 문서 (K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드) 에서는 RSA 공개키를 이용하여 SSH 접속 설정을 진행한다.
 
 SSH Key 생성 및 배포 이후의 모든 설치과정은 **Install 인스턴스 또는 Control Plane 노드**에서 진행한다.
+
+> Naver 클라우드의 경우 ubuntu 계정 생성 시 키 생성 및 배포를 진행하기 때문에 해당 과정을 생략한다.
 
 **Install 인스턴스 또는 Control Plane 노드**에서 RSA 공개키를 생성한다.
 ```
@@ -720,7 +921,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDRueywSiuwyfmCSecHu7iwyi3xYS1xigAnhR/RMg/W
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmAYEo3CcFGhRhzLcVz3rKb+C25mOne+MaQGynZFpZk4muEAUdkpieoo+B6r2eJHjBLopn5quWJ561H7EZb/GlfC5ThjHFF+hTf5trF4boW1iZRvUM56KAwXiYosLLRBXeNlub4SKfApe8ojQh4RRzFBZP/wNbOKr+Fo6g4RQCWrr5xQCZMK3ugBzTHM+zh9Ra7tG0oCySRcFTAXXoyXnJm+PFhdR6jbkerDlUYP9RD/87p/YKS1wSXExpBkEglpbTUPMCj+t1kXXEJ68JkMrVMpeznuuopgjHYWWD2FgjFFNkp ubuntu@cp-master
 ```
 
-<br>
+<br><br>
 
 ### <div id='2.3'> 2.3. K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드
 
@@ -739,7 +940,7 @@ git clone 명령을 통해 HOME 디렉토리 경로에서 K-PaaS 컨테이너 �
 $ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.5.x
 ```
 
-<br>
+<br><br>
 
 ### <div id='2.4'> 2.4. K-PaaS 컨테이너 플랫폼 클러스터 설치 준비
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수를 사전 정의 후 쉘 스크립트를 통해 설치를 진행한다.
@@ -864,7 +1065,7 @@ export METALLB_IP_RANGE=
 export INGRESS_NGINX_PRIVATE_IP=
 ```
 
-<br>
+<br><br>
 
 ### <div id='2.5'> 2.5. K-PaaS 컨테이너 플랫폼 클러스터 설치
 쉘 스크립트를 통해 필요 패키지 설치, 클러스터 설치 환경변수 설정, Ansible playbook을 통한 K-PaaS 컨테이너 플랫폼 클러스터 설치를 순차적으로 진행한다.
@@ -873,7 +1074,7 @@ export INGRESS_NGINX_PRIVATE_IP=
 $ source deploy-cp-cluster.sh
 ```
 
-<br>
+<br><br>
 
 ### <div id='2.6'> 2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인
 노드 및 kube-system 네임스페이스의 Pod를 확인하여 K-PaaS 컨테이너 플랫폼 클러스터 설치를 확인한다.<br>
@@ -913,47 +1114,23 @@ nodelocaldns-pvl6z                            1/1     Running   0             8m
 nodelocaldns-x7grn                            1/1     Running   0             8m8s
 ```
 
-<br>
-
-### <div id='2.7'> 2.7. Ingress Nginx 서비스 로드밸런서 생성 (선택)
-Ingress Nginx Service의 External IP 할당을 위해 인터페이스가 아닌 로드밸런서 서비스를 적용할 경우<br>
-배포된 서비스의 포트를 확인하여야 한다.
-
-<br>
-
-```
-$ kubectl get svc ingress-nginx-controller -n ingress-nginx
-
-NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                      AGE
-ingress-nginx-controller             LoadBalancer   10.233.58.196   x.x.x.x          80:32584/TCP,443:30966/TCP   3h58m
-```
-
-<br>
-
-로드밸런서 생성에 대한 부분은 [2.1.7. 로드밸런서](#2.1.7) 내용을 참고하되 아래의 설정을 적용하여 생성한다.
-
-ingress-nginx-controller 서비스 일 경우 (예시)
-
-|항목|설명|비고|
-|---|---|---|
-|프로토콜|HTTP, HTTPS 선택||
-|로드밸런서 포트|80, 443 입력||
-|인스턴스 포트|80, 443에 할당된 노드포트 입력||
-|선택된 인스턴스|클러스터 전체 인스턴스 선택||
-
-<br>
+<br><br>
 
 ## <div id='3'> 3. K-PaaS 컨테이너 플랫폼 클러스터 삭제 (참고)
 쉘 스크립트를 통해 K-PaaS 컨테이너 플랫폼 클러스터 삭제를 진행한다.
+
+<br>
 
 ```
 $ source reset-cp-cluster.sh
 ```
 
-<br>
+<br><br>
 
 ## <div id='4'> 4. Resource 생성 시 주의사항
 사용자가 직접 Resource를 생성 시 다음과 같은 prefix를 사용하지 않도록 주의한다.
+
+<br>
 
 |Resource 명|생성 시 제외해야 할 prefix|
 |---|---|
@@ -972,16 +1149,18 @@ $ source reset-cp-cluster.sh
 |Pod|nodes|
 ||resources|
 
-<br>
+<br><br>
 
-## <div id='5'> 5. Kubeflow 설치
-`단일 클라우드` 환경 기준에서는 클러스터 배포 이후에 별도의 과정을 통해 Kubeflow 설치를 지원한다.
+## <div id='5'> 5. Kubeflow 설치 (선택)
+`단일 클라우드` 환경 기준에서는 클러스터 배포 이후에 별도의 쉘 스크립트를 통해 Kubeflow 설치를 지원한다.
+
+<br>
 
 ```
 $ source deploy-cp-kubeflow.sh
 ```
 
-<br>
+<br><br>
 
 [image 001]:images/kpaas-cp-cluster-1.png
 [image 002]:images/kpaas-cp-cluster-2.png
@@ -1018,5 +1197,21 @@ $ source deploy-cp-kubeflow.sh
 [image 032]:images/kpaas-cp-cluster-32.png
 [image 033]:images/kpaas-cp-cluster-33.png
 [image 034]:images/kpaas-cp-cluster-34.png
+[image 035]:images/kpaas-cp-cluster-35.png
+[image 036]:images/kpaas-cp-cluster-36.png
+[image 037]:images/kpaas-cp-cluster-37.png
+[image 038]:images/kpaas-cp-cluster-38.png
+[image 039]:images/kpaas-cp-cluster-39.png
+[image 040]:images/kpaas-cp-cluster-40.png
+[image 041]:images/kpaas-cp-cluster-41.png
+[image 042]:images/kpaas-cp-cluster-42.png
+[image 043]:images/kpaas-cp-cluster-43.png
+[image 044]:images/kpaas-cp-cluster-44.png
+[image 045]:images/kpaas-cp-cluster-45.png
+[image 046]:images/kpaas-cp-cluster-46.png
+[image 047]:images/kpaas-cp-cluster-47.png
+[image 048]:images/kpaas-cp-cluster-48.png
+[image 049]:images/kpaas-cp-cluster-49.png
+[image 050]:images/kpaas-cp-cluster-50.png
 
 ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드
