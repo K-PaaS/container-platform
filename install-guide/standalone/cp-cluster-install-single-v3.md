@@ -475,7 +475,8 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 ***2. Network > Load Balancer > 관리 메뉴에서 "로드 밸런서 생성" 버튼을 클릭, 로드 밸런서 생성 모드 선택 팝업에서 "L4 라우팅"을 선택한다.***
 
 <br>
-3. 설정 정보를 입력한다.
+
+***3. 설정 정보를 입력한다.***
 
 <br>
 
@@ -486,7 +487,8 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 |서브넷|Control Plane 노드와 동일한 Public 서브넷 선택||
 
 <br>
-4. 리스너, 맴버 그룹 정보를 입력한다.
+
+***4. 리스너, 맴버 그룹 정보를 입력한다.***
 
 <br>
 
@@ -520,10 +522,12 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ```
 
 <br>
-5. "리스너추가" 버튼을 클릭한다.
+
+***5. "리스너추가" 버튼을 클릭한다.***
 
 <br>
-6. 리스너, 맴버 그룹 정보를 입력한다.
+
+***6. 리스너, 맴버 그룹 정보를 입력한다.***
 
 <br>
 
@@ -549,13 +553,16 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |맴버 목록|전체 노드 인스턴스 추가||
 
 <br>
-7. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
+
+***7. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.***
 
 <br>
-8. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
+
+***8. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.***
 
 <br>
-9. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.
+
+***9. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.***
 
 <br>
 
@@ -570,17 +577,20 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 `Public IP만 우선 생성`한 후, `클러스터 배포 완료 이후`에 `로드밸런서 서비스를 생성`한다.
 
 <br>
-1. Servers > Networking 메뉴에서 "IP 생성" 버튼을 클릭하여 Public IP를 생성한다.
+
+***1. Servers > Networking 메뉴에서 "IP 생성" 버튼을 클릭하여 Public IP를 생성한다.***
 
 <br>
 
 로드밸런서 생성 시 서비스에 할당된 포트와 노드포트 정보 확인 이후 로드밸런서 설정이 가능하기때문에, 아래 기술한 로드밸런서 생성 및 설정 과정은 [2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6) 단계 이후에 진행한다.
 
 <br>
-2. Load Balancer > Load Balancer 관리 메뉴에서 "Load Balancer 생성" 버튼을 클릭한다.
+
+***2. Load Balancer > Load Balancer 관리 메뉴에서 "Load Balancer 생성" 버튼을 클릭한다.***
 
 <br>
-3. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.
+
+***3. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.***
 
 <br>
 
@@ -593,10 +603,12 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |Service Type|HTTP 선택||
 
 <br>
-4. "Load Balancer 생성" 버튼을 클릭한다.
+
+***4. "Load Balancer 생성" 버튼을 클릭한다.***
 
 <br>
-5. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.
+
+***5. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.***
 
 <br>
 
@@ -609,10 +621,12 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |Service Type|HTTPS 선택||
 
 <br>
-6. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443 포트 로드밸런서 모두)
+
+***6. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443 포트 로드밸런서 모두)***
 
 <br>
-7. 정보를 입력 후 "추가" 버튼을 클릭한다.
+
+***7. 정보를 입력 후 "추가" 버튼을 클릭한다.***
 
 <br>
 
@@ -631,10 +645,12 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ```
 
 <br>
-8. Servers > Networking 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
+
+***8. Servers > Networking 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.***
 
 <br>
-9. "방화벽 설정" 버튼 클릭하여 등록한 Static NAT 설정으로 방화벽을 등록한다.
+
+***9. "방화벽 설정" 버튼 클릭하여 등록한 Static NAT 설정으로 방화벽을 등록한다.***
 
 <br>
 
@@ -649,17 +665,20 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 `Public IP만 우선 생성`한 후, `클러스터 배포 완료 이후`에 `로드밸런서 서비스를 생성`한다.
 
 <br>
-1. Server > Public IP 메뉴에서 "공인 IP 신청" 버튼 클릭하여 미할당 Public IP를 생성한다.
+
+***1. Server > Public IP 메뉴에서 "공인 IP 신청" 버튼 클릭하여 미할당 Public IP를 생성한다.***
 
 <br>
 
 로드밸런서 생성 시 서비스에 할당된 포트와 노드포트 정보 확인 이후 로드밸런서 설정이 가능하기때문에, 아래 기술한 로드밸런서 생성 및 설정 과정은 [2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6) 단계 이후에 진행한다.
 
 <br>
-2. Load Balancer > Target Group 메뉴에서 "Target Group 생성" 버튼을 클릭한다.
+
+***2. Load Balancer > Target Group 메뉴에서 "Target Group 생성" 버튼을 클릭한다.***
 
 <br>
-3. 아래 Target Group 정보를 입력 후 "다음" 버튼을 클릭한다.
+
+***3. 아래 Target Group 정보를 입력 후 "다음" 버튼을 클릭한다.***
 
 <br>
 
@@ -680,7 +699,8 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ```
 
 <br>
-4. 아래 Helth Check 설정 정보를 입력 후 "다음" 버튼을 클릭한다.
+
+***4. 아래 Helth Check 설정 정보를 입력 후 "다음" 버튼을 클릭한다.***
 
 <br>
 
@@ -690,16 +710,20 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |포트|||
 
 <br>
-5. 전체 노드를 선택하여 Target Group을 생성한다.
+
+***5. 전체 노드를 선택하여 Target Group을 생성한다.***
 
 <br>
-6. 443 포트를 기준으로 Target Group을 추가 생성한다.
+
+***6. 443 포트를 기준으로 Target Group을 추가 생성한다.***
 
 <br>
-7. Load Balancer > Load Balancer 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
+
+***7. Load Balancer > Load Balancer 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.***
 
 <br>
-8. 아래 로드밸런서 정보를 입력 후 "다음" 버튼을 클릭한다.
+
+***8. 아래 로드밸런서 정보를 입력 후 "다음" 버튼을 클릭한다.***
 
 <br>
 
@@ -712,16 +736,20 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |공인 IP|기존에 생성된 Public IP 선택(1번 과정에서 생성)||
 
 <br>
-9. 리스너 설정에서 프로토콜 TCP, 로드밸런서 포트 80 입력, "추가" 버튼 클릭 후 "다음" 버튼을 클릭한다.
+
+***9. 리스너 설정에서 프로토콜 TCP, 로드밸런서 포트 80 입력, "추가" 버튼 클릭 후 "다음" 버튼을 클릭한다.***
 
 <br>
-10. Target Group 선택 에서 기존에 생성한 Target Group 선택 후 로드밸런서를 생성한다.
+
+***10. Target Group 선택 에서 기존에 생성한 Target Group 선택 후 로드밸런서를 생성한다.***
 
 <br>
-11. "리스너 설정 변경" 버튼을 클릭한 후, "리스너 추가" 버튼을 클릭한다.
+
+***11. "리스너 설정 변경" 버튼을 클릭한 후, "리스너 추가" 버튼을 클릭한다.***
 
 <br>
-12.  443 포트에 대한 리스너를 추가한다.
+
+***12.  443 포트에 대한 리스너를 추가한다.***
 
 <br>
 
