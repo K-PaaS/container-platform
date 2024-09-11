@@ -336,9 +336,7 @@ Root Volume 이외에 추가 Volume을 각 Worker 노드에 사전에 할당해�
 <br><br>
 
 ### <div id='2.1.6'> 2.1.6. Ingress Nginx 서비스 설정 (***`필수 설정`***)
-K-PaaS 컨테이너 플랫폼 서비스 구성을 위해서 Ingress Nginx 서비스 설정이 필요하다.
-
-K-PaaS 컨테이너 플랫폼 클러스터의 Ingress Nginx 서비스 설정 정보는 다음과 같다.
+K-PaaS 컨테이너 플랫폼 서비스 구성을 위해 필요한 Ingress Nginx 서비스 설정 정보는 다음과 같다.
 
 <br>
 
@@ -455,7 +453,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 <summary>Naver 클라우드 인터페이스 추가</summary>
 <br>
 Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할당이 불가능하다.<br>
-따라서, 아래 기술한 Public 클라우드의 로드밸런서 서비스 생성 및 설정 진행이 필요하다.
+따라서, 아래 기술한 Naver 클라우드의 로드밸런서 서비스 생성 및 설정 진행이 필요하다.
 
 <br>
 
