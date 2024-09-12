@@ -45,16 +45,16 @@
 <br><br>
 
 ### <div id='1.2'> 1.2. 범위
-설치 범위는 K-PaaS 컨테이너 플랫폼 환경의 기반이 되는 클러스터 설치를 `단일 클라우드` 환경 기준으로 작성하였다.
+설치 범위는 K-PaaS 컨테이너 플랫폼 환경의 기반이 되는 클러스터 설치를 **`단일 클라우드`** 환경 기준으로 작성하였다.
 
 <br><br>
 
 ### <div id='1.3'> 1.3. 시스템 구성도
-시스템 구성은 쿠버네티스 `단일 클러스터` (Control Plane, Worker) 환경으로 구성되어 있다.
+시스템 구성은 쿠버네티스 **`단일 클러스터`** (Control Plane, Worker) 환경으로 구성되어 있다.
 
 <br>
 
-K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 `단일 클러스터`를 구성하고 각 리소스를 통해 K-PaaS 컨테이너 플랫폼 포털 환경을 배포하여 대시보드, 데이터베이스, 레파지토리 등의 환경을 제공한다.
+K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 **`단일 클러스터`** 를 구성하고 각 리소스를 통해 K-PaaS 컨테이너 플랫폼 포털 환경을 배포하여 대시보드, 데이터베이스, 레파지토리 등의 환경을 제공한다.
 
 <br>
 
@@ -158,7 +158,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보�
 <details>
 <summary>KT 클라우드</summary>
 <br>
-ubuntu 22.04 이미지로 인스턴스 생성 시 Last password change 일자가 2023-07-04 로 설정되어 일정시간 경과 후 ssh 접속 시 패스워드 변경 프롬프트가 출력된다.
+ubuntu 22.04 이미지로 인스턴스 생성 시 Last password change 일자가 2023-07-04 로 설정되어 일정시간 경과 후 ssh 접속 시 패스워드 방식의 로그인을 시도한다.
 
 <br>
 
@@ -224,9 +224,13 @@ $ sudo useradd -m -s /bin/bash ubuntu
 $ echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
 
 $ sudo mkdir -p /home/ubuntu/.ssh
-$ echo "{ 공개키 }" | sudo tee -a /home/ubuntu/.ssh/authorized_keys
+$ echo "{{ 공개키 }}" | sudo tee -a /home/ubuntu/.ssh/authorized_keys
 $ sudo chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 ```
+
+<br>
+
+해당 과정 진행 후, 생성한 ***`ubuntu 계정으로 인스턴스에 접속`*** 하여 이후 설치 과정을 진행한다.
 
 <br>
 
@@ -342,12 +346,12 @@ K-PaaS 컨테이너 플랫폼 서비스 구성을 위해 필요한 Ingress Nginx
 
 |서비스|설명|비고|
 |---|---|---|
-|Ingress Nginx Controller|K-PaaS 컨테이너 플랫폼 서비스를<br>Ingress로 외부 노출하기 위한 서비스|1개 인터페이스 또는 1개 로드밸런서 생성 필요<br>Public IP 할당 필요|
+|Ingress Nginx Controller|K-PaaS 컨테이너 플랫폼 서비스를<br>Ingress로 외부 노출하기 위한 서비스|***`1개 인터페이스 또는 1개 로드밸런서`*** 생성 필요<br>Public IP 할당 필요|
 
 <br>
 
 K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸런서 타입 서비스의 External IP를 할당한다.<br>
-해당 External IP로 외부 통신 및 서비스를 지원하기 위해 다음 두가지 중 한가지 방식을 선택하여 설정을 진행한다.
+해당 External IP로 외부 통신 및 서비스를 지원하기 위해 ***`다음 두가지 중 한가지 방식을 선택`*** 하여 설정을 진행한다.
 
 <br>
 
@@ -441,7 +445,21 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 ![image 020]
 
 <br><br>
-7. Control Plane 노드에서 <code>$ sudo ifconfig {인터페이스명}:1 {VIP} up</code> 명령어를 실행한다. (HA Control Plane 구성 시 VIP 연결한 Control Plane 노드에서 실행)
+7. Control Plane 노드에서 다음 명령어를 실행한다. (HA Control Plane 구성 시 Virtual IP 연결한 Control Plane 노드에서 실행)
+
+```
+## 인터페이스 조회
+## 인터페이스명 예 : eth0, ens3 ...
+
+$ sudo ifconfig
+```
+
+```
+## 인터페이스 추가
+## 예시 : sudo ifconfig ens3:1 192.168.0.10 up
+
+$ sudo ifconfig {{ 인터페이스명 }}:1 {{ Virtual IP (Private) }} up
+```
 
 <br>
 
@@ -469,7 +487,7 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 <summary>NHN 클라우드 로드밸런서 서비스 생성</summary>
 <br>
 
-로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 `Public IP만 우선 생성`한 후, `클러스터 배포 완료 이후`에 `로드밸런서 서비스를 생성`한다.
+로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 ***`Public IP만 우선 생성`*** 한 후, ***`클러스터 배포 완료 이후`*** 에 ***`로드밸런서 서비스를 생성`*** 한다.
 
 <br>
 1. Network > Floating IP 메뉴에서 "플로팅 IP 생성" 버튼 클릭하여 Public IP를 생성한다.
@@ -489,22 +507,18 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 <br><br>
 3. 설정 정보를 입력한다.
 
-![image 027]
-
-<br>
-
 |항목|설명|비고|
 |---|---|---|
 |이름|로드밸런서 이름 입력||
 |VPC|Control Plane 노드와 동일한 네트워크 VPC 선택||
 |서브넷|Control Plane 노드와 동일한 Public 서브넷 선택||
 
+<br>
+
+![image 027]
+
 <br><br>
 4. 리스너, 맴버 그룹 정보를 입력한다.
-
-![image 028]
-
-<br>
 
 리스너
 
@@ -535,15 +549,15 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ```
 
+<br>
+
+![image 028]
+
 <br><br>
 5. "리스너추가" 버튼을 클릭한다.
 
 <br><br>
 6. 리스너, 맴버 그룹 정보를 입력한다.
-
-![image 029]
-
-<br>
 
 리스너
 
@@ -565,6 +579,10 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |상태 확인 프로토콜|TCP 선택||
 |상태 확인 포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
 |맴버 목록|전체 노드 인스턴스 추가||
+
+<br>
+
+![image 029]
 
 <br><br>
 7. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
@@ -589,7 +607,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 <summary>KT 클라우드 로드밸런서 서비스 생성</summary>
 <br>
 
-로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 `Public IP만 우선 생성`한 후, `클러스터 배포 완료 이후`에 `로드밸런서 서비스를 생성`한다.
+로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 ***`Public IP만 우선 생성`*** 한 후, ***`클러스터 배포 완료 이후`*** 에 ***`로드밸런서 서비스를 생성`*** 한다.
 
 <br>
 1. Servers > Networking 메뉴에서 "IP 생성" 버튼을 클릭하여 Public IP를 생성한다.
@@ -609,10 +627,6 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 <br><br>
 3. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.
 
-![image 033]
-
-<br>
-
 |항목|설명|비고|
 |---|---|---|
 |Zone|Control Plane 노드와 동일한 네트워크 Zone 선택|VPC와 동일 개념|
@@ -621,15 +635,15 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |Service IP / Port|신규 IP 할당, 80 포트 입력||
 |Service Type|HTTP 선택||
 
+<br>
+
+![image 033]
+
 <br><br>
 4. "Load Balancer 생성" 버튼을 클릭한다.
 
 <br><br>
 5. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.
-
-![image 034]
-
-<br>
 
 |항목|설명|비고|
 |---|---|---|
@@ -639,17 +653,15 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |Service IP / Port|80 포트로 생성한 로드밸런서 Private IP 선택, 443 포트 입력||
 |Service Type|HTTPS 선택||
 
+<br>
+
+![image 034]
+
 <br><br>
 6. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443 포트 로드밸런서 모두)
 
 <br><br>
 7. 정보를 입력 후 "추가" 버튼을 클릭한다.
-
-![image 035]
-
-![image 036]
-
-<br>
 
 |항목|설명|비고|
 |---|---|---|
@@ -664,6 +676,12 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ```
 $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ```
+
+<br>
+
+![image 035]
+
+![image 036]
 
 <br><br>
 8. Servers > Networking 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
@@ -685,7 +703,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 <summary>Naver 클라우드 로드밸런서 서비스 생성</summary>
 <br>
 
-로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 `Public IP만 우선 생성`한 후, `클러스터 배포 완료 이후`에 `로드밸런서 서비스를 생성`한다.
+로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 ***`Public IP만 우선 생성`*** 한 후, ***`클러스터 배포 완료 이후`*** 에 ***`로드밸런서 서비스를 생성`*** 한다.
 
 <br>
 1. Server > Public IP 메뉴에서 "공인 IP 신청" 버튼 클릭하여 미할당 Public IP를 생성한다.
@@ -703,10 +721,6 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 <br><br>
 3. 아래 Target Group 정보를 입력 후 "다음" 버튼을 클릭한다.
 
-![image 040]
-
-<br>
-
 |항목|설명|비고|
 |---|---|---|
 |Target Group 이름|Target Group 이름 입력||
@@ -723,18 +737,21 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ```
 
+<br>
+
+![image 040]
+
 <br><br>
 4. 아래 Helth Check 설정 정보를 입력 후 "다음" 버튼을 클릭한다.
-
-![image 041]
-
-
-<br>
 
 |항목|설명|비고|
 |---|---|---|
 |프로토콜|TCP 선택||
 |포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
+
+<br>
+
+![image 041]
 
 <br><br>
 5. 전체 노드를 선택하여 적용 Target에 포함시킨 후 Target Group을 생성한다.
@@ -754,10 +771,6 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 <br><br>
 8. 아래 로드밸런서 정보를 입력 후 "다음" 버튼을 클릭한다.
 
-![image 045]
-
-<br>
-
 |항목|설명|비고|
 |---|---|---|
 |로드밸런서 이름|로드밸런서 이름을 입력||
@@ -766,17 +779,21 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |서브넷 선택|로드밸런서 서브넷 선택||
 |공인 IP|기존에 생성된 Public IP 선택(1번 과정에서 생성)||
 
+<br>
+
+![image 045]
+
 <br><br>
 9. 리스너 설정 정보를 입력 후 "추가", "다음" 버튼을 클릭한다.
-
-![image 046]
-
-<br>
 
 |항목|설명|비고|
 |---|---|---|
 |프로토콜|TCP 선택||
 |로드밸런서 포트|80 포트 입력||
+
+<br>
+
+![image 046]
 
 <br><br>
 10. Target Group 선택 후 로드밸런서를 생성한다.
@@ -791,17 +808,17 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 <br><br>
 12. 443 포트에 대한 리스너 설정 정보를 입력 후 리스너를 추가한다.
 
-![image 049]
-
-![image 050]
-
-<br>
-
 |항목|설명|비고|
 |---|---|---|
 |프로토콜|TCP 선택||
 |포트|443 포트 입력||
 |Target Group|443 포트 기준으로 설정한 Target Group 선택||
+
+<br>
+
+![image 049]
+
+![image 050]
 
 <br>
 
@@ -931,6 +948,10 @@ Private 클라우드 환경의 로드밸런서 구성은 아래 절차를 참고
 
 <br>
 
+<details>
+<summary>Keepalived, HAProxy 설치</summary>
+<br>
+
 로드밸런서 HA 구성의 경우 2개 로드밸런서 인스턴스에서 Keepalived, HAProxy 설치 과정을 각각 진행한다.
 
 <br>
@@ -1026,17 +1047,25 @@ HAProxy 서비스를 재시작한다.
 # systemctl restart haproxy
 ```
 
+<br>
+
+</details>
+
 <br><br>
 
 ### <div id='2.2'> 2.2. SSH Key 생성 및 배포
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위해서는 SSH Key가 인벤토리의 모든 서버들에 복사되어야 한다.<br>
 본 문서 (K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드) 에서는 RSA 공개키를 이용하여 SSH 접속 설정을 진행한다.
 
-SSH Key 생성 및 배포 이후의 모든 설치과정은 **Install 인스턴스 또는 Control Plane 노드**에서 진행한다.
+SSH Key 생성 및 배포 이후의 모든 설치과정은 ***`Install 인스턴스 또는 Control Plane 노드`*** 에서 진행한다.
+
+<br>
 
 > Naver 클라우드의 경우 ubuntu 계정 생성 시 키 생성 및 배포를 진행하기 때문에 해당 과정을 생략한다.
 
-**Install 인스턴스 또는 Control Plane 노드**에서 RSA 공개키를 생성한다.
+<br>
+
+***`Install 인스턴스 또는 Control Plane 노드`*** 에서 RSA 공개키를 생성한다.
 ```
 $ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
 Generating public/private rsa key pair.
@@ -1060,7 +1089,7 @@ The key's randomart image is:
 
 <br>
 
-사용할 **Install, Control Plane, Worker 노드**에 공개키를 복사한다.
+사용할 ***`Install, Control Plane, Worker 노드`*** 에 공개키를 복사한다.
 ```
 ## 출력된 공개키 복사
 
@@ -1070,7 +1099,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 
 <br>
 
-사용할 **Install, Control Plane, Worker 노드**의 authorized_keys 파일 본문의 마지막 부분(기존 본문 내용 아래 추가)에 공개키를 복사한다.
+사용할 ***`Install, Control Plane, Worker 노드`*** 의 authorized_keys 파일 본문의 마지막 부분(기존 본문 내용 아래 추가)에 공개키를 복사한다.
 ```
 $ vi .ssh/authorized_keys
 
@@ -1083,7 +1112,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 
 ### <div id='2.3'> 2.3. K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드
 
-> 2.3.부터는 **Install 인스턴스 또는 Control Plane 노드**에서만 진행.
+> 2.3.부터는 ***`Install 인스턴스 또는 Control Plane 노드`*** 에서만 진행.
 
 <br>
 
@@ -1122,17 +1151,17 @@ Control Plane
 |환경변수|설명|비고|
 |---|---|---|
 |KUBE_CONTROL_HOSTS|Control Plane 노드의 갯수||
-|ETCD_TYPE|ETCD 배포 방식<br>external : 별도의 노드에 ETCD 구성<br>stacked : Control Plane 노드에 ETCD 구성|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정|
-|LOADBALANCER_DOMAIN|사전에 구성한 로드밸런서의 VIP 또는 Domain 정보|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정|
-|ETCD1_NODE_HOSTNAME|ETCD 1번 노드의 호스트명|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`ETCD_TYPE` 값이 external 일 경우 설정|
-|ETCD1_NODE_PRIVATE_IP|ETCD 1번 노드의 Private IP|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`ETCD_TYPE` 값이 external 일 경우 설정|
-|ETCD{n}_NODE_HOSTNAME|ETCD n번 노드의 호스트명|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`ETCD_TYPE` 값이 external 일 경우 설정<br>`KUBE_CONTROL_HOSTS` 값만큼 설정|
-|ETCD{n}_NODE_PRIVATE_IP|ETCD n번 노드의 Private IP|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`ETCD_TYPE` 값이 external 일 경우 설정<br>`KUBE_CONTROL_HOSTS` 값만큼 설정|
+|ETCD_TYPE|ETCD 배포 방식<br>external : 별도의 노드에 ETCD 구성<br>stacked : Control Plane 노드에 ETCD 구성|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정|
+|LOADBALANCER_DOMAIN|사전에 구성한 로드밸런서의 VIP 또는 Domain 정보|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정|
+|ETCD1_NODE_HOSTNAME|ETCD 1번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정|
+|ETCD1_NODE_PRIVATE_IP|ETCD 1번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정|
+|ETCD{n}_NODE_HOSTNAME|ETCD n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
+|ETCD{n}_NODE_PRIVATE_IP|ETCD n번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
 |MASTER1_NODE_HOSTNAME|Control Plane 1번 노드의 호스트명||
 |MASTER1_NODE_PUBLIC_IP|Control Plane 1번 노드의 Public IP|Control Plane 1번 노드만 Public IP 정보 필요|
 |MASTER1_NODE_PRIVATE_IP|Control Plane 1번 노드의 Private IP||
-|MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`KUBE_CONTROL_HOSTS` 값만큼 설정|
-|MASTER{n}_NODE_PRIVATE_IP|Control Plane n번 노드의 Private IP|`KUBE_CONTROL_HOSTS` 값이 2 이상일 경우 설정<br>`KUBE_CONTROL_HOSTS` 값만큼 설정|
+|MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
+|MASTER{n}_NODE_PRIVATE_IP|Control Plane n번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
 
 <br>
 
@@ -1143,8 +1172,8 @@ Worker
 |KUBE_WORKER_HOSTS|Worker 노드의 갯수||
 |WORKER1_NODE_HOSTNAME|Worker 1번 노드의 호스트명||
 |WORKER1_NODE_PRIVATE_IP|Worker 1번 노드의 Private IP||
-|WORKER{n}_NODE_HOSTNAME|Worker n번 노드의 호스트명|`KUBE_WORKER_HOSTS` 값만큼 설정|
-|WORKER{n}_NODE_PRIVATE_IP|Worker n번 노드의 Private IP|`KUBE_WORKER_HOSTS` 값만큼 설정|
+|WORKER{n}_NODE_HOSTNAME|Worker n번 노드의 호스트명|**`KUBE_WORKER_HOSTS`** 값만큼 설정|
+|WORKER{n}_NODE_PRIVATE_IP|Worker n번 노드의 Private IP|**`KUBE_WORKER_HOSTS`** 값만큼 설정|
 
 <br>
 
@@ -1153,7 +1182,7 @@ Storage
 |환경변수|설명|비고|
 |---|---|---|
 |STORAGE_TYPE|Storage 정보<br>nfs : NFS 스토리지<br>rook-ceph : Rook Ceph 스토리지||
-|NFS_SERVER_PRIVATE_IP|NFS Server 인스턴스의 Private IP|`STORAGE_TYPE` 값 nfs 일 경우 설정|
+|NFS_SERVER_PRIVATE_IP|NFS Server 인스턴스의 Private IP|**`STORAGE_TYPE`** 값 nfs 일 경우 설정|
 
 <br>
 
@@ -1162,7 +1191,7 @@ LoadBalancer Service
 |환경변수|설명|비고|
 |---|---|---|
 |METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역|Control Plane 노드와 동일한 네트워크 서브넷 대역 설정|
-|INGRESS_NGINX_PRIVATE_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)|`METALLB_IP_RANGE` 값과 중복되지 않도록 설정|
+|INGRESS_NGINX_PRIVATE_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
 
 <br>
 
@@ -1310,7 +1339,7 @@ $ source reset-cp-cluster.sh
 <br><br>
 
 ## <div id='5'> 5. Kubeflow 설치 (선택)
-`단일 클라우드` 환경 기준에서는 클러스터 배포 이후에 별도의 쉘 스크립트를 통해 Kubeflow 설치를 지원한다.
+**`단일 클라우드`** 환경 기준에서는 클러스터 배포 이후에 별도의 쉘 스크립트를 통해 Kubeflow 설치를 지원한다.
 
 <br>
 
