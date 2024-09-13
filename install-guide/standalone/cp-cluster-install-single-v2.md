@@ -651,7 +651,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |Tier|Control Plane 노드와 동일한 네트워크 Tier 선택|서브넷과 동일 개념|
 |Name|로드밸런서 이름 입력||
 |Service IP / Port|80 포트로 생성한 로드밸런서 Private IP 선택, 443 포트 입력||
-|Service Type|HTTPS 선택||
+|Service Type|HTTPS(Bridge) 선택||
 
 <br>
 
