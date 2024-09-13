@@ -335,7 +335,7 @@ NFS 스토리지 구성 시<br>
 <br>
 
 Rook-Ceph 스토리지 구성 시<br>
-Root Volume 이외에 추가 Volume을 각 Worker 노드에 사전에 할당해야 한다.
+Root Volume 이외에 ***`추가 Volume을 각 Worker 노드에 사전에 할당`*** 해야 한다.
 
 <br><br>
 
@@ -369,7 +369,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 <details>
 <summary>NHN 클라우드 인터페이스 추가</summary>
 <br>
-1. Network > Network Interface 메뉴로 이동하여 "네트워크 인터페이스 생성" 버튼을 클릭한다.
+1. <b><code>Network > Network Interface</code></b> 메뉴로 이동하여 "네트워크 인터페이스 생성" 버튼을 클릭한다.
 
 <br><br>
 2. 이름 입력, Control Plane 노드와 동일한 네트워크 VPC, 서브넷 선택 후 "확인" 버튼을 클릭한다.
@@ -387,7 +387,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 ![image 010]
 
 <br><br>
-5. Compute > Instance 메뉴로 이동하여 Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭한다.
+5. <b><code>Compute > Instance</code></b> 메뉴로 이동하여 Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭한다.
 
 ![image 011]
 
@@ -415,7 +415,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 <details>
 <summary>KT 클라우드 인터페이스 추가</summary>
 <br>
-1. Servers > Virtual IP 메뉴에서 "Virtual IP 생성" 버튼을 클릭한다.
+1. <b><code>Servers > Virtual IP</code></b> 메뉴에서 "Virtual IP 생성" 버튼을 클릭한다.
 
 <br><br>
 2. Control Plane 노드와 동일한 네트워크 Zone, Tier 선택, Name 입력 후 "생성" 버튼을 클릭한다.
@@ -428,7 +428,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 ![image 016]
 
 <br><br>
-4. Servers > Networking 메뉴에서 "IP 생성" 버튼 클릭하여 Control Plane 노드와 동일한 네트워크 Zone에 Public IP를 생성한다.
+4. <b><code>Servers > Networking</code></b> 메뉴에서 "IP 생성" 버튼 클릭하여 Control Plane 노드와 동일한 네트워크 Zone에 Public IP를 생성한다.
 
 ![image 017]
 
@@ -490,7 +490,7 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 ***`Public IP만 우선 생성`*** 한 후, ***`클러스터 배포 완료 이후`*** 에 ***`로드밸런서 서비스를 생성`*** 한다.
 
 <br>
-1. Network > Floating IP 메뉴에서 "플로팅 IP 생성" 버튼 클릭하여 Public IP를 생성한다.
+1. <b><code>Network > Floating IP</code></b> 메뉴에서 "플로팅 IP 생성" 버튼 클릭하여 Public IP를 생성한다.
 <br><br>
 
 ![image 025]
@@ -500,7 +500,7 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 로드밸런서 생성 시 서비스에 할당된 포트와 노드포트 정보 확인 이후 로드밸런서 설정이 가능하기때문에, 아래 기술한 로드밸런서 생성 및 설정 과정은 [2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6) 단계 이후에 진행한다.
 
 <br><br>
-2. Network > Load Balancer > 관리 메뉴에서 "로드 밸런서 생성" 버튼을 클릭, 로드 밸런서 생성 모드 선택 팝업에서 "L4 라우팅"을 선택한다.
+2. <b><code>Network > Load Balancer > 관리</code></b> 메뉴에서 "로드 밸런서 생성" 버튼을 클릭, 로드 밸런서 생성 모드 선택 팝업에서 "L4 라우팅"을 선택한다.
 
 ![image 026]
 
@@ -610,7 +610,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 ***`Public IP만 우선 생성`*** 한 후, ***`클러스터 배포 완료 이후`*** 에 ***`로드밸런서 서비스를 생성`*** 한다.
 
 <br>
-1. Servers > Networking 메뉴에서 "IP 생성" 버튼을 클릭하여 Public IP를 생성한다.
+1. <b><code>Servers > Networking</code></b> 메뉴에서 "IP 생성" 버튼을 클릭하여 Public IP를 생성한다.
 <br><br>
 
 ![image 017]
@@ -620,7 +620,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 로드밸런서 생성 시 서비스에 할당된 포트와 노드포트 정보 확인 이후 로드밸런서 설정이 가능하기때문에, 아래 기술한 로드밸런서 생성 및 설정 과정은 [2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6) 단계 이후에 진행한다.
 
 <br><br>
-2. Load Balancer > Load Balancer 관리 메뉴에서 "Load Balancer 생성" 버튼을 클릭한다.
+2. <b><code>Load Balancer > Load Balancer 관리</code></b> 메뉴에서 "Load Balancer 생성" 버튼을 클릭한다.
 
 ![image 032]
 
@@ -684,7 +684,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image 036]
 
 <br><br>
-8. Servers > Networking 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
+8. <b><code>Servers > Networking</code></b> 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
 
 ![image 037]
 
@@ -706,7 +706,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 로드밸런서 서비스 생성 전 로드밸런서 서비스에 할당할 ***`Public IP만 우선 생성`*** 한 후, ***`클러스터 배포 완료 이후`*** 에 ***`로드밸런서 서비스를 생성`*** 한다.
 
 <br>
-1. Server > Public IP 메뉴에서 "공인 IP 신청" 버튼 클릭하여 미할당 Public IP를 생성한다.
+1. <b><code>Server > Public IP</code></b> 메뉴에서 "공인 IP 신청" 버튼 클릭하여 미할당 Public IP를 생성한다.
 <br><br>
 
 ![image 039]
@@ -716,7 +716,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 로드밸런서 생성 시 서비스에 할당된 포트와 노드포트 정보 확인 이후 로드밸런서 설정이 가능하기때문에, 아래 기술한 로드밸런서 생성 및 설정 과정은 [2.6. K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6) 단계 이후에 진행한다.
 
 <br><br>
-2. Load Balancer > Target Group 메뉴에서 "Target Group 생성" 버튼을 클릭한다.
+2. <b><code>Load Balancer > Target Group</code></b> 메뉴에서 "Target Group 생성" 버튼을 클릭한다.
 
 <br><br>
 3. 아래 Target Group 정보를 입력 후 "다음" 버튼을 클릭한다.
@@ -764,7 +764,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 6. 2~5번 과정을 반복하여 TCP 443 포트로 Target Group을 추가 생성한다.
 
 <br><br>
-7. Load Balancer > Load Balancer 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
+7. <b><code>Load Balancer > Load Balancer</code></b> 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
 
 ![image 044]
 
@@ -783,7 +783,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 ![image 045]
 
-<br><br>
+<br><br>  
 9. 리스너 설정 정보를 입력 후 "추가", "다음" 버튼을 클릭한다.
 
 |항목|설명|비고|
