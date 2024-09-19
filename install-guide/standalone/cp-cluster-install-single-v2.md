@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드
 
 <br><br>
 
@@ -29,11 +29,11 @@
   2.5. [K-PaaS 컨테이너 플랫폼 클러스터 설치](#2.5)<br>
   2.6. [K-PaaS 컨테이너 플랫폼 클러스터 설치 확인](#2.6)
 
-1. [K-PaaS 컨테이너 플랫폼 클러스터 삭제 (참고)](#3)
+3. [K-PaaS 컨테이너 플랫폼 클러스터 삭제 (참고)](#3)
 
-2. [Resource 생성 시 주의사항](#4)
+4. [Resource 생성 시 주의사항](#4)
 
-3. [Kubeflow 설치](#5)
+5. [Kubeflow 설치](#5)
 
 <br><br>
 
@@ -370,41 +370,44 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 <summary>NHN 클라우드 인터페이스 추가</summary>
 <br>
 1. <b><code>Network > Network Interface</code></b> 메뉴로 이동하여 "네트워크 인터페이스 생성" 버튼을 클릭한다.
+<br><br>
+
+![image if nhn 001]
 
 <br><br>
 2. 이름 입력, Control Plane 노드와 동일한 네트워크 VPC, 서브넷 선택 후 "확인" 버튼을 클릭한다.
 
-![image 008]
+![image if nhn 002]
 
 <br><br>
 3. 생성한 인터페이스 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
 
-![image 009]
+![image if nhn 003]
 
 <br><br>
 4. 플로팅 IP 생성 또는 기존에 생성된 플로팅 IP 선택 후 "연결" 버튼을 클릭한다.
 
-![image 010]
+![image if nhn 004]
 
 <br><br>
 5. <b><code>Compute > Instance</code></b> 메뉴로 이동하여 Control Plane 노드 (HA Control Plane 구성 시 인터페이스 연결 추가 할 Control Plane 노드)를 선택 후 "인스턴스 중지" 버튼 클릭한다.
 
-![image 011]
+![image if nhn 005]
 
 <br><br>
 6. 하단 네트워크 탭에서 "네트워크 인터페이스 연결 추가" 버튼 클릭한다.
 
-![image 012]
+![image if nhn 006]
 
 <br><br>
 7. 기존 네트워크 인터페이스 지정 선택 후 생성한 인터페이스를 선택 후 "확인" 버튼을 클릭한다.
 
-![image 013]
+![image if nhn 007]
 
 <br><br>
 8. "인스턴스 시작" 버튼을 클릭한다.
 
-![image 014]
+![image if nhn 008]
 
 <br>
 
@@ -420,29 +423,29 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 <br><br>
 2. Control Plane 노드와 동일한 네트워크 Zone, Tier 선택, Name 입력 후 "생성" 버튼을 클릭한다.
 
-![image 015]
+![image if kt 001]
 
 <br><br>
 3. Virtual IP 선택 후 "연결" 버튼을 클릭하여 Control Plane VM에 Virtual IP를 연결한다.
 
-![image 016]
+![image if kt 002]
 
 <br><br>
 4. <b><code>Servers > Networking</code></b> 메뉴에서 "IP 생성" 버튼 클릭하여 Control Plane 노드와 동일한 네트워크 Zone에 Public IP를 생성한다.
 
-![image 017]
+![image if kt 003]
 
 <br><br>
 5. 생성된 Public IP 선택 후 "접속 설정" 버튼 클릭하여 Virtual IP 선택 후 80, 443 포트에 대한 Port Forwarding 설정을 진행한다.
 
-![image 018]
+![image if kt 004]
 
-![image 019]
+![image if kt 005]
 
 <br><br>
-6. "방화벽 설정" 버튼 클릭하여 등록한 접속 설정으로 방화벽을 설정한다.
+6. "방화벽 설정" 버튼 클릭하여 등록한 접속 설정으로 방화벽을 설정한다. (Source CIDR, Destination CIDR은 설치하는 각각의 환경에 맞춰 설정)
 
-![image 020]
+![image if kt 006]
 
 <br><br>
 7. Control Plane 노드에서 다음 명령어를 실행한다. (HA Control Plane 구성 시 Virtual IP 연결한 Control Plane 노드에서 실행)
@@ -493,7 +496,7 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 1. <b><code>Network > Floating IP</code></b> 메뉴에서 "플로팅 IP 생성" 버튼 클릭하여 Public IP를 생성한다.
 <br><br>
 
-![image 025]
+![image lb nhn 001]
 
 <br>
 
@@ -502,7 +505,7 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 <br><br>
 2. <b><code>Network > Load Balancer > 관리</code></b> 메뉴에서 "로드 밸런서 생성" 버튼을 클릭, 로드 밸런서 생성 모드 선택 팝업에서 "L4 라우팅"을 선택한다.
 
-![image 026]
+![image lb nhn 002]
 
 <br><br>
 3. 설정 정보를 입력한다.
@@ -515,10 +518,10 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 
 <br>
 
-![image 027]
+![image lb nhn 003]
 
 <br><br>
-4. 리스너, 맴버 그룹 정보를 입력한다.
+4. 80 포트의 리스너, 맴버 그룹 정보를 입력한다.
 
 리스너
 
@@ -551,13 +554,10 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 028]
+![image lb nhn 004]
 
 <br><br>
-5. "리스너추가" 버튼을 클릭한다.
-
-<br><br>
-6. 리스너, 맴버 그룹 정보를 입력한다.
+5. "리스너추가" 버튼을 클릭 후 443 포트의 리스너, 맴버 그룹 정보를 입력한다.
 
 리스너
 
@@ -582,20 +582,18 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 029]
+![image lb nhn 005]
 
 <br><br>
-7. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
+6. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
 
 <br><br>
-8. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
-
-![image 030]
+7. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
 
 <br><br>
-9. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.
+8. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.
 
-![image 031]
+![image lb nhn 006]
 
 <br>
 
@@ -613,7 +611,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 1. <b><code>Servers > Networking</code></b> 메뉴에서 "IP 생성" 버튼을 클릭하여 Public IP를 생성한다.
 <br><br>
 
-![image 017]
+![image if kt 003]
 
 <br>
 
@@ -622,7 +620,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 <br><br>
 2. <b><code>Load Balancer > Load Balancer 관리</code></b> 메뉴에서 "Load Balancer 생성" 버튼을 클릭한다.
 
-![image 032]
+![image lb kt 001]
 
 <br><br>
 3. 로드밸런서 정보를 입력 후 "확인" 버튼을 클릭한다.
@@ -637,7 +635,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 033]
+![image lb kt 002]
 
 <br><br>
 4. "Load Balancer 생성" 버튼을 클릭한다.
@@ -655,7 +653,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 034]
+![image lb kt 003]
 
 <br><br>
 6. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443 포트 로드밸런서 모두)
@@ -679,19 +677,25 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 035]
+![image lb kt 004]
 
-![image 036]
+![image lb kt 005]
+
+![image lb kt 006]
 
 <br><br>
 8. <b><code>Servers > Networking</code></b> 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
 
-![image 037]
+![image lb kt 004]
+
+![image lb kt 005]
+
+![image lb kt 006]
 
 <br><br>
 9. "방화벽 설정" 버튼 클릭하여 등록한 Static NAT 설정으로 방화벽을 등록한다.
 
-![image 038]
+![image lb kt 008]
 
 <br>
 
@@ -709,7 +713,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 1. <b><code>Server > Public IP</code></b> 메뉴에서 "공인 IP 신청" 버튼 클릭하여 미할당 Public IP를 생성한다.
 <br><br>
 
-![image 039]
+![image lb naver 001]
 
 <br>
 
@@ -717,6 +721,8 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br><br>
 2. <b><code>Load Balancer > Target Group</code></b> 메뉴에서 "Target Group 생성" 버튼을 클릭한다.
+
+![image lb naver 002]
 
 <br><br>
 3. 아래 Target Group 정보를 입력 후 "다음" 버튼을 클릭한다.
@@ -739,7 +745,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 040]
+![image lb naver 003]
 
 <br><br>
 4. 아래 Helth Check 설정 정보를 입력 후 "다음" 버튼을 클릭한다.
@@ -751,14 +757,14 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 041]
+![image lb naver 004]
 
 <br><br>
 5. 전체 노드를 선택하여 적용 Target에 포함시킨 후 Target Group을 생성한다.
 
-![image 042]
+![image lb naver 005]
 
-![image 043]
+![image lb naver 006]
 
 <br><br>
 6. 2~5번 과정을 반복하여 TCP 443 포트로 Target Group을 추가 생성한다.
@@ -766,7 +772,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 <br><br>
 7. <b><code>Load Balancer > Load Balancer</code></b> 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
 
-![image 044]
+![image lb naver 007]
 
 <br><br>
 8. 아래 로드밸런서 정보를 입력 후 "다음" 버튼을 클릭한다.
@@ -781,7 +787,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 045]
+![image lb naver 008]
 
 <br><br>  
 9. 리스너 설정 정보를 입력 후 "추가", "다음" 버튼을 클릭한다.
@@ -793,17 +799,17 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 046]
+![image lb naver 009]
 
 <br><br>
 10. Target Group 선택 후 로드밸런서를 생성한다.
 
-![image 047]
+![image lb naver 010]
 
 <br><br>
 11. 생성한 로드밸런서 선택 후 "리스너 설정 변경" 버튼을 클릭, "리스너 추가" 버튼을 클릭한다.
 
-![image 048]
+![image lb naver 011]
 
 <br><br>
 12. 443 포트에 대한 리스너 설정 정보를 입력 후 리스너를 추가한다.
@@ -816,9 +822,9 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-![image 049]
+![image lb naver 012]
 
-![image 050]
+![image lb naver 013]
 
 <br>
 
@@ -1356,49 +1362,51 @@ $ source deploy-cp-kubeflow.sh
 [image 005]:images/kpaas-cp-cluster-5.png
 [image 006]:images/kpaas-cp-cluster-6.png
 [image 007]:images/kpaas-cp-cluster-7.png
-[image 008]:images/kpaas-cp-cluster-8.png
-[image 009]:images/kpaas-cp-cluster-9.png
-[image 010]:images/kpaas-cp-cluster-10.png
-[image 011]:images/kpaas-cp-cluster-11.png
-[image 012]:images/kpaas-cp-cluster-12.png
-[image 013]:images/kpaas-cp-cluster-13.png
-[image 014]:images/kpaas-cp-cluster-14.png
-[image 015]:images/kpaas-cp-cluster-15.png
-[image 016]:images/kpaas-cp-cluster-16.png
-[image 017]:images/kpaas-cp-cluster-17.png
-[image 018]:images/kpaas-cp-cluster-18.png
-[image 019]:images/kpaas-cp-cluster-19.png
-[image 020]:images/kpaas-cp-cluster-20.png
-[image 021]:images/kpaas-cp-cluster-21.png
-[image 022]:images/kpaas-cp-cluster-22.png
-[image 023]:images/kpaas-cp-cluster-23.png
-[image 024]:images/kpaas-cp-cluster-24.png
-[image 025]:images/kpaas-cp-cluster-25.png
-[image 026]:images/kpaas-cp-cluster-26.png
-[image 026]:images/kpaas-cp-cluster-26.png
-[image 027]:images/kpaas-cp-cluster-27.png
-[image 028]:images/kpaas-cp-cluster-28.png
-[image 029]:images/kpaas-cp-cluster-29.png
-[image 030]:images/kpaas-cp-cluster-30.png
-[image 031]:images/kpaas-cp-cluster-31.png
-[image 032]:images/kpaas-cp-cluster-32.png
-[image 033]:images/kpaas-cp-cluster-33.png
-[image 034]:images/kpaas-cp-cluster-34.png
-[image 035]:images/kpaas-cp-cluster-35.png
-[image 036]:images/kpaas-cp-cluster-36.png
-[image 037]:images/kpaas-cp-cluster-37.png
-[image 038]:images/kpaas-cp-cluster-38.png
-[image 039]:images/kpaas-cp-cluster-39.png
-[image 040]:images/kpaas-cp-cluster-40.png
-[image 041]:images/kpaas-cp-cluster-41.png
-[image 042]:images/kpaas-cp-cluster-42.png
-[image 043]:images/kpaas-cp-cluster-43.png
-[image 044]:images/kpaas-cp-cluster-44.png
-[image 045]:images/kpaas-cp-cluster-45.png
-[image 046]:images/kpaas-cp-cluster-46.png
-[image 047]:images/kpaas-cp-cluster-47.png
-[image 048]:images/kpaas-cp-cluster-48.png
-[image 049]:images/kpaas-cp-cluster-49.png
-[image 050]:images/kpaas-cp-cluster-50.png
+
+[image if nhn 001]:images/kpaas-cp-cluster-if-nhn-01.png
+[image if nhn 002]:images/kpaas-cp-cluster-if-nhn-02.png
+[image if nhn 003]:images/kpaas-cp-cluster-if-nhn-03.png
+[image if nhn 004]:images/kpaas-cp-cluster-if-nhn-04.png
+[image if nhn 005]:images/kpaas-cp-cluster-if-nhn-05.png
+[image if nhn 006]:images/kpaas-cp-cluster-if-nhn-06.png
+[image if nhn 007]:images/kpaas-cp-cluster-if-nhn-07.png
+[image if nhn 008]:images/kpaas-cp-cluster-if-nhn-08.png
+
+[image if kt 001]:images/kpaas-cp-cluster-if-kt-01.png
+[image if kt 002]:images/kpaas-cp-cluster-if-kt-02.png
+[image if kt 003]:images/kpaas-cp-cluster-if-kt-03.png
+[image if kt 004]:images/kpaas-cp-cluster-if-kt-04.png
+[image if kt 005]:images/kpaas-cp-cluster-if-kt-05.png
+[image if kt 006]:images/kpaas-cp-cluster-if-kt-06.png
+
+[image lb nhn 001]:images/kpaas-cp-cluster-lb-nhn-01.png
+[image lb nhn 002]:images/kpaas-cp-cluster-lb-nhn-02.png
+[image lb nhn 003]:images/kpaas-cp-cluster-lb-nhn-03.png
+[image lb nhn 004]:images/kpaas-cp-cluster-lb-nhn-04.png
+[image lb nhn 005]:images/kpaas-cp-cluster-lb-nhn-05.png
+[image lb nhn 006]:images/kpaas-cp-cluster-lb-nhn-06.png
+
+[image lb kt 001]:images/kpaas-cp-cluster-lb-kt-01.png
+[image lb kt 002]:images/kpaas-cp-cluster-lb-kt-02.png
+[image lb kt 003]:images/kpaas-cp-cluster-lb-kt-03.png
+[image lb kt 004]:images/kpaas-cp-cluster-lb-kt-04.png
+[image lb kt 005]:images/kpaas-cp-cluster-lb-kt-05.png
+[image lb kt 006]:images/kpaas-cp-cluster-lb-kt-06.png
+[image lb kt 007]:images/kpaas-cp-cluster-lb-kt-07.png
+[image lb kt 008]:images/kpaas-cp-cluster-lb-kt-08.png
+
+[image lb naver 001]:images/kpaas-cp-cluster-lb-naver-01.png
+[image lb naver 002]:images/kpaas-cp-cluster-lb-naver-02.png
+[image lb naver 003]:images/kpaas-cp-cluster-lb-naver-03.png
+[image lb naver 004]:images/kpaas-cp-cluster-lb-naver-04.png
+[image lb naver 005]:images/kpaas-cp-cluster-lb-naver-05.png
+[image lb naver 006]:images/kpaas-cp-cluster-lb-naver-06.png
+[image lb naver 007]:images/kpaas-cp-cluster-lb-naver-07.png
+[image lb naver 008]:images/kpaas-cp-cluster-lb-naver-08.png
+[image lb naver 009]:images/kpaas-cp-cluster-lb-naver-09.png
+[image lb naver 010]:images/kpaas-cp-cluster-lb-naver-10.png
+[image lb naver 011]:images/kpaas-cp-cluster-lb-naver-11.png
+[image lb naver 012]:images/kpaas-cp-cluster-lb-naver-12.png
+[image lb naver 013]:images/kpaas-cp-cluster-lb-naver-13.png
 
 ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드
