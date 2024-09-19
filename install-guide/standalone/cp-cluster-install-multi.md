@@ -17,7 +17,7 @@
   2.1.3. [주요 소프트웨어](#2.1.3)<br>
   2.1.4. [방화벽](#2.1.4)<br>
   2.1.5. [스토리지](#2.1.5)<br>
-  2.1.6. [Ingress Nginx 서비스 설정](#2.1.6)<br>
+  2.1.6. [Ingress Nginx, Istio Gateway 서비스 설정](#2.1.6)<br>
   2.1.6.1. [Control Plane 노드 추가 인터페이스](#2.1.6.1)<br>
   2.1.6.2. [클라우드 로드밸런서 서비스](#2.1.6.2)<br>
   2.1.7. [HA Control Plane 로드밸런서](#2.1.7)<br>
@@ -361,8 +361,8 @@ Root Volume 이외에 ***`추가 Volume을 각 Worker 노드에 사전에 할당
 
 <br><br>
 
-### <div id='2.1.6'> 2.1.6. Ingress Nginx 서비스 설정 (***`필수 설정`***)
-K-PaaS 컨테이너 플랫폼 서비스 구성을 위해 필요한 Ingress Nginx 서비스 설정 정보는 다음과 같다.
+### <div id='2.1.6'> 2.1.6. Ingress Nginx, Istio Gateway 서비스 설정 (***`필수 설정`***)
+K-PaaS 컨테이너 플랫폼 서비스 구성을 위해 필요한 Ingress Nginx, Istio Gateway 서비스 설정 정보는 다음과 같다.
 
 <br>
 
@@ -500,7 +500,7 @@ $ sudo ifconfig {{ 인터페이스명 }}:1 {{ Virtual IP (Private) }} up
 <details>
 <summary>Naver 클라우드 인터페이스 추가</summary>
 <br>
-Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할당이 불가능하다.<br>
+Naver 클라우드는 정책 상 1개의 인스턴스에 2개 이상의 Public IP 할당이 불가능하다.<br>
 따라서, 아래 기술한 Naver 클라우드의 로드밸런서 서비스 생성 및 설정 진행이 필요하다.
 
 <br>
