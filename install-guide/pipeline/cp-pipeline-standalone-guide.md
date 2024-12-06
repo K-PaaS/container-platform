@@ -58,7 +58,12 @@ Kubespray를 통해 설치된 Kubernetes Cluster 환경에 컨테이너 플랫�
 ### <div id='2.1'>2.1. 컨테이너 플랫폼 포털 설치
 컨테이너 플랫폼 파이프라인에서 사용할 인프라로 인증서버 **KeyCloak**, 데이터베이스 **MariaDB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
 K-PaaS 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치하므로 아래 가이드를 참조하여 사전 설치를 진행한다.
-> [[컨테이너 플랫폼 포털 배포]](../portal/cp-portal-standalone-guide.md)
+
+##### 싱글 클러스터 환경
+> [[싱글 클러스터 컨테이너 플랫폼 포털 배포 가이드]](../portal/cp-portal-standalone-guide.md)
+##### 멀티 클러스터 환경
+> [[멀티 클러스터 컨테이너 플랫폼 포털 배포 가이드]](../portal/cp-portal-standalone-guide-mc.md)
+
 
 <br>
 
@@ -92,10 +97,11 @@ data-cp-pipeline-postgresql-postgresql-0   Bound    pvc-f61096ac-5e2b-4105-9ed3-
 
 ### <div id='3.1'>3.1. 컨테이너 플랫폼 파이프라인 Deployment 파일 다운로드
 컨테이너 플랫폼 파이프라인 배포를 위해 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
-:bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
+##### :bulb: 해당 내용은 **Master Node**에서 진행한다. <br>
+> 멀티 클러스터 환경의 경우 컨테이너 플랫폼 포털 배포 시 **Cluster1**로 지정했던 클러스터에서 진행한다.
 
 + 컨테이너 플랫폼 파이프라인 Deployment 파일 다운로드 :  
-  [cp-pipeline-deployment-v1.5.2.tar.gz](https://nextcloud.k-paas.org/index.php/s/2RA8xkXfFKT2L8c/download)
+  [cp-pipeline-deployment-v1.6.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/QZcw7ALyL7ReQmn/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -103,21 +109,22 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/2RA8xkXfFKT2L8c/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/QZcw7ALyL7ReQmn/download
 
 $ ls ~/workspace/container-platform
-  cp-pipeline-deployment-v1.5.2.tar.gz ...
+  cp-pipeline-deployment-v1.6.0.tar.gz ...
   
 # Deployment 파일 압축 해제
-$ tar -xvf cp-pipeline-deployment-v1.5.2.tar.gz
+$ tar -xvf cp-pipeline-deployment-v1.6.0.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성
 ```bash
-├── script          # 컨테이너 플랫폼 파이프라인 배포 관련 변수 및 스크립트 파일 위치
-├── images          # 컨테이너 플랫폼 파이프라인 이미지 파일 위치
-├── charts          # 컨테이너 플랫폼 파이프라인 Helm Charts 파일 위치
-├── values_orig     # 컨테이너 플랫폼 파이프라인 Helm Charts values 파일 위치 
+cp-pipeline-deployment
+ ├── script        # 파이프라인 배포를 위한 변수 및 스크립트 파일 위치
+ ├── images        # 이미지 파일 위치
+ ├── charts        # Helm 차트 파일 위치
+ └── values_orig   # Helm 차트 values 파일 위치
 ```
 
 <br>
@@ -131,12 +138,12 @@ $ vi cp-pipeline-vars.sh
 ```
 ```bash                                                  
 # COMMON VARIABLE (Please change the value of the variables below.)
-HOST_DOMAIN="{host domain}"                    # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
-K8S_STORAGECLASS="cp-storageclass"             # Kubernetes StorageClass Name (e.g. cp-storageclass)
-IS_MULTI_CLUSTER="N"                           # Please enter "Y" if deploy in a multi-cluster environment
+HOST_DOMAIN="{host domain}"                           # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
+K8S_STORAGECLASS="cp-storageclass"                    # Kubernetes StorageClass Name (e.g. cp-storageclass)
+IS_MULTI_CLUSTER="N"                                  # Please enter "Y" if deploy in a multi-cluster environment
 ```
 ```bash
-# Example
+# (예시)
 HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
 K8S_STORAGECLASS="cp-storageclass"
 IS_MULTI_CLUSTER="N"
@@ -145,23 +152,8 @@ IS_MULTI_CLUSTER="N"
 |변수|설명|상세 내용|
 |---|---|---|
 |**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
-|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
+|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 `cp-storageclass`이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**IS_MULTI_CLUSTER**|멀티 클러스터 환경 여부|멀티 클러스터 환경에 배포할 경우 "Y" 입력|
-
-<br>
-
-:bulb: Keycloak 기본 배포 프로토콜은 **HTTP**이며 인증서를 통한 **HTTPS**가 설정된 경우<br>
-컨테이너 플랫폼 파이프라인 변수 파일 내 아래 내용을 수정한다.
-```bash
-$ vi cp-pipeline-vars.sh
-```    
-```bash
-# KEYCLOAK_URL 변수 값 http -> https 로 변경 
-....  
-#keycloak
-KEYCLOAK_URL="https://keycloak.${HOST_DOMAIN}"     #if apply TLS, https://
-....     
-```
 
 <br>
 
@@ -178,7 +170,7 @@ $ ./deploy-cp-pipeline.sh
 컨테이너 플랫폼 파이프라인 관련 리소스가 정상적으로 배포되었는지 확인한다.<br>
 리소스 Pod의 경우 Node에 바인딩 및 컨테이너 생성 후 Running 상태로 전환되기까지 몇 초가 소요된다.
 
-- **컨테이너 플랫폼 파이프라인 리소스 조회**
+#### 컨테이너 플랫폼 파이프라인 리소스 조회
 
 ```bash
 $ kubectl get all -n cp-pipeline
@@ -227,7 +219,21 @@ replicaset.apps/cp-pipeline-ui-deployment-845bb6999f              1         1   
 NAME                                                 READY   AGE
 statefulset.apps/cp-pipeline-postgresql-postgresql   1/1     103s
 ```    
+```bash
+# 멀티 클러스터 환경에 배포 시 Pod 현황
+NAME                                                     READY   STATUS    RESTARTS      AGE
+cp-pipeline-api-deployment-6978c48fbb-wkhmk              1/1     Running   0             3m45s
+cp-pipeline-common-api-deployment-558bb4cbdc-wxf2h       2/2     Running   0             3m43s
+cp-pipeline-config-server-deployment-68674cf765-kcwls    2/2     Running   0             3m41s
+cp-pipeline-inspection-api-deployment-75c58bcffd-szflk   1/1     Running   0             3m45s
+cp-pipeline-jenkins-deployment-64ff4ccd64-bvf6r          1/1     Running   0             3m40s
+cp-pipeline-postgresql-postgresql-0                      1/1     Running   0             3m39s
+cp-pipeline-sonarqube-sonarqube-5b8d4b4856-297qn         1/1     Running   0             3m37s
+cp-pipeline-ui-deployment-58c5ffdc6c-2lgq9               2/2     Running   0             3m42s
+```
+
 <br>
+
 
 ### <div id='3.4'>3.4. (참고) 컨테이너 플랫폼 파이프라인 리소스 삭제
 배포된 컨테이너 플랫폼 파이프라인 리소스의 삭제를 원하는 경우 아래 스크립트를 실행한다.<br>
@@ -245,7 +251,7 @@ Are you sure you want to delete the container platform pipeline? <y/n> y # y 입
 
 ## <div id='4'>4. 컨테이너 플랫폼 파이프라인 접속
 컨테이너 플랫폼 파이프라인에 접속한다.<br><br>
-**컨테이너 플랫폼 파이프라인 URL** : `http://pipeline.${HOST_DOMAIN}`
+**컨테이너 플랫폼 파이프라인 URL** : `https://pipeline.${HOST_DOMAIN}`
 + [[3.2. 컨테이너 플랫폼 파이프라인 변수 정의]](#3.2) 에서 정의한 `HOST_DOMAIN` 값 입력
 
 <br>
@@ -280,7 +286,7 @@ Are you sure you want to delete the container platform pipeline? <y/n> y # y 입
 
 ### <div id='4.3'/>4.3. 컨테이너 플랫폼 파이프라인 사용 가이드
 - 컨테이너 플랫폼 파이프라인 사용방법은 아래 사용가이드를 참고한다.
-    + [컨테이너 플랫폼 파이프라인 사용 가이드](../../use-guide/pipeline/cp-pipeline-use-guide.md)
+   + [컨테이너 플랫폼 파이프라인 사용 가이드](../../use-guide/pipeline/cp-pipeline-use-guide.md)
 
 <br>
 
