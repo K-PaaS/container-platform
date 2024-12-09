@@ -27,40 +27,40 @@
   - Pod가 삭제된 후 복구가 되는지 확인하는 실험이다.
     ![IMG_10_1_1_2_1]
 
-<table>
-<thead>
-  <tr>
-    <th>항목</th>
-    <th>설명</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>Name</td>
-    <td>Pod Fault 실험 이름. 소문자와 숫자 조합 또는 소문자만 입력 가능하다.</td>
-  </tr>
-  <tr>
-    <td>Namespace</td>
-    <td>Pod Fault 실험이 진행될 Namespace를 선택한다.</td>
-  </tr>
-  <tr>
-    <td>Grace period</td>
-    <td>선택 사항이며 입력하지 않을 경우 기본값은 0이다. Pod가 정상적으로 종료될 때까지 주어진 기간(초)으로 0이상 숫자만 입력 가능하다.</td>
-  </tr>
-  <tr>
-    <td>Namespace Selector</td>
-    <td>Pod Fault 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
-  </tr>
-  <tr>
-    <td>Label Selector</td>
-    <td>Pod Fault 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
-  </tr>
-  <tr>
-    <td>Preview of Pods to be injected</td>
-    <td>Pod Fault 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
-  </tr>
-</tbody>
-</table>
+    <table>
+    <thead>
+      <tr>
+        <th>항목</th>
+        <th>설명</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Name</td>
+        <td>Pod Fault 실험 이름. 소문자와 숫자 조합 또는 소문자만 입력 가능하다.</td>
+      </tr>
+      <tr>
+        <td>Namespace</td>
+        <td>Pod Fault 실험이 진행될 Namespace를 선택한다.</td>
+      </tr>
+      <tr>
+        <td>Grace period</td>
+        <td>선택 사항이며 입력하지 않을 경우 기본값은 0이다. Pod가 정상적으로 종료될 때까지 주어진 기간(초)으로 0이상 숫자만 입력 가능하다.</td>
+      </tr>
+      <tr>
+        <td>Namespace Selector</td>
+        <td>Pod Fault 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
+      </tr>
+      <tr>
+        <td>Label Selector</td>
+        <td>Pod Fault 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
+      </tr>
+      <tr>
+        <td>Preview of Pods to be injected</td>
+        <td>Pod Fault 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
+      </tr>
+    </tbody>
+    </table>
 
 <br>
 
@@ -68,44 +68,44 @@
   - 네트워크 지연을 발생시키는 실험이다.
     ![IMG_10_1_1_2_2]
 
-<table>
-<thead>
-  <tr>
-    <th>항목</th>
-    <th>설명</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>Name</td>
-    <td>Network Attack 실험 이름. 소문자와 숫자 조합 또는 소문자만 입력 가능하다.</td>
-  </tr>
-  <tr>
-    <td>Namespace</td>
-    <td>Network Attack 실험이 진행될 Namespace를 선택한다.</td>
-  </tr>
-  <tr>
-    <td>Latency</td>
-    <td>네트워크 지연시간을 입력한다.</td>
-  </tr>
-  <tr>
-    <td>Duration</td>
-    <td>카오스가 지속될 시간을 입력한다. 최대 12시간까지 실험이 가능하다.</td>
-  </tr>
-  <tr>
-    <td>Namespace Selector</td>
-    <td>Network Attack 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
-  </tr>
-  <tr>
-    <td>Label Selector</td>
-    <td>Network Attack 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
-  </tr>
-  <tr>
-    <td>Preview of Pods to be injected</td>
-    <td>Network Attack 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
-  </tr>
-</tbody>
-</table>
+    <table>
+    <thead>
+      <tr>
+        <th>항목</th>
+        <th>설명</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Name</td>
+        <td>Network Attack 실험 이름. 소문자와 숫자 조합 또는 소문자만 입력 가능하다.</td>
+      </tr>
+      <tr>
+        <td>Namespace</td>
+        <td>Network Attack 실험이 진행될 Namespace를 선택한다.</td>
+      </tr>
+      <tr>
+        <td>Latency</td>
+        <td>네트워크 지연시간을 입력한다.</td>
+      </tr>
+      <tr>
+        <td>Duration</td>
+        <td>카오스가 지속될 시간을 입력한다. 최대 12시간까지 실험이 가능하다.</td>
+      </tr>
+      <tr>
+        <td>Namespace Selector</td>
+        <td>Network Attack 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
+      </tr>
+      <tr>
+        <td>Label Selector</td>
+        <td>Network Attack 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
+      </tr>
+      <tr>
+        <td>Preview of Pods to be injected</td>
+        <td>Network Attack 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
+      </tr>
+    </tbody>
+    </table>
 
 <br>
 
@@ -115,56 +115,57 @@
 - CPU와 Memory 둘 다 부하를 주거나, 둘 중 하나에 부하를 줄 수 있다.
 - Stress Test는 Duration이 30초 이상일 경우 메트릭이 수집되어 차트로 볼 수 있다.
 - 리소스 상태가 정상적이지 않을 경우 메트릭이 정상적으로 수집이 되지 않을 수 있다.
-<table>
-<thead>
-  <tr>
-    <th>항목</th>
-    <th>설명</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>Name</td>
-    <td>Stress Test 실험 이름. 소문자와 숫자 조합 또는 소문자만 입력 가능하다.</td>
-  </tr>
-  <tr>
-    <td>Namespace</td>
-    <td>Stress Test 실험이 진행될 Namespace를 선택한다.</td>
-  </tr>
-  <tr>
-    <td>CPU Workers</td>
-    <td>CPU 부하를 지원하는 스레드 수를 지정한다.</td>
-  </tr>
-  <tr>
-    <td>CPU Load</td>
-    <td>CPU가 차지하는 비율 지정. CPU 부하 최종합계 = workers * load</td>
-  </tr>
-  <tr>
-    <td>Memory Workers</td>
-    <td>Memory 부하를 지원하는 스레드 수를 지정한다.</td>
-  </tr>
-  <tr>
-    <td>Memory Size</td>
-    <td>1 Worker당 소비되는 메모리 크기. 기본값은 총 이용가능한 Memory.</td>
-  </tr>
-  <tr>
-    <td>Duration</td>
-    <td>카오스가 지속될 시간을 입력한다. 최대 12시간까지 실험이 가능하다. 30초미만일 경우에도 카오스 실험이 생성되지만, 메트릭 수집이 불가하다.</td>
-  </tr>
-  <tr>
-    <td>Namespace Selector</td>
-    <td>Stress Test 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
-  </tr>
-  <tr>
-    <td>Label Selector</td>
-    <td>Stress Test 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
-  </tr>
-  <tr>
-    <td>Preview of Pods to be injected</td>
-    <td>Stress Test 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
-  </tr>
-</tbody>
-</table>
+
+    <table>
+    <thead>
+      <tr>
+        <th>항목</th>
+        <th>설명</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Name</td>
+        <td>Stress Test 실험 이름. 소문자와 숫자 조합 또는 소문자만 입력 가능하다.</td>
+      </tr>
+      <tr>
+        <td>Namespace</td>
+        <td>Stress Test 실험이 진행될 Namespace를 선택한다.</td>
+      </tr>
+      <tr>
+        <td>CPU Workers</td>
+        <td>CPU 부하를 지원하는 스레드 수를 지정한다.</td>
+      </tr>
+      <tr>
+        <td>CPU Load</td>
+        <td>CPU가 차지하는 비율 지정. CPU 부하 최종합계 = workers * load</td>
+      </tr>
+      <tr>
+        <td>Memory Workers</td>
+        <td>Memory 부하를 지원하는 스레드 수를 지정한다.</td>
+      </tr>
+      <tr>
+        <td>Memory Size</td>
+        <td>1 Worker당 소비되는 메모리 크기. 기본값은 총 이용가능한 Memory.</td>
+      </tr>
+      <tr>
+        <td>Duration</td>
+        <td>카오스가 지속될 시간을 입력한다. 최대 12시간까지 실험이 가능하다. 30초미만일 경우에도 카오스 실험이 생성되지만, 메트릭 수집이 불가하다.</td>
+      </tr>
+      <tr>
+        <td>Namespace Selector</td>
+        <td>Stress Test 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
+      </tr>
+      <tr>
+        <td>Label Selector</td>
+        <td>Stress Test 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
+      </tr>
+      <tr>
+        <td>Preview of Pods to be injected</td>
+        <td>Stress Test 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
+      </tr>
+    </tbody>
+    </table>
 
 <br>
 
