@@ -5,9 +5,24 @@
 ## Table of Contents
 
 1. [Workloads 메뉴](#1)  
-  1.1. [Deployment](#1-1)  
+  1.1. [Deployments](#1-1)   
+  1.1.1. [Deployment 목록 조회](#1-1-1)    
+  1.1.2. [Deployment 상세 조회](#1-1-2)  
+  1.1.3. [Deployment 생성](#1-1-3)  
+  1.1.4. [Deployment 수정](#1-1-4)  
+  1.1.5. [Deployment 삭제](#1-1-5)   
   1.2. [Pods](#1-2)      
+  1.2.1. [Pod 목록 조회](#1-2-1)  
+  1.2.2. [Pod 상세 조회](#1-2-2)  
+  1.2.3. [Pod 생성](#1-2-3)  
+  1.2.4. [Pod 수정](#1-2-4)  
+  1.2.5. [Pod 삭제](#1-2-5)  
   1.3. [ReplicaSets](#1-3)  
+  1.3.1. [ReplicaSet 목록 조회](#1-3-1)  
+  1.3.2. [ReplicaSet 상세 조회](#1-3-2)  
+  1.3.3. [ReplicaSet 생성](#1-3-3)  
+  1.3.4. [ReplicaSet 수정](#1-3-4)  
+  1.3.5. [ReplicaSet 삭제](#1-3-5)  
        
 <br>
 
@@ -70,7 +85,7 @@
 
 <br>
 
-#### <div id='1-2-5'/> 1.2.5. Pod
+#### <div id='1-2-5'/> 1.2.5. Pod 삭제
 - Pod 상세에서 삭제 버튼을 클릭할 시 Pod 삭제가 완료된다.
   ![IMG_3_2_5]
 

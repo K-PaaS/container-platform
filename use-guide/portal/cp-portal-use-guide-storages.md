@@ -6,8 +6,23 @@
 
 1. [Storages 메뉴](#1)  
   1.1. [Persistent Volumes](#1-1)  
-  1.2. [Persistent Volume Claims](#1-2)      
+  1.1.1. [Persistent Volume 목록 조회](#1-1-1)  
+  1.1.2. [Persistent Volume 상세 조회](#1-1-2)  
+  1.1.3. [Persistent Volume 생성](#1-1-3)  
+  1.1.4. [Persistent Volume 수정](#1-1-4)  
+  1.1.5. [Persistent Volume 삭제](#1-1-5)  
+  1.2. [Persistent Volume Claims](#1-2)  
+  1.2.1. [Persistent Volume Claim 목록 조회](#1-2-1)  
+  1.2.2. [Persistent Volume Claim 상세 조회](#1-2-2)  
+  1.2.3. [Persistent Volume Claim 생성](#1-2-3)  
+  1.2.4. [Persistent Volume Claim 수정](#1-2-4)  
+  1.2.5. [Persistent Volume Claim 삭제](#1-2-5)  
   1.3. [Storage Classes](#1-3)  
+  1.3.1. [Storage Class 목록 조회](#1-3-1)  
+  1.3.2. [Storage Class 상세 조회](#1-3-2)  
+  1.3.3. [Storage Class 생성](#1-3-3)  
+  1.3.4. [Storage Class 수정](#1-3-4)  
+  1.3.5. [Storage Class 삭제](#1-3-5)  
        
 <br>
 

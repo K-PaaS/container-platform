@@ -6,20 +6,25 @@
 
 1. [Chaos 메뉴](#1)  
   1.1. [Experiments](#1-1)  
+  1.1.1. [Experiment 목록 조회](#1-1-1)  
+  1.1.2. [Experiment 생성](#1-1-2)  
+  1.1.3. [Experiment 상세 조회](#1-1-3)  
+  1.1.4. [Experiment 삭제](#1-1-4)  
   1.2. [Events](#1-2)   
+  1.2.1. [Event 조회](#1-1-4)  
 <br>
 
 ## <div id='1'/> 1. Chaos 메뉴
 ### <div id='1-1'/> 1.1. Experiments
-#### <div id='1-1-1'/> 1.1.1. Experiments 목록 조회
-- Chaos Experiments 목록을 조회한다.
+#### <div id='1-1-1'/> 1.1.1. Experiment 목록 조회
+- Chaos Experiment 목록을 조회한다.
   ![IMG_10_1_1_1]
 
 <br>
 
-#### <div id='1-1-2'/> 1.1.2. Experiments 생성
-- Experiments 목록에서 생성 버튼을 클릭하여 Chaos Experiments 생성 페이지로 이동한다.
-- Chaos Experiments 생성 페이지에서 'Pod Fault', 'Network Attack', 'Stress Test' 탭에 따라 각각 다른 종류의 Chaos Experiments을 생성할 수 있다.
+#### <div id='1-1-2'/> 1.1.2. Experiment 생성
+- Experiment 목록에서 생성 버튼을 클릭하여 Chaos Experiment 생성 페이지로 이동한다.
+- Chaos Experiment 생성 페이지에서 'Pod Fault', 'Network Attack', 'Stress Test' 탭에 따라 각각 다른 종류의 Chaos Experiment을 생성할 수 있다.
 
 <br>
 
@@ -169,27 +174,27 @@
 
 <br>
 
-#### <div id='1-1-3'/> 1.1.3. Experiments 상세 조회
-- Experiments 목록에서 Experiments명을 클릭하여 Experiments 상세 페이지로 이동한다.
+#### <div id='1-1-3'/> 1.1.3. Experiment 상세 조회
+- Experiment 목록에서 Experiment명을 클릭하여 Experiment 상세 페이지로 이동한다.
   ![IMG_10_1_1_3_1]
   
 <br>
 
-- Stress Test Experiments일 경우 모니터링할 수 있는 차트를 추가로 볼 수 있다.
+- Stress Test Experiment일 경우 모니터링할 수 있는 차트를 추가로 볼 수 있다.
 - 대상 리소스가 HPA 설정이 되어있을 경우
   ![IMG_10_1_1_3_2]
 
 <br>
 
-#### <div id='1-1-4'/> 1.1.4. Experiments 삭제
-- Experiments 상세 페이지 하단의 삭제 버튼을 클릭하여 Experiments를 삭제한다.
+#### <div id='1-1-4'/> 1.1.4. Experiment 삭제
+- Experiment 상세 페이지 하단의 삭제 버튼을 클릭하여 Experiment를 삭제한다.
   ![IMG_10_1_1_4_1]
 
 <br>
 
 ### <div id='1-2'/> 1.2. Events
-#### <div id='1-2-1'/> 1.2.1. Events 조회
-- Chaos Events를 조회한다.
+#### <div id='1-2-1'/> 1.2.1. Event 조회
+- Chaos Event를 조회한다.
   ![IMG_10_1_2_1]
 
 <br>

@@ -6,7 +6,9 @@
 
 1. [Info 메뉴](#1)  
   1.1. [Access](#1-1)  
-  1.2. [Private Repository](#1-2)      
+  1.1.1. [Access 정보 조회](#1-1-1)  
+  1.2. [Private Repository](#1-2)  
+  1.2.1. [Private Repository 정보 조회](#1-2-1)  
 
 <br>
 
