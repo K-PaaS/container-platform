@@ -181,9 +181,9 @@
 <br>
 
 - Stress Test Experiment일 경우 모니터링할 수 있는 차트를 추가로 볼 수 있다.
-- 차트의 리소스는 최대 6개까지 보여진다. 
-- 대상 리소스 중 HPA 설정이 되어 있는 리소스가 있을 경우, 첫 번째 Metric인 'Resource usage by selected Pods during chaos'에서 HPA에 의해 Metric이 수집되는 파드 수가 증가하여 Chaos Experiment에서 선택한 파드의 차트가 보이지 않을 수 있다.(차트의 리소스는 최대 6개까지 보여지므로)
-- Chaos Experiment에 의해 부하를 받은 Pod에 접근이 정상적이지 않을 경우 APP Status에서 빈칸으로 표시되고, 정상적으로 접근이 될 경우 색칠한 칸으로 표시된다.
+  - 차트의 리소스는 최대 6개까지 보여진다. 
+  - 대상 리소스 중 HPA 설정이 되어 있는 리소스가 있을 경우, 첫 번째 Metric인 'Resource usage by selected Pods during chaos'에서 HPA에 의해 Metric이 수집되는 파드 수가 증가하여 Chaos Experiment에서 선택한 파드의 차트가 보이지 않을 수 있다.(차트의 리소스는 최대 6개까지 보여지므로)
+  - Chaos Experiment에 의해 부하를 받은 Pod에 접근이 정상적이지 않을 경우 APP Status에서 빈칸으로 표시되고, 정상적으로 접근이 될 경우 색칠한 칸으로 표시된다.
   ![IMG_10_1_1_3_2]
 
 <br>
