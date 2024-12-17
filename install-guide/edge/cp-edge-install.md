@@ -119,7 +119,6 @@ Control Plane 노드
 |TCP|2379-2380|etcd server client API|
 |TCP|6443|kubernetes API Server|
 |TCP|9443|cloudcore router port|
-|TCP|10000-10004|cloudHub websocket port|
 |TCP|10001|cloudHub quic port|
 |TCP|10002|cloudHub https port|
 |TCP|10003|cloudStream streamPort|
@@ -130,7 +129,6 @@ Control Plane 노드
 |TCP|10255|Read-Only Kubelet API|
 |TCP|20004|edgeMesh server containerPort|
 |TCP|20006|edgeMesh tunnel listenPort|
-|TCP|40001|edgeMesh edgeProxy listenPort|
 |TCP|40001|edgeMesh edgeProxy listenPort|
 |TCP|30000-32767|NodePort Services|
 |UDP|4789|Calico networking VXLAN|
@@ -193,14 +191,14 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 
 <br>
 
-CloudCore 서비스 설정 방법은 K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드 내 [2.1.6.1. Control Plane 노드 추가 인터페이스](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md#2.1.6.1), [2.1.6.2. 클라우드 로드밸런서 서비스](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md#2.1.6.2) 항목을 참고한다.
+CloudCore 서비스 설정 방법은 K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드 내 [2.1.6.1. Control Plane 노드 추가 인터페이스](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md#2.1.6.1) 항목과 [2.1.6.2. 클라우드 로드밸런서 서비스](https://github.com/K-PaaS/container-platform/blob/master/install-guide/standalone/cp-cluster-install-single.md#2.1.6.2) 항목을 참고한다.
 
 <br>
 
 또한, 로드밸런서 서비스 방식으로 설정할 경우 다음의 포트 매핑 정보를 기준으로 로드밸런서를 생성한다.
 
 |프로토콜|포트|노드포트|비고|
-|---|---|---|
+|---|---|---|---|
 |TCP|10000|30000||
 |TCP|10001|30001||
 |TCP|10002|30002||
@@ -210,7 +208,7 @@ CloudCore 서비스 설정 방법은 K-PaaS 컨테이너 플랫폼 클러스터 
 <br><br>
 
 ### <div id='2.2'> 2.2. K-PaaS 컨테이너 플랫폼 클러스터 설치
-K-PaaS 컨테이너 플랫폼 Edge 배포를 위해서는 클라우드 환경에 K-PaaS 컨테이너 플랫폼 클러스터가 배포되어있어야 하며, 이후 Edge 환경에 Edge 노드를 배포하여야 한다.
+K-PaaS 컨테이너 플랫폼 Edge 배포를 위해서는 클라우드 환경에 K-PaaS 컨테이너 플랫폼 클러스터가 배포되어 있어야 하며, 이후 Edge 환경에 Edge 노드를 배포하여야 한다.
 
 <br>
 
@@ -262,9 +260,9 @@ $ vi cp-edge-vars.sh
 |CLOUDCORE2_NODE_HOSTNAME|CloudCore가 설치될 노드의 호스트명|Control Plane 또는 Worker 노드 중 1개 노드 정보 입력|
 |EDGE_NODE_CNT|Edge 노드의 갯수||
 |EDGE1_NODE_HOSTNAME|Edge 1번 노드의 호스트명||
-|EDGE1_NODE_PRIVATE_IP|Edge 1번 노드의 Private IP||
+|EDGE1_NODE_PUBLIC_IP|Edge 1번 노드의 Public IP||
 |EDGE{n}_NODE_HOSTNAME|Edge n번 노드의 호스트명|**`EDGE_NODE_CNT`** 값이 2 이상일 경우 설정<br>**`EDGE_NODE_CNT`** 값만큼 설정|
-|EDGE{n}_NODE_PRIVATE_IP|Edge n번 노드의 Private IP|**`EDGE_NODE_CNT`** 값이 2 이상일 경우 설정<br>**`EDGE_NODE_CNT`** 값만큼 설정|
+|EDGE{n}_NODE_PUBLIC_IP|Edge n번 노드의 Public IP|**`EDGE_NODE_CNT`** 값이 2 이상일 경우 설정<br>**`EDGE_NODE_CNT`** 값만큼 설정|
 
 <br>
 
@@ -280,10 +278,10 @@ export CLOUDCORE2_NODE_HOSTNAME=
 export EDGE_NODE_CNT=
 
 export EDGE1_NODE_HOSTNAME=
-export EDGE1_NODE_PRIVATE_IP=
+export EDGE1_NODE_PUBLIC_IP=
 ...
 export EDGE{n}_NODE_HOSTNAME=
-export EDGE{n}_NODE_PRIVATE_IP=
+export EDGE{n}_NODE_PUBLIC_IP=
 ```
 
 <br><br>
