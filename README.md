@@ -5,16 +5,16 @@
 <table>
 <thead>
   <tr>
-    <th>플랫폼</th>
-    <th><a href="https://github.com/K-PaaS/cp-deployment">컨테이너 플랫폼</a></th>
-    <th>&nbsp;&nbsp;&nbsp;<a href="https://github.com/K-PaaS/sidecar-deployment.git">사이드카</a>&nbsp;&nbsp;&nbsp;</th>
+    <th width="40%">플랫폼</th>
+    <th width="30%"><a href="https://github.com/K-PaaS/cp-deployment">컨테이너 플랫폼</a></th>
+    <th width="30%">&nbsp;&nbsp;&nbsp;<a href="https://github.com/K-PaaS/sidecar-deployment.git">사이드카</a>&nbsp;&nbsp;&nbsp;</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td align="center">포털</td>
     <td align="center"><a href="https://github.com/K-PaaS/cp-portal-release">CP 포털</a></td>
-    <td align="center">-</td>
+    <td align="center"><a href="https://github.com/K-PaaS/sidecar-deployment/tree/master/install-scripts/portal">SideCar 포털</a></td>
   </tr>
   <tr>
     <td rowspan="8">Component <br>/서비스</td>
