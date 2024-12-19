@@ -14,7 +14,7 @@
   <tr>
     <td align="center">포털</td>
     <td align="center"><a href="https://github.com/K-PaaS/cp-portal-release">CP 포털</a></td>
-    <td align="center"><a href="https://github.com/K-PaaS/sidecar-deployment/tree/master/install-scripts/portal">SideCar 포털</a></td>
+    <td align="center"><a href="https://github.com/K-PaaS/sidecar-deployment/tree/master/install-scripts/portal">사이드카 포털</a></td>
   </tr>
   <tr>
     <td rowspan="8">Component <br>/서비스</td>
