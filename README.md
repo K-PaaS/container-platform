@@ -5,9 +5,9 @@
 <table>
 <thead>
   <tr>
-    <th width="40%">플랫폼</th>
-    <th width="30%"><a href="https://github.com/K-PaaS/cp-deployment">컨테이너 플랫폼</a></th>
-    <th width="30%">&nbsp;&nbsp;&nbsp;<a href="https://github.com/K-PaaS/sidecar-deployment.git">사이드카</a>&nbsp;&nbsp;&nbsp;</th>
+    <th width="300">플랫폼</th>
+    <th width="250"><a href="https://github.com/K-PaaS/cp-deployment">컨테이너 플랫폼</a></th>
+    <th width="250">&nbsp;&nbsp;&nbsp;<a href="https://github.com/K-PaaS/sidecar-deployment.git">사이드카</a>&nbsp;&nbsp;&nbsp;</th>
   </tr>
 </thead>
 <tbody>
