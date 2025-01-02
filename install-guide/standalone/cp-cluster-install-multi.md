@@ -1448,7 +1448,7 @@ cp-cluster3-worker-1   Ready    <none>                 10m   v1.30.4
 cp-cluster3-worker-2   Ready    <none>                 10m   v1.30.4
 cp-cluster3-worker-3   Ready    <none>                 10m   v1.30.4
 
-$ kubectl get pods -n kube-system --context=cluster2
+$ kubectl get pods -n kube-system --context=cluster3
 NAME                                          READY   STATUS    RESTARTS      AGE
 calico-kube-controllers-b5f8f6849-hhbgh       1/1     Running   0             9m22s
 calico-node-d8sg6                             1/1     Running   0             9m22s
