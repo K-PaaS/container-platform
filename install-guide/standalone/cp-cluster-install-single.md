@@ -196,12 +196,37 @@ $ sudo chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 
 <br>
 
+RSA 공개키를 생성한다.
+
+```
+$ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
+Generating public/private rsa key pair.
+Your identification has been saved in /home/ubuntu/.ssh/id_rsa
+Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:odWdv3PDIEpkPuoS53yM0hrsEQZL4mHvM0KwLK2uC57 ubuntu@cp-master
+The key's randomart image is:
++---[RSA 3072]----+
+|                 |
+|         . . .   |
+|.+ o    = . o    |
+|++= o  * .   .   |
+|oo+o .. S . . .  |
+|.+..o  o o . + . |
+|o +o O. .     *  |
+|=o.o=o*        o |
+|E++o ++          |
++----[SHA256]-----+
+```
+
+<br>
+
 인스턴스에 접근할 로컬 환경에 개인키를 복사한다.
 
 ```
-## 출력된 개인키 복사
+## 출력된 개인키 복사하여 로컬 환경에 파일 생성
 
-$ sudo cat /home/ubuntu/.ssh/id_rsa
+$ sudo cat ~/.ssh/id_rsa
 ```
 
 <br>
@@ -211,13 +236,13 @@ $ sudo cat /home/ubuntu/.ssh/id_rsa
 ```
 ## 출력된 공개키 복사
 
-$ sudo cat /home/ubuntu/.ssh/id_rsa.pub
+$ sudo cat ~/.ssh/id_rsa.pub
 ```
 
 <br>
 
 
-그 외 인스턴스에서 아래 과정을 진행한다.
+전체 인스턴스에서 아래 과정을 진행한다.
 
 ```
 $ sudo useradd -m -s /bin/bash ubuntu
@@ -1064,15 +1089,11 @@ HAProxy 서비스를 재시작한다.
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위해서는 SSH Key가 인벤토리의 모든 서버들에 복사되어야 한다.<br>
 본 문서 (K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드) 에서는 RSA 공개키를 이용하여 SSH 접속 설정을 진행한다.
 
-SSH Key 생성 및 배포 이후의 모든 설치과정은 ***`Install 인스턴스 또는 Control Plane 노드`*** 에서 진행한다.
+SSH Key 생성 및 배포 이후의 모든 설치과정은 ***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서 진행한다.
 
 <br>
 
-> Naver 클라우드의 경우 ubuntu 계정 생성 시 키 생성 및 배포를 진행하기 때문에 해당 과정을 생략한다.
-
-<br>
-
-***`Install 인스턴스 또는 Control Plane 노드`*** 에서 RSA 공개키를 생성한다.
+***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서 RSA 공개키를 생성한다.
 ```
 $ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
 Generating public/private rsa key pair.
@@ -1119,7 +1140,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 
 ### <div id='2.3'> 2.3. K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드
 
-> 2.3.부터는 ***`Install 인스턴스 또는 Control Plane 노드`*** 에서만 진행.
+> 2.3.부터는 ***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서만 진행.
 
 <br>
 
