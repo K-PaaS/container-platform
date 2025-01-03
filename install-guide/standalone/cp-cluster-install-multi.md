@@ -17,7 +17,7 @@
   2.1.3. [주요 소프트웨어](#2.1.3)<br>
   2.1.4. [방화벽](#2.1.4)<br>
   2.1.5. [스토리지](#2.1.5)<br>
-  2.1.6. [Ingress Nginx, Istio Gateway 서비스 설정](#2.1.6)<br>
+  2.1.6. [Istio Gateway 서비스 설정](#2.1.6)<br>
   2.1.6.1. [Control Plane 노드 추가 인터페이스](#2.1.6.1)<br>
   2.1.6.2. [클라우드 로드밸런서 서비스](#2.1.6.2)<br>
   2.1.7. [HA Control Plane 로드밸런서](#2.1.7)<br>
@@ -206,12 +206,37 @@ $ sudo chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 
 <br>
 
+RSA 공개키를 생성한다.
+
+```
+$ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
+Generating public/private rsa key pair.
+Your identification has been saved in /home/ubuntu/.ssh/id_rsa
+Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:odWdv3PDIEpkPuoS53yM0hrsEQZL4mHvM0KwLK2uC57 ubuntu@cp-master
+The key's randomart image is:
++---[RSA 3072]----+
+|                 |
+|         . . .   |
+|.+ o    = . o    |
+|++= o  * .   .   |
+|oo+o .. S . . .  |
+|.+..o  o o . + . |
+|o +o O. .     *  |
+|=o.o=o*        o |
+|E++o ++          |
++----[SHA256]-----+
+```
+
+<br>
+
 인스턴스에 접근할 로컬 환경에 개인키를 복사한다.
 
 ```
-## 출력된 개인키 복사
+## 출력된 개인키 복사하여 로컬 환경에 파일 생성
 
-$ sudo cat /home/ubuntu/.ssh/id_rsa
+$ sudo cat ~/.ssh/id_rsa
 ```
 
 <br>
@@ -221,13 +246,12 @@ $ sudo cat /home/ubuntu/.ssh/id_rsa
 ```
 ## 출력된 공개키 복사
 
-$ sudo cat /home/ubuntu/.ssh/id_rsa.pub
+$ sudo cat ~/.ssh/id_rsa.pub
 ```
 
 <br>
 
-
-그 외 인스턴스에서 아래 과정을 진행한다.
+전체 인스턴스에서 아래 과정을 진행한다.
 
 ```
 $ sudo useradd -m -s /bin/bash ubuntu
@@ -255,16 +279,13 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 
 |Python 패키지|버전|
 |---|---|
-|ansible|9.5.1|
-|cryptography|42.0.7|
-|jinja2|3.1.4|
+|ansible|9.8.0|
 |jmespath|1.0.1|
-|MarkupSafe|2.1.5|
-|netaddr|1.2.1|
-|pbr|6.0.0|
-|ruamel.yaml|0.18.6|
-|ruamel.yaml.clib|0.2.8|
-|jsonchema|4.22.0|
+|jsonschema|4.23.0|
+|netaddr|1.3.0|
+|configparser|>=3.3.0|
+|ipaddress||
+|ruamel.yaml|>=0.15.88|
 
 <br><br>
 
@@ -275,27 +296,25 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubespray|2.25.0|
-|Kubernetes Native|1.29.5|
-|CRI-O|1.29.1|
-|Calico|3.27.3|
+|Kubespray|2.26.0|
+|Kubernetes Native|1.30.4|
+|CRI-O|1.30.3|
+|Calico|3.28.1|
 |MetalLB|0.13.9|
-|Ingress Nginx Controller|1.11.1|
-|Helm|3.14.2|
-|Istio|1.22.3|
+|Ingress Nginx Controller|1.11.3|
+|Helm|3.15.4|
+|Istio|1.23.2|
 |Podman|3.4.4|
-|OpenTofu|1.8.1|
-|NFS Common|-|
+|OpenTofu|1.8.3|
 |nfs-subdir-external-provisioner|4.0.2|
-|Rook Ceph|1.14.9|
-|Kubeflow|1.7.0|
+|Rook Ceph|1.15.4|
 
 <br><br>
 
 ### <div id='2.1.4'> 2.1.4. 방화벽 (***`필수 설정`***)
 K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 방화벽 정보는 다음과 같다.
 
-> 멀티 클라우드 배포에서 Istio East-West Gateway 방화벽이 추가되었다.
+> 멀티 클라우드 배포에서 Istio Ingress, Eastwest Gateway 방화벽이 추가되었다.
 
 <br>
 
@@ -313,6 +332,8 @@ Control Plane 노드
 |TCP|10255|Read-Only Kubelet API|
 |TCP|30000-32767| NodePort Services|
 |UDP|4789|Calico networking VXLAN|
+|TCP|80|Istio Ingress Gateway|
+|TCP|443|Istio Ingress Gateway|
 |TCP|15021|Istio East-West Gateway Status|
 |TCP|15443|Istio East-West Gateway mTLS|
 |TCP|15012|Istio East-West Gateway istiod|
@@ -330,6 +351,8 @@ Worker 노드
 |TCP|10255|Read-Only Kubelet API|
 |TCP|30000-32767| NodePort Services|
 |UDP|4789|Calico networking VXLAN|
+|TCP|80|Istio Ingress Gateway|
+|TCP|443|Istio Ingress Gateway|
 |TCP|15021|Istio East-West Gateway Status|
 |TCP|15443|Istio East-West Gateway mTLS|
 |TCP|15012|Istio East-West Gateway istiod|
@@ -361,19 +384,18 @@ Root Volume 이외에 ***`추가 Volume을 각 Worker 노드에 사전에 할당
 
 <br><br>
 
-### <div id='2.1.6'> 2.1.6. Ingress Nginx, Istio Gateway 서비스 설정 (***`필수 설정`***)
-K-PaaS 컨테이너 플랫폼 서비스 구성을 위해 필요한 Ingress Nginx, Istio Gateway 서비스 설정 정보는 다음과 같다.
+### <div id='2.1.6'> 2.1.6. Istio Gateway 서비스 설정 (***`필수 설정`***)
+K-PaaS 컨테이너 플랫폼 서비스 구성을 위해 필요한 Istio Gateway 서비스 설정 정보는 다음과 같다.
 
 <br>
 
 |서비스|설명|비고|
 |---|---|---|
-|Ingress Nginx Controller|K-PaaS 컨테이너 플랫폼 서비스를<br>Ingress로 외부 노출하기 위한 서비스|각 클라우드에 ***`1개 인터페이스 또는 1개 로드밸런서`*** 생성 필요<br>Public IP 할당 필요|
-|Istio EastWest Gateway|멀티 클라우드간 서비스 통신을 위한<br>게이트웨이 서비스|각 클라우드에 ***`1개 인터페이스 또는 1개 로드밸런서`*** 생성 필요<br>Public IP 할당 필요|
+|Istio Ingress Gateway<br>(Eastwest Gateway 기능 포함)|외부 서비스 통신과<br>멀티 클라우드간 서비스 통신을 위한<br>게이트웨이 서비스|각 클라우드에 ***`1개 인터페이스 또는 1개 로드밸런서`*** 생성 필요<br>Public IP 할당 필요|
 
 <br>
 
-> 멀티 클라우드 배포에서 서비스에 할당할 인터페이스 또는 로드밸런서 서비스는 2개 클라우드 환경에 각각 별도로 구성한다.
+> 멀티 클라우드 배포에서 서비스에 할당할 인터페이스 또는 로드밸런서 서비스는 각 클라우드 환경에 별도로 구성한다.
 
 <br>
 
@@ -384,8 +406,8 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 
 |방식|설명|비고|
 |---|---|---|
-|인터페이스 추가|1개 Control Plane 노드에 Public IP가 할당된 신규 인터페이스 추가|Public IP 사용에 대한 비용만 발생<br>HA 구성에서 해당 노드 장애 시 Ingress Nginx 서비스 외부 접근 불가|
-|로드밸런서 생성|Public IP가 할당된 로드밸런서 서비스 생성|로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
+|인터페이스 추가|1개 Control Plane 노드에 Public IP가 할당된 신규 인터페이스 추가|Public IP 사용에 대한 비용만 발생<br>HA 구성에서 해당 노드 장애 시 Istio Gateway 서비스 외부 접근 불가|
+|로드밸런서 생성|Public IP가 할당된 로드밸런서 서비스 생성|로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Istio Gateway 서비스 정상<br>운영 환경에서 권장|
 
 <br><br>
 
@@ -463,7 +485,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 ![image if kt 003]
 
 <br><br>
-5. 생성된 Public IP 선택 후 "접속 설정" 버튼 클릭하여 Virtual IP 선택 후 80, 443 포트에 대한 Port Forwarding 설정을 진행한다.
+5. 생성된 Public IP 선택 후 "접속 설정" 버튼 클릭하여 Virtual IP 선택 후 80, 443, 15021, 15443, 15012, 15017 포트에 대한 Port Forwarding 설정을 진행한다.
 
 ![image if kt 004]
 
@@ -510,8 +532,7 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개 이상의 Public I
 <br><br>
 
 ### <div id='2.1.6.2'> 2.1.6.2. 클라우드 로드밸런서 서비스
-> 클라우드 로드밸런서 서비스 생성 예시는 Ingress Nginx Controller 서비스를 기준으로 작성되었으며,<br>
-> Istio EastWest Gateway 서비스의 경우에는 [2.1.4. 방화벽](#2.1.4) 정보를 참고하여 해당 서비스의 포트와 노드포트의 정보를 확인 후 설정을 진행한다.
+> 클라우드 로드밸런서 서비스 생성 예시는 Istio Gateway 서비스 중 Ingress, Eastwest Gateway 포트 기준으로 작성되었다.<br>
 
 <br>
 
@@ -568,17 +589,17 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개 이상의 Public I
 |---|---|---|
 |이름|맴버 그룹 이름을 입력||
 |프로토콜|HTTP 선택||
-|포트|Ingress Nginx 서비스의 80 포트에 할당된 노드포트 값 입력||
+|포트|Ingress IngressGateway 서비스의 80 포트에 할당된 노드포트 값 입력||
 |상태 확인 프로토콜|TCP 선택||
 |상태 확인 포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
 |맴버 목록|전체 노드 인스턴스 추가||
 
 <br>
 
-> Ingress Nginx 서비스 포트 확인<br>
+> Istio Gateway 서비스 포트 확인<br>
 
 ```
-$ kubectl get svc ingress-nginx-controller -n ingress-nginx
+$ kubectl get svc istio-ingressgateway -n istio-system
 ```
 
 <br>
@@ -604,7 +625,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |---|---|---|
 |이름|맴버 그룹 이름을 입력||
 |프로토콜|HTTPS 선택||
-|포트|Ingress Nginx 서비스의 443 포트에 할당된 노드포트 값 입력||
+|포트|Istio IngressGateway 서비스의 443 포트에 할당된 노드포트 값 입력||
 |상태 확인 프로토콜|TCP 선택||
 |상태 확인 포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
 |맴버 목록|전체 노드 인스턴스 추가||
@@ -614,13 +635,16 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb nhn 005]
 
 <br><br>
-6. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
+6. 15021, 15443, 15012, 15017 포트의 리스너, 맴버 그룹 추가를 5번 과정과 동일하게 진행한다.
 
 <br><br>
-7. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
+7. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
 
 <br><br>
-8. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.
+8. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
+
+<br><br>
+9. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.
 
 ![image lb nhn 006]
 
@@ -685,23 +709,26 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb kt 003]
 
 <br><br>
-6. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443 포트 로드밸런서 모두)
+6. 15021, 15443, 15012, 15017 포트의 로드밸런서 추가를 5번 과정과 동일하게 진행한다.
 
 <br><br>
-7. 정보를 입력 후 "추가" 버튼을 클릭한다.
+7. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443, 15021, 15443, 15012, 15017 포트 로드밸런서 모두)
+
+<br><br>
+8. 정보를 입력 후 "추가" 버튼을 클릭한다.
 
 |항목|설명|비고|
 |---|---|---|
 |Tier|Control Plane 노드와 동일한 네트워크 Tier 선택||
 |VM|클러스터 전체 노드를 순차적으로 선택||
-|Public Port|80, 443 포트에 할당된 노드포트 정보 입력||
+|Public Port|80, 443, 15021, 15443, 15012, 15017 포트에 할당된 노드포트 정보 입력||
 
 <br>
 
-> Ingress Nginx 서비스 포트 확인<br>
+> Istio Gateway 서비스 포트 확인<br>
 
 ```
-$ kubectl get svc ingress-nginx-controller -n ingress-nginx
+$ kubectl get svc istio-ingressgateway -n istio-system
 ```
 
 <br>
@@ -713,7 +740,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb kt 006]
 
 <br><br>
-8. <b><code>Servers > Networking</code></b> 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
+9. <b><code>Servers > Networking</code></b> 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
 
 ![image lb kt 004]
 
@@ -722,7 +749,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb kt 006]
 
 <br><br>
-9. "방화벽 설정" 버튼 클릭하여 등록한 Static NAT 설정으로 방화벽을 등록한다.
+10. "방화벽 설정" 버튼 클릭하여 등록한 Static NAT 설정으로 방화벽을 등록한다.
 
 ![image lb kt 008]
 
@@ -766,10 +793,10 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
-> Ingress Nginx 서비스 포트 확인<br>
+> Istio Gateway 서비스 포트 확인<br>
 
 ```
-$ kubectl get svc ingress-nginx-controller -n ingress-nginx
+$ kubectl get svc istio-ingressgateway -n istio-system
 ```
 
 <br>
@@ -796,7 +823,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb naver 006]
 
 <br><br>
-6. 2~5번 과정을 반복하여 TCP 443 포트로 Target Group을 추가 생성한다.
+6. 2~5번 과정을 반복하여 TCP 443, 15021, 15443, 15012, 15017 포트로 Target Group을 추가 생성한다.
 
 <br><br>
 7. <b><code>Load Balancer > Load Balancer</code></b> 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
@@ -854,6 +881,9 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb naver 012]
 
 ![image lb naver 013]
+
+<br><br>
+13. 15021, 15443, 15012, 15017 포트에 대한 리스너 추가를 12번 과정과 동일하게 진행한다.
 
 <br>
 
@@ -1092,15 +1122,11 @@ HAProxy 서비스를 재시작한다.
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위해서는 SSH Key가 인벤토리의 모든 서버들에 복사되어야 한다.<br>
 본 문서 (K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드) 에서는 RSA 공개키를 이용하여 SSH 접속 설정을 진행한다.
 
-SSH Key 생성 및 배포 이후의 모든 설치과정은 ***`Install 인스턴스 또는 Control Plane 노드`*** 에서 진행한다.
+SSH Key 생성 및 배포 이후의 모든 설치과정은 ***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서 진행한다.
 
 <br>
 
-> Naver 클라우드의 경우 ubuntu 계정 생성 시 키 생성 및 배포를 진행하기 때문에 해당 과정을 생략한다.
-
-<br>
-
-***`Install 인스턴스 또는 Control Plane 노드`*** 에서 RSA 공개키를 생성한다.
+***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서 RSA 공개키를 생성한다.
 ```
 $ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
 Generating public/private rsa key pair.
@@ -1124,7 +1150,7 @@ The key's randomart image is:
 
 <br>
 
-사용할 ***`Install, Control Plane, Worker 노드`*** 에 공개키를 복사한다.
+사용할 ***`Install, 모든 클러스터의 Control Plane, Worker 노드`*** 에 공개키를 복사한다.
 ```
 ## 출력된 공개키 복사
 
@@ -1134,7 +1160,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 
 <br>
 
-사용할 ***`Install, Control Plane, Worker 노드`*** 의 authorized_keys 파일 본문의 마지막 부분(기존 본문 내용 아래 추가)에 공개키를 복사한다.
+사용할 ***`Install, 모든 클러스터의 Control Plane, Worker 노드`*** 의 authorized_keys 파일 본문의 마지막 부분(기존 본문 내용 아래 추가)에 공개키를 복사한다.
 ```
 $ vi .ssh/authorized_keys
 
@@ -1147,7 +1173,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 
 ### <div id='2.3'> 2.3. K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드
 
-> 2.3.부터는 ***`Install 인스턴스 또는 Control Plane 노드`*** 에서만 진행.
+> 2.3.부터는 ***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서만 진행.
 
 <br>
 
@@ -1159,7 +1185,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 Deployment를 다
 
 git clone 명령을 통해 HOME 디렉토리 경로에서 K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드를 진행한다.
 ```
-$ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.5.x
+$ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.6.x
 ```
 
 <br><br>
@@ -1178,16 +1204,33 @@ $ cd ~/cp-deployment/multi
 
 <br>
 
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수 정보를 입력한다.
+K-PaaS 컨테이너 플랫폼 멀티 클러스터의 갯수를 설정 후 환경변수 스크립트 파일을 생성한다.
 ```
-## 1번 클라우드 K-PaaS 컨테이너 플랫폼 클러스터 환경변수
-$ vi cp-cluster-vars1.sh
+$ vi create-vars.sh
+```
 
-## 2번 클라우드 K-PaaS 컨테이너 플랫폼 클러스터 환경변수
-$ vi cp-cluster-vars2.sh
+```
+...
+export CLUSTER_CNT={클러스터 갯수}
+...
+```
+
+```
+$ source create-vars.sh
 ```
 
 <br>
+
+K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수 정보를 입력한다.
+```
+## K-PaaS 컨테이너 플랫폼 클러스터 환경변수
+$ vi cp-cluster-vars.sh
+```
+
+<br>
+
+클러스터 구분은 아래의 환경변수 앞에 CLUSTER{n}_ 으로 구분한다.<br>
+ex) CLUSTER1_KUBE_CONTROL_HOSTS, CLUSTER2_KUBE_CONTROL_HOSTS, CLUSTER3_KUBE_CONTROL_HOSTS...
 
 Control Plane
 
@@ -1229,91 +1272,89 @@ Storage
 
 <br>
 
+> 멀티 클라우드 배포에서는 Istio IngressGateway를 통해 Ingress Nginx Controller에 대한 기능을 대체한다. 
+
 LoadBalancer Service
 
 |환경변수|설명|비고|
 |---|---|---|
 |METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역|Control Plane 노드와 동일한 네트워크 서브넷 대역 설정|
-|INGRESS_NGINX_PRIVATE_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
+|INGRESS_NGINX_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
 
 <br>
 
-> 멀티 클라우드 배포에서는 Istio 서비스에 대한 설정이 추가되었다.
+> 멀티 클라우드 배포에서는 Istio Gateway 서비스에 대한 설정이 추가되었다.
 
 Istio Service
 
 |환경변수|설명|비고|
 |---|---|---|
-|ISTIO_INGRESS_PRIVATE_IP|MetalLB를 통해 Istio Ingress Gateway Service에서 사용할 Private IP|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
-|ISTIO_EASTWEST_PRIVATE_IP|MetalLB를 통해 Istio EastWest Gateway Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
-|ISTIO_EASTWEST_PUBLIC_IP|Istio EastWest Gateway Service에서 사용할 인터페이스에 할당한 ***`Public IP (인터페이스, 로드밸런서 서비스)`***||
+|ISTIO_GATEWAY_PRIVATE_IP|MetalLB를 통해 Istio Gateway Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정<br>로드밸런서 서비스 일 경우 **`ISTIO_GATEWAY_PUBLIC_IP`** 값과 중복되도록 입력|
+|ISTIO_GATEWAY_PUBLIC_IP|Istio Gateway Service에서 사용할 인터페이스에 할당한 ***`Public IP (인터페이스, 로드밸런서 서비스)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
 
 <br>
 
 ```
 #!/bin/bash
 
-# Control Plane Node Count Variable (eg. 1, 3, 5 ...)
-export KUBE_CONTROL_HOSTS=
+export CLUSTER_CNT=3
+
+#################################
+# CLUSTER1
+#################################
+
+# Master Node Count Variable (eg. 1, 3, 5 ...)
+export CLUSTER1_KUBE_CONTROL_HOSTS=
 
 # if KUBE_CONTROL_HOSTS > 1 (eg. external, stacked)
-export ETCD_TYPE=
+export CLUSTER1_ETCD_TYPE=
 
 # if KUBE_CONTROL_HOSTS > 1
 # HA Control Plane LoadBalanncer IP or Domain
-export LOADBALANCER_DOMAIN=
+export CLUSTER1_LOADBALANCER_DOMAIN=
 
 # if ETCD_TYPE=external
 # The number of ETCD node variable is set equal to the number of KUBE_CONTROL_HOSTS
-export ETCD1_NODE_HOSTNAME=
-export ETCD1_NODE_PRIVATE_IP=
-...
-export ETCD{n}_NODE_HOSTNAME=
-export ETCD{n}_NODE_PRIVATE_IP=
-...
+export CLUSTER1_ETCD1_NODE_HOSTNAME=
+export CLUSTER1_ETCD1_NODE_PRIVATE_IP=
+export CLUSTER1_ETCD2_NODE_HOSTNAME=
+export CLUSTER1_ETCD2_NODE_PRIVATE_IP=
+export CLUSTER1_ETCD3_NODE_HOSTNAME=
+export CLUSTER1_ETCD3_NODE_PRIVATE_IP=
 
-# Master Node Info Variable
-# The number of MASTER node variable is set equal to the number of KUBE_CONTROL_HOSTS
-export MASTER1_NODE_HOSTNAME=
-export MASTER1_NODE_PUBLIC_IP=
-export MASTER1_NODE_PRIVATE_IP=
 ...
-export MASTER{n}_NODE_HOSTNAME=
-export MASTER{n}_NODE_PRIVATE_IP=
-...
-
-# Worker Node Count Variable
-export KUBE_WORKER_HOSTS=
-
-# Worker Node Info Variable
-# The number of Worker node variable is set equal to the number of KUBE_WORKER_HOSTS
-export WORKER1_NODE_HOSTNAME=
-export WORKER1_NODE_PRIVATE_IP=
-...
-export WORKER{n}_NODE_HOSTNAME=
-export WORKER{n}_NODE_PRIVATE_IP=
-...
-
-# Storage Variable (eg. nfs, rook-ceph)
-export STORAGE_TYPE=
-
-# if STORATE_TYPE=nfs
-export NFS_SERVER_PRIVATE_IP=
-
-# MetalLB Variable (eg. 192.168.0.150-192.168.0.160)
-export METALLB_IP_RANGE=
 
 # MetalLB Ingress Nginx Controller LoadBalancer Service External IP
-export INGRESS_NGINX_PRIVATE_IP=
+export CLUSTER1_INGRESS_NGINX_IP=
 
-# MetalLB Istio Ingress Gateway LoadBalancer Service External IP
-export ISTIO_INGRESS_PRIVATE_IP=
+# MetalLB Istio Gateway LoadBalancer Service External IP
+export CLUSTER1_ISTIO_GATEWAY_PRIVATE_IP=
+export CLUSTER1_ISTIO_GATEWAY_PUBLIC_IP=
 
-# MetalLB Istio EastWest Gateway LoadBalancer Service External IP
-export ISTIO_EASTWEST_PRIVATE_IP=
+#################################
+# CLUSTER2
+#################################
 
-# Istio eastwestgateway Service Public IP Variable
-export ISTIO_EASTWEST_PUBLIC_IP=
+# Master Node Count Variable (eg. 1, 3, 5 ...)
+export CLUSTER2_KUBE_CONTROL_HOSTS=
+
+# if KUBE_CONTROL_HOSTS > 1 (eg. external, stacked)
+export CLUSTER2_ETCD_TYPE=
+
+# if KUBE_CONTROL_HOSTS > 1
+# HA Control Plane LoadBalanncer IP or Domain
+export CLUSTER2_LOADBALANCER_DOMAIN=
+
+# if ETCD_TYPE=external
+# The number of ETCD node variable is set equal to the number of KUBE_CONTROL_HOSTS
+export CLUSTER2_ETCD1_NODE_HOSTNAME=
+export CLUSTER2_ETCD1_NODE_PRIVATE_IP=
+export CLUSTER2_ETCD2_NODE_HOSTNAME=
+export CLUSTER2_ETCD2_NODE_PRIVATE_IP=
+export CLUSTER2_ETCD3_NODE_HOSTNAME=
+export CLUSTER2_ETCD3_NODE_PRIVATE_IP=
+
+...
 ```
 
 <br><br>
@@ -1334,13 +1375,14 @@ $ source deploy-cp-cluster.sh
 ```
 $ kubectl get nodes --context=cluster1
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster1-master     Ready    control-plane          12m   v1.29.5
-cp-cluster1-worker-1   Ready    <none>                 10m   v1.29.5
-cp-cluster1-worker-2   Ready    <none>                 10m   v1.29.5
-cp-cluster1-worker-3   Ready    <none>                 10m   v1.29.5
+cp-cluster1-master     Ready    control-plane          12m   v1.30.4
+cp-cluster1-worker-1   Ready    <none>                 10m   v1.30.4
+cp-cluster1-worker-2   Ready    <none>                 10m   v1.30.4
+cp-cluster1-worker-3   Ready    <none>                 10m   v1.30.4
 
 $ kubectl get pods -n kube-system --context=cluster1
 NAME                                          READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-b5f8f6849-hhbgh       1/1     Running   0             9m22s
 calico-node-d8sg6                             1/1     Running   0             9m22s
 calico-node-kfvjx                             1/1     Running   0             10m
 calico-node-khwdz                             1/1     Running   0             10m
@@ -1356,9 +1398,6 @@ kube-proxy-nfttc                              1/1     Running   0             10
 kube-proxy-znfgk                              1/1     Running   0             10m
 kube-scheduler-cp-cluster1-master             1/1     Running   1 (11m ago)   12m
 metrics-server-5cd75b7749-xcrps               2/2     Running   0             7m57s
-nginx-proxy-cp-cluster1-worker-1              1/1     Running   0             10m
-nginx-proxy-cp-cluster1-worker-2              1/1     Running   0             10m
-nginx-proxy-cp-cluster1-worker-3              1/1     Running   0             10m
 nodelocaldns-556gb                            1/1     Running   0             8m8s
 nodelocaldns-8dpnt                            1/1     Running   0             8m8s
 nodelocaldns-pvl6z                            1/1     Running   0             8m8s
@@ -1370,13 +1409,14 @@ nodelocaldns-x7grn                            1/1     Running   0             8m
 ```
 $ kubectl get nodes --context=cluster2
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster2-master     Ready    control-plane          12m   v1.29.5
-cp-cluster2-worker-1   Ready    <none>                 10m   v1.29.5
-cp-cluster2-worker-2   Ready    <none>                 10m   v1.29.5
-cp-cluster2-worker-3   Ready    <none>                 10m   v1.29.5
+cp-cluster2-master     Ready    control-plane          12m   v1.30.4
+cp-cluster2-worker-1   Ready    <none>                 10m   v1.30.4
+cp-cluster2-worker-2   Ready    <none>                 10m   v1.30.4
+cp-cluster2-worker-3   Ready    <none>                 10m   v1.30.4
 
 $ kubectl get pods -n kube-system --context=cluster2
 NAME                                          READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-b5f8f6849-hhbgh       1/1     Running   0             9m22s
 calico-node-d8sg6                             1/1     Running   0             9m22s
 calico-node-kfvjx                             1/1     Running   0             10m
 calico-node-khwdz                             1/1     Running   0             10m
@@ -1392,9 +1432,40 @@ kube-proxy-nfttc                              1/1     Running   0             10
 kube-proxy-znfgk                              1/1     Running   0             10m
 kube-scheduler-cp-cluster2-master             1/1     Running   1 (11m ago)   12m
 metrics-server-5cd75b7749-xcrps               2/2     Running   0             7m57s
-nginx-proxy-cp-cluster2-worker-1              1/1     Running   0             10m
-nginx-proxy-cp-cluster2-worker-2              1/1     Running   0             10m
-nginx-proxy-cp-cluster2-worker-3              1/1     Running   0             10m
+nodelocaldns-556gb                            1/1     Running   0             8m8s
+nodelocaldns-8dpnt                            1/1     Running   0             8m8s
+nodelocaldns-pvl6z                            1/1     Running   0             8m8s
+nodelocaldns-x7grn                            1/1     Running   0             8m8s
+```
+
+<br>
+
+```
+$ kubectl get nodes --context=cluster3
+NAME                   STATUS   ROLES                  AGE   VERSION
+cp-cluster3-master     Ready    control-plane          12m   v1.30.4
+cp-cluster3-worker-1   Ready    <none>                 10m   v1.30.4
+cp-cluster3-worker-2   Ready    <none>                 10m   v1.30.4
+cp-cluster3-worker-3   Ready    <none>                 10m   v1.30.4
+
+$ kubectl get pods -n kube-system --context=cluster3
+NAME                                          READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-b5f8f6849-hhbgh       1/1     Running   0             9m22s
+calico-node-d8sg6                             1/1     Running   0             9m22s
+calico-node-kfvjx                             1/1     Running   0             10m
+calico-node-khwdz                             1/1     Running   0             10m
+calico-node-nc58v                             1/1     Running   0             10m
+coredns-657959df74-td5c2                      1/1     Running   0             8m15s
+coredns-657959df74-ztnjj                      1/1     Running   0             8m7s
+dns-autoscaler-b5c786945-rhlkd                1/1     Running   0             8m9s
+kube-apiserver-cp-cluster2-master             1/1     Running   0             12m
+kube-controller-manager-cp-cluster2-master    1/1     Running   1 (11m ago)   12m
+kube-proxy-dj5c8                              1/1     Running   0             10m
+kube-proxy-kkvhk                              1/1     Running   0             10m
+kube-proxy-nfttc                              1/1     Running   0             10m
+kube-proxy-znfgk                              1/1     Running   0             10m
+kube-scheduler-cp-cluster2-master             1/1     Running   1 (11m ago)   12m
+metrics-server-5cd75b7749-xcrps               2/2     Running   0             7m57s
 nodelocaldns-556gb                            1/1     Running   0             8m8s
 nodelocaldns-8dpnt                            1/1     Running   0             8m8s
 nodelocaldns-pvl6z                            1/1     Running   0             8m8s

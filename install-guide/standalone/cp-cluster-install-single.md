@@ -196,12 +196,37 @@ $ sudo chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 
 <br>
 
+RSA 공개키를 생성한다.
+
+```
+$ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
+Generating public/private rsa key pair.
+Your identification has been saved in /home/ubuntu/.ssh/id_rsa
+Your public key has been saved in /home/ubuntu/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:odWdv3PDIEpkPuoS53yM0hrsEQZL4mHvM0KwLK2uC57 ubuntu@cp-master
+The key's randomart image is:
++---[RSA 3072]----+
+|                 |
+|         . . .   |
+|.+ o    = . o    |
+|++= o  * .   .   |
+|oo+o .. S . . .  |
+|.+..o  o o . + . |
+|o +o O. .     *  |
+|=o.o=o*        o |
+|E++o ++          |
++----[SHA256]-----+
+```
+
+<br>
+
 인스턴스에 접근할 로컬 환경에 개인키를 복사한다.
 
 ```
-## 출력된 개인키 복사
+## 출력된 개인키 복사하여 로컬 환경에 파일 생성
 
-$ sudo cat /home/ubuntu/.ssh/id_rsa
+$ sudo cat ~/.ssh/id_rsa
 ```
 
 <br>
@@ -211,13 +236,13 @@ $ sudo cat /home/ubuntu/.ssh/id_rsa
 ```
 ## 출력된 공개키 복사
 
-$ sudo cat /home/ubuntu/.ssh/id_rsa.pub
+$ sudo cat ~/.ssh/id_rsa.pub
 ```
 
 <br>
 
 
-그 외 인스턴스에서 아래 과정을 진행한다.
+전체 인스턴스에서 아래 과정을 진행한다.
 
 ```
 $ sudo useradd -m -s /bin/bash ubuntu
@@ -245,16 +270,13 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 
 |Python 패키지|버전|
 |---|---|
-|ansible|9.5.1|
-|cryptography|42.0.7|
-|jinja2|3.1.4|
+|ansible|9.8.0|
 |jmespath|1.0.1|
-|MarkupSafe|2.1.5|
-|netaddr|1.2.1|
-|pbr|6.0.0|
-|ruamel.yaml|0.18.6|
-|ruamel.yaml.clib|0.2.8|
-|jsonchema|4.22.0|
+|jsonschema|4.23.0|
+|netaddr|1.3.0|
+|configparser|>=3.3.0|
+|ipaddress||
+|ruamel.yaml|>=0.15.88|
 
 <br><br>
 
@@ -265,20 +287,20 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubespray|2.25.0|
-|Kubernetes Native|1.29.5|
-|CRI-O|1.29.1|
-|Calico|3.27.3|
+|Kubespray|2.26.0|
+|Kubernetes Native|1.30.4|
+|CRI-O|1.30.3|
+|Calico|3.28.1|
 |MetalLB|0.13.9|
-|Ingress Nginx Controller|1.11.1|
-|Helm|3.14.2|
-|Istio|1.22.3|
+|Ingress Nginx Controller|1.11.3|
+|Helm|3.15.4|
+|Istio|1.23.2|
 |Podman|3.4.4|
-|OpenTofu|1.8.1|
-|NFS Common|-|
+|OpenTofu|1.8.3|
 |nfs-subdir-external-provisioner|4.0.2|
-|Rook Ceph|1.14.9|
+|Rook Ceph|1.15.4|
 |Kubeflow|1.7.0|
+|Kyverno|1.12.5|
 
 <br><br>
 
@@ -301,6 +323,8 @@ Control Plane 노드
 |TCP|10255|Read-Only Kubelet API|
 |TCP|30000-32767| NodePort Services|
 |UDP|4789|Calico networking VXLAN|
+|TCP|80|Ingress Nginx Controller|
+|TCP|443|Ingress Nginx Controller|
 
 <br>
 
@@ -314,6 +338,8 @@ Worker 노드
 |TCP|10255|Read-Only Kubelet API|
 |TCP|30000-32767| NodePort Services|
 |UDP|4789|Calico networking VXLAN|
+|TCP|80|Ingress Nginx Controller|
+|TCP|443|Ingress Nginx Controller|
 
 <br><br>
 
@@ -1063,15 +1089,11 @@ HAProxy 서비스를 재시작한다.
 K-PaaS 컨테이너 플랫폼 클러스터 설치를 위해서는 SSH Key가 인벤토리의 모든 서버들에 복사되어야 한다.<br>
 본 문서 (K-PaaS 컨테이너 플랫폼 클러스터 설치 가이드) 에서는 RSA 공개키를 이용하여 SSH 접속 설정을 진행한다.
 
-SSH Key 생성 및 배포 이후의 모든 설치과정은 ***`Install 인스턴스 또는 Control Plane 노드`*** 에서 진행한다.
+SSH Key 생성 및 배포 이후의 모든 설치과정은 ***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서 진행한다.
 
 <br>
 
-> Naver 클라우드의 경우 ubuntu 계정 생성 시 키 생성 및 배포를 진행하기 때문에 해당 과정을 생략한다.
-
-<br>
-
-***`Install 인스턴스 또는 Control Plane 노드`*** 에서 RSA 공개키를 생성한다.
+***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서 RSA 공개키를 생성한다.
 ```
 $ ssh-keygen -t rsa -m PEM -N '' -f $HOME/.ssh/id_rsa
 Generating public/private rsa key pair.
@@ -1118,7 +1140,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QrbqzV6g4iZT4iR1u+EKKVQGqBy4DbGqH7/PVfmA
 
 ### <div id='2.3'> 2.3. K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드
 
-> 2.3.부터는 ***`Install 인스턴스 또는 Control Plane 노드`*** 에서만 진행.
+> 2.3.부터는 ***`Install 인스턴스 또는 설치를 진행할 Control Plane 노드`*** 에서만 진행.
 
 <br>
 
@@ -1130,7 +1152,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 Deployment를 다
 
 git clone 명령을 통해 HOME 디렉토리 경로에서 K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드를 진행한다.
 ```
-$ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.5.x
+$ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.6.x
 ```
 
 <br><br>
@@ -1197,7 +1219,7 @@ LoadBalancer Service
 |환경변수|설명|비고|
 |---|---|---|
 |METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역|Control Plane 노드와 동일한 네트워크 서브넷 대역 설정|
-|INGRESS_NGINX_PRIVATE_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
+|INGRESS_NGINX_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
 
 <br>
 
@@ -1255,7 +1277,7 @@ export NFS_SERVER_PRIVATE_IP=
 export METALLB_IP_RANGE=
 
 # MetalLB Ingress Nginx Controller LoadBalancer Service External IP
-export INGRESS_NGINX_PRIVATE_IP=
+export INGRESS_NGINX_IP=
 ```
 
 <br><br>
@@ -1276,13 +1298,14 @@ $ source deploy-cp-cluster.sh
 ```
 $ kubectl get nodes
 NAME                 STATUS   ROLES                  AGE   VERSION
-cp-master            Ready    control-plane          12m   v1.29.5
-cp-worker-1          Ready    <none>                 10m   v1.29.5
-cp-worker-2          Ready    <none>                 10m   v1.29.5
-cp-worker-3          Ready    <none>                 10m   v1.29.5
+cp-master            Ready    control-plane          12m   v1.30.4
+cp-worker-1          Ready    <none>                 10m   v1.30.4
+cp-worker-2          Ready    <none>                 10m   v1.30.4
+cp-worker-3          Ready    <none>                 10m   v1.30.4
 
 $ kubectl get pods -n kube-system
 NAME                                          READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-b5f8f6849-hhbgh       1/1     Running   0             9m22s
 calico-node-d8sg6                             1/1     Running   0             9m22s
 calico-node-kfvjx                             1/1     Running   0             10m
 calico-node-khwdz                             1/1     Running   0             10m
@@ -1298,9 +1321,6 @@ kube-proxy-nfttc                              1/1     Running   0             10
 kube-proxy-znfgk                              1/1     Running   0             10m
 kube-scheduler-cp-master                      1/1     Running   1 (11m ago)   12m
 metrics-server-5cd75b7749-xcrps               2/2     Running   0             7m57s
-nginx-proxy-cp-worker-1                       1/1     Running   0             10m
-nginx-proxy-cp-worker-2                       1/1     Running   0             10m
-nginx-proxy-cp-worker-3                       1/1     Running   0             10m
 nodelocaldns-556gb                            1/1     Running   0             8m8s
 nodelocaldns-8dpnt                            1/1     Running   0             8m8s
 nodelocaldns-pvl6z                            1/1     Running   0             8m8s

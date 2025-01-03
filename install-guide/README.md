@@ -30,8 +30,8 @@
   + [Linkerd 설치 가이드](multicluster/cp-linkerd-install.md)
   + [Karmada 설치 가이드](multicluster/cp-karmada-install.md)
 - CSP Kubernetes Service 활용
-  + [Istio 설치 및 샘플](csp/cp-csp-istio-guide.md)
-  + [Linkerd 설치 및 샘플](csp/cp-csp-linkerd-guide.md)
+  + [Istio 멀티 클러스터 구성 가이드](csp/cp-csp-istio-guide.md)
+  + [Linkerd 멀티 클러스터 구성 가이드](csp/cp-csp-linkerd-guide.md)
 
 ### Edge 배포
 - Edge 설치
@@ -45,6 +45,7 @@
   + [소스 컨트롤 설치 가이드](source-control/cp-source-control-standalone-guide.md)
 - 샘플 모델
   + [웹 카운팅 / 실시간 온도수집](edge/cp-edge-sample-guide.md)
+
 
 <br>
 

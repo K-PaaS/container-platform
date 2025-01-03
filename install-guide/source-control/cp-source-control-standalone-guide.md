@@ -59,16 +59,22 @@
 ### <div id='2.1'>2.1. 컨테이너 플랫폼 포털 설치
 컨테이너 플랫폼 소스 컨트롤에서 사용할 인프라로 인증서버 **KeyCloak**, 데이터베이스 **MariaDB**, 레포지토리 서버 **Harbor** 설치가 사전에 진행되어야 한다.
 컨테이너 플랫폼 포털 배포 시 해당 인프라를 모두 설치하므로 아래 가이드를 참조하여 사전 설치를 진행한다.
-> [[컨테이너 플랫폼 포털 배포]](../portal/cp-portal-standalone-guide.md)
+
+##### 싱글 클러스터 환경
+> [[싱글 클러스터 컨테이너 플랫폼 포털 배포 가이드]](../portal/cp-portal-standalone-guide.md)
+##### 멀티 클러스터 환경
+> [[멀티 클러스터 컨테이너 플랫폼 포털 배포 가이드]](../portal/cp-portal-standalone-guide-mc.md)
 
 <br>
 
 ## <div id='3'>3. 컨테이너 플랫폼 소스 컨트롤 배포
 ### <div id='3.1'>3.1. 컨테이너 플랫폼 소스 컨트롤 Deployment 파일 다운로드
 컨테이너 플랫폼 소스 컨트롤 배포를 위해 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
-:bulb: 해당 내용은 Kubernetes **Master Node**에서 진행한다.
+##### :bulb: 해당 내용은 **Master Node**에서 진행한다. <br>
+> 멀티 클러스터 환경의 경우 컨테이너 플랫폼 포털 배포 시 **Cluster1**로 지정했던 클러스터에서 진행한다.
+
 + 컨테이너 플랫폼 소스 컨트롤 Deployment 파일 다운로드 :  
-  [cp-source-control-deployment-v1.5.2.tar.gz](https://nextcloud.k-paas.org/index.php/s/gQ5dd4XadmP43MG/download)
+  [cp-source-control-deployment-v1.6.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/dkfdTd6zttpi3T2/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -76,21 +82,22 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/gQ5dd4XadmP43MG/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/dkfdTd6zttpi3T2/download
 
 $ ls ~/workspace/container-platform
-  cp-source-control-deployment-v1.5.2.tar.gz ...
+  cp-source-control-deployment-v1.6.0.tar.gz ...
   
 # Deployment 파일 압축 해제
-$ tar -xvf cp-source-control-deployment-v1.5.2.tar.gz
+$ tar -xvf cp-source-control-deployment-v1.6.0.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성
 ```bash
-├── script          # 컨테이너 플랫폼 소스 컨트롤 배포 관련 변수 및 스크립트 파일 위치
-├── images          # 컨테이너 플랫폼 소스 컨트롤 이미지 파일 위치
-├── charts          # 컨테이너 플랫폼 소스 컨트롤 Helm Charts 파일 위치
-├── values_orig     # 컨테이너 플랫폼 소스 컨트롤 Helm Charts values 파일 위치
+cp-source-control-deployment
+ ├── script        # 소스컨트롤 배포를 위한 변수 및 스크립트 파일 위치
+ ├── images        # 이미지 파일 위치
+ ├── charts        # Helm 차트 파일 위치
+ └── values_orig   # Helm 차트 values 파일 위치
 ```
 
 <br>
@@ -104,11 +111,12 @@ $ vi cp-source-control-vars.sh
 ```
 ```bash                                                    
 # COMMON VARIABLE (Please change the value of the variables below.)
-HOST_DOMAIN="{host domain}"                    # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
-K8S_STORAGECLASS="cp-storageclass"             # Kubernetes StorageClass Name (e.g. cp-storageclass)
-IS_MULTI_CLUSTER="N"                           # Please enter "Y" if deploy in a multi-cluster environment
+HOST_DOMAIN="{host domain}"                           # Host Domain (e.g. xx.xxx.xxx.xx.nip.io)
+K8S_STORAGECLASS="cp-storageclass"                    # Kubernetes StorageClass Name (e.g. cp-storageclass)
+IS_MULTI_CLUSTER="N"                                  # Please enter "Y" if deploy in a multi-cluster environment
 ```
-```bash  
+```bash
+# (예시)
 HOST_DOMAIN="105.xxx.xxx.xxx.nip.io"
 K8S_STORAGECLASS="cp-storageclass"
 IS_MULTI_CLUSTER="N"
@@ -116,24 +124,8 @@ IS_MULTI_CLUSTER="N"
 |변수|설명|상세 내용|
 |---|---|---|
 |**HOST_DOMAIN**|Host Domain 값 입력|[[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../portal/cp-portal-standalone-guide.md#3.1.2)에서<br>정의한 `HOST_DOMAIN` 값 입력|
-|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 <b>`cp-storageclass`</b>이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
+|**K8S_STORAGECLASS**|StorageClass 명 입력|컨테이너 플랫폼을 통해 배포된 클러스터는 <br> 기본으로 `cp-storageclass`이다. <br> 다른 StorageClass 사용 시 해당 리소스 명을 입력한다.|
 |**IS_MULTI_CLUSTER**|멀티 클러스터 환경 여부|멀티 클러스터 환경에 배포할 경우 "Y" 입력|
-<br>
-
-:bulb: Keycloak 기본 배포 프로토콜은 **HTTP**이며 인증서를 통한 **HTTPS**가 설정된 경우<br>
-컨테이너 플랫폼 소스 컨트롤 변수 파일 내 아래 내용을 수정한다.
-
-```bash
-$ vi cp-source-control-vars.sh
-```    
-```bash
-# KEYCLOAK_URL 변수 값 http -> https 로 변경 
-....  
-#keycloak
-KEYCLOAK_URL="https://keycloak.${HOST_DOMAIN}"     #if apply TLS, https://
-....     
-```
-
 <br>
 
 ### <div id='3.3'>3.3. 컨테이너 플랫폼 소스 컨트롤 배포 스크립트 실행
@@ -149,7 +141,7 @@ $ ./deploy-cp-source-control.sh
 컨테이너 플랫폼 소스 컨트롤 관련 리소스가 정상적으로 배포되었는지 확인한다.<br>
 리소스 Pod의 경우 Node에 바인딩 및 컨테이너 생성 후 Running 상태로 전환되기까지 몇 초가 소요된다.
 
-- **컨테이너 플랫폼 소스 컨트롤 리소스 조회**
+#### 컨테이너 플랫폼 소스 컨트롤 리소스 조회
 
 ```bash
 $ kubectl get all -n cp-source-control
@@ -176,7 +168,13 @@ replicaset.apps/cp-source-control-api-deployment-8565cf8dd7      1         1    
 replicaset.apps/cp-source-control-manager-deployment-df5fd8bd8   1         1         1       28s
 replicaset.apps/cp-source-control-ui-deployment-5fd69d4b59       1         1         1       27s
 ```    
-
+```bash
+# 멀티 클러스터 환경에 배포 시 Pod 현황
+NAME                                                        READY   STATUS    RESTARTS   AGE
+pod/cp-source-control-api-deployment-7d7db8dbbc-k92hn       2/2     Running   0          3m31s
+pod/cp-source-control-manager-deployment-855965dd98-7c77k   1/1     Running   0          3m32s
+pod/cp-source-control-ui-deployment-845b588b48-74wjc        2/2     Running   0          3m31s
+```
 <br>
 
 ### <div id='3.4'>3.4. (참고) 컨테이너 플랫폼 소스 컨트롤 리소스 삭제
@@ -194,8 +192,9 @@ Are you sure you want to delete the container platform source control? <y/n> y #
 
 ## <div id='4'>4. 컨테이너 플랫폼 소스 컨트롤 접속
 컨테이너 플랫폼 소스 컨트롤에 접속한다.<br><br>
-**컨테이너 플랫폼 소스 컨트롤 URL** : `http://scm.${HOST_DOMAIN}`
+**컨테이너 플랫폼 소스 컨트롤 URL** : `https://scm.${HOST_DOMAIN}`
 + [[3.2. 컨테이너 플랫폼 소스 컨트롤 변수 정의]](#3.2) 에서 정의한 `HOST_DOMAIN` 값 입력
+
 <br>
 
 ### <div id='4.1'/>4.1. 컨테이너 플랫폼 소스 컨트롤 관리자 로그인
@@ -228,7 +227,7 @@ Are you sure you want to delete the container platform source control? <y/n> y #
 
 ### <div id='4.3'/>4.3. 컨테이너 플랫폼 소스 컨트롤 사용 가이드
 - 컨테이너 플랫폼 소스컨트롤 사용 방법은 아래 사용가이드를 참고한다.
-    + [컨테이너 플랫폼 소스 컨트롤 사용 가이드](../../use-guide/source-control/cp-source-control-use-guide.md)
+   + [컨테이너 플랫폼 소스 컨트롤 사용 가이드](../../use-guide/source-control/cp-source-control-use-guide.md)
 
 <br>
 
