@@ -15,6 +15,9 @@
 <br>
 
 ## <div id='1'/> 1. Chaos 메뉴
+Chaos는 다양한 유형의 실험을 제공하여 운영 환경에서 실제 발생할 수 있는 이상(파드 종료, 네트워크 지연 등)을 시뮬레이션하고 실험 상태를 모니터링 할 수 있다.
+실험의 종류로는 'Pod Fault', 'Network Attack', 'Stress Test'가 있다.
+
 ### <div id='1-1'/> 1.1. Experiments
 #### <div id='1-1-1'/> 1.1.1. Experiment 목록 조회
 - Chaos Experiment 목록을 조회한다.
@@ -42,27 +45,27 @@
     <tbody>
       <tr>
         <td>Name</td>
-        <td>Pod Fault 실험 이름. 소문자와 숫자 조합 또는 소문자만 입력 가능하다.</td>
+        <td>Pod Fault 실험의 이름. 소문자와 숫자 조합 또는 소문자만 입력 가능하다.</td>
       </tr>
       <tr>
         <td>Namespace</td>
-        <td>Pod Fault 실험이 진행될 Namespace를 선택한다.</td>
+        <td>Pod Fault 실험을 위한 카오스 리소스가 만들어지는 Namespace를 선택한다.</td>
       </tr>
       <tr>
         <td>Grace period</td>
-        <td>선택 사항이며 입력하지 않을 경우 기본값은 0이다. Pod가 정상적으로 종료될 때까지 주어진 기간(초)으로 0이상 숫자만 입력 가능하다.</td>
+        <td>선택 사항이며 Pod가 정상적으로 종료될 때까지 주어진 기간(초)이다. 기본값은 0이며, 0이상 숫자만 입력 가능하다.</td>
       </tr>
       <tr>
         <td>Namespace Selector</td>
-        <td>Pod Fault 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
+        <td>Pod Fault 실험 대상 Pod가 속한 Namespace를 지정한다.</td>
       </tr>
       <tr>
         <td>Label Selector</td>
-        <td>Pod Fault 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
+        <td>Pod Fault 실험 대상 Pod가 가진 Label Selector를 지정한다.</td>
       </tr>
       <tr>
         <td>Preview of Pods to be injected</td>
-        <td>Pod Fault 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
+        <td>Pod Fault 실험 대상 Pod를 최대 6개까지 선택할 수 있다.</td>
       </tr>
     </tbody>
     </table>
@@ -87,27 +90,27 @@
       </tr>
       <tr>
         <td>Namespace</td>
-        <td>Network Attack 실험이 진행될 Namespace를 선택한다.</td>
+        <td>Network Attack 실험을 위한 카오스 리소스가 만들어지는 Namespace를 선택한다.</td>
       </tr>
       <tr>
         <td>Latency</td>
-        <td>네트워크 지연시간을 입력한다.</td>
+        <td>네트워크 지연을 얼마나 발생시킬지 숫자를 입력 후 시간 단위를 선택한다.</td>
       </tr>
       <tr>
         <td>Duration</td>
-        <td>카오스가 지속될 시간을 입력한다. 최대 12시간까지 실험이 가능하다.</td>
+        <td>카오스 실험이 얼마동안 진행할지 숫자를 입력 후 시간 단위를 선택한다. 최대 12시간까지 실험이 가능하다.</td>
       </tr>
       <tr>
         <td>Namespace Selector</td>
-        <td>Network Attack 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
+        <td>Network Attack 실험 대상 Pod가 속한 Namespace를 지정한다.</td>
       </tr>
       <tr>
         <td>Label Selector</td>
-        <td>Network Attack 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
+        <td>Network Attack 실험 대상 Pod가 가진 Label Selector를 지정한다.</td>
       </tr>
       <tr>
         <td>Preview of Pods to be injected</td>
-        <td>Network Attack 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
+        <td>Network Attack 실험 대상 Pod를 최대 6개까지 선택할 수 있다.</td>
       </tr>
     </tbody>
     </table>
@@ -117,9 +120,9 @@
 -  Stress Test
   - 선택한 Pod에 CPU, Memory를 할당하여 부하를 주는 실험이다.
     ![IMG_10_1_1_2_3]
-- CPU와 Memory 둘 다 부하를 주거나, 둘 중 하나에 부하를 줄 수 있다.
-- Stress Test는 Duration이 30초 이상일 경우 메트릭이 수집되어 차트로 볼 수 있다.
-- 리소스 상태가 정상적이지 않을 경우 메트릭이 정상적으로 수집이 되지 않을 수 있다.
+- CPU와 Memory 둘 다 부하를 주거나, 둘 중 하나를 선택해서 부하를 줄 수 있다.
+- Duration이 30초 이상일 경우 메트릭이 수집되어 차트로 볼 수 있다.
+- 리소스 상태가 정상적이지 않을 경우 메트릭이 원활하게 수집되지 않을 수 있다.
 
     <table>
     <thead>
@@ -135,39 +138,39 @@
       </tr>
       <tr>
         <td>Namespace</td>
-        <td>Stress Test 실험이 진행될 Namespace를 선택한다.</td>
+        <td>Stress Test 실험을 위한 카오스 리소스가 만들어지는 Namespace를 선택한다.</td>
       </tr>
       <tr>
         <td>CPU Workers</td>
-        <td>CPU 부하를 지원하는 스레드 수를 지정한다.</td>
+        <td>CPU 부하를 지원할 스레드 수를 지정한다.</td>
       </tr>
       <tr>
         <td>CPU Load</td>
-        <td>CPU가 차지하는 비율 지정. CPU 부하 최종합계 = workers * load</td>
+        <td>CPU가 차지할 비율 지정한다. CPU 부하 최종합계 = workers * load</td>
       </tr>
       <tr>
         <td>Memory Workers</td>
-        <td>Memory 부하를 지원하는 스레드 수를 지정한다.</td>
+        <td>Memory 부하를 지원할 스레드 수를 지정한다.</td>
       </tr>
       <tr>
         <td>Memory Size</td>
-        <td>1 Worker당 소비되는 메모리 크기. 기본값은 총 이용가능한 Memory.</td>
+        <td>1 Worker당 소비될 메모리 크기. 기본값은 총 이용가능한 Memory 크기.</td>
       </tr>
       <tr>
         <td>Duration</td>
-        <td>카오스가 지속될 시간을 입력한다. 최대 12시간까지 실험이 가능하다. 30초미만일 경우에도 카오스 실험이 생성되지만, 메트릭 수집이 불가하다.</td>
+        <td>카오스 실험이 얼마동안 진행할지 숫자를 입력 후 시간 단위를 선택한다. 최대 12시간까지 실험이 가능하다. 30초미만일 경우에도 카오스 실험은 진행되지만, 메트릭 수집이 불가하다.</td>
       </tr>
       <tr>
         <td>Namespace Selector</td>
-        <td>Stress Test 실험을 할 Pod가 속한 Namespace를 지정한다.</td>
+        <td>Stress Test 실험 대상 Pod가 속한 Namespace를 지정한다.</td>
       </tr>
       <tr>
         <td>Label Selector</td>
-        <td>Stress Test 실험을 할 Pod가 속한 Label Selector 지정한다.</td>
+        <td>Stress Test 실험 대상 Pod가 가진 Label Selector를 지정한다.</td>
       </tr>
       <tr>
         <td>Preview of Pods to be injected</td>
-        <td>Stress Test 실험을 할 Pod를 최대 6개까지 선택할 수 있다.</td>
+        <td>Stress Test 실험 대상 Pod를 최대 6개까지 선택할 수 있다.</td>
       </tr>
     </tbody>
     </table>
@@ -182,7 +185,7 @@
 
 - Stress Test Experiment일 경우 모니터링할 수 있는 차트를 추가로 볼 수 있다.
   - 차트의 리소스는 최대 6개까지 보여진다. 
-  - 대상 리소스 중 HPA 설정이 되어 있는 리소스가 있을 경우, 첫 번째 Metric인 'Resource usage by selected Pods during chaos'에서 HPA에 의해 Metric이 수집되는 파드 수가 증가하여 Chaos Experiment에서 선택한 파드의 차트가 보이지 않을 수 있다.(차트의 리소스는 최대 6개까지 보여지므로)
+  - 대상 리소스 중 HPA 설정이 되어 있는 리소스가 있을 경우, 첫 번째 Metric인 'Resource usage by selected Pods during chaos'에서 HPA에 의해 Metric이 수집되는 파드 수가 증가하여 Chaos Experiment에서 선택한 모든 파드의 차트가 보이지 않을 수 있다.(차트의 리소스는 최대 6개까지 보여진다.)
   - Chaos Experiment에 의해 부하를 받은 Pod에 접근이 정상적이지 않을 경우 APP Status에서 빈칸으로 표시되고, 정상적으로 접근이 될 경우 색칠한 칸으로 표시된다.
   ![IMG_10_1_1_3_2]
 
