@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 Karmada 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/README.md) > K-PaaS 컨테이너 플랫폼 Karmada 설치 가이드
 
 <br>
 
@@ -30,7 +30,7 @@
   5.1 [namespace 생성](#5.1)<br>
   5.2 [Karmada Propagationpolicy 생성](#5.2)<br>
   5.3 [예제 코드 생성](#5.3)<br>
-	5.4 [실습 애플리케이션 동작 확인](#5.4)
+  5.4 [실습 애플리케이션 동작 확인](#5.4)
 
 <br>
 
@@ -331,17 +331,17 @@ $ vi propagationpolicy.yaml
 apiVersion: policy.karmada.io/v1alpha1
 kind: PropagationPolicy
 metadata:
-name: example-policy # The default namespace is `default`.
+  name: example-policy # The default namespace is `default`.
 spec:
-resourceSelectors:
-- apiVersion: apps/v1
-  kind: Deployment
-  name: nginx # If no namespace is specified, the namespace is inherited from the parent object scope.
-placement:
-clusterAffinity:
-  clusterNames:
-  - member1
-  - member2
+  resourceSelectors:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: nginx # If no namespace is specified, the namespace is inherited from the parent object scope.
+  placement:
+    clusterAffinity:
+      clusterNames:
+      - member1
+      - member2
 ```
 
 ```bash
@@ -361,22 +361,22 @@ $ vi nginx.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-name: nginx
-labels:
-app: nginx
-spec:
-replicas: 2
-selector:
-matchLabels:
-  app: nginx
-template:
-metadata:
+  name: nginx
   labels:
-  app: nginx
+    app: nginx
 spec:
-  containers:
-  - image: nginx
-    name: nginx
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
 ```
 
 ```bash
@@ -717,4 +717,4 @@ Hello version: v1, instance: helloworld-v1-b6c45f55-gz5qb
 ```
 
 
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > K-PaaS 컨테이너 플랫폼 Karmada 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/README.md) > K-PaaS 컨테이너 플랫폼 Karmada 설치 가이드
