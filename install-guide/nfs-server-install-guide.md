@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > NFS Server 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/README.md) > NFS Server 설치 가이드
 
 <br>
 

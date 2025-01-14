@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 컨테이너 플랫폼 소스 컨트롤 배포 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/README.md) > 컨테이너 플랫폼 소스 컨트롤 배포 가이드
 
 <br>
 
@@ -231,7 +231,7 @@ Are you sure you want to delete the container platform source control? <y/n> y #
 
 <br>
 
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 컨테이너 플랫폼 소스 컨트롤 배포 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/README.md) > 컨테이너 플랫폼 소스 컨트롤 배포 가이드
 
 [image 001]:../images/portal/cp-001.png
 [image 002]:../images/portal/cp-002.png
