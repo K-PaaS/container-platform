@@ -76,7 +76,7 @@
 ## <div id='3'>3. 컨테이너 플랫폼 포털 접속
 컨테이너 플랫폼 포털에 접속한다.<br><br>
 **컨테이너 플랫폼 포털 URL** : `http://portal.${HOST_DOMAIN}`
-+ [[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../../install-guide/portal/cp-portal-standalone-guide.md#3.1.2) 에서 정의한 `HOST_DOMAIN` 값 입력
++ [[3.2. 컨테이너 플랫폼 포털 변수 정의]](../../install-guide/portal/cp-portal-standalone-guide.md#3.2) 에서 정의한 `HOST_DOMAIN` 값 입력
 
 <br>
 
@@ -103,7 +103,7 @@ Keycloak Admin Console에 접속 후 조회한 Keycloak Admin 계정으로 로�
 
 **Keycloak Admin Console URL** : `http://keycloak.${HOST_DOMAIN}/auth/admin`
 + Keycloak TLS 적용 시 `https` 로 접속
-+ [[3.1.2. 컨테이너 플랫폼 포털 변수 정의]](../../install-guide/portal/cp-portal-standalone-guide.md#3.1.2) 에서 정의한 `HOST_DOMAIN` 값 입력
++ [[3.2. 컨테이너 플랫폼 포털 변수 정의]](../../install-guide/portal/cp-portal-standalone-guide.md#3.2) 에서 정의한 `HOST_DOMAIN` 값 입력
 
 ![image 011]
 
