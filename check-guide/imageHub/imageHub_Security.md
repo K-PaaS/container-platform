@@ -1,5 +1,166 @@
 
-## Trivy를 활용한 컨테이너 이미지 보안
+# K-PaaS 공공 이미지 허브 서비스
+
+- **도메인**: [registry.k-paas.org](https://registry.k-paas.org)
+
+**이미지 사용 방법**
+
+1. Podman CLI를 통해 레지스트리에 로그인:
+   - AccessKey 및 SecretKey는 업체별 별도 안내
+    
+    ```
+    sudo podman login registry.k-paas.org
+    ```
+    
+2. 이미지 Pull 및 Push:
+    
+    ```
+    sudo podman pull registry.k-paas.org/<업체명>/<이미지명>:<태그>
+    sudo podman push <이미지명>:<태그> registry.k-paas.org/<업체명>/<이미지명>:<태그>
+    ```
+    
+* 업체명
+  웹캐시 : webcash  
+  한국기업보안 : korsec
+  스피타 : spitha
+  젝사젠 : juxtagene
+  인젠트 : inzent
+
+감사합니다.
+
+
+## 이미지 업로드 방법
+
+### 1. Podman을 활용한 사용 방법
+
+**1.1 Podman 설치**
+
+- Podman 설치 방법은 Podman 공식 문서를 참고하세요.
+    
+
+**1.2 레지스트리 로그인**
+
+```
+podman login registry.k-paas.org
+```
+
+- 사용자명과 비밀번호를 입력하여 인증합니다.
+    
+
+**1.3 이미지 Pull**
+
+```
+podman pull registry.k-paas.org/<업체명>/<이미지명>:<태그>
+```
+
+**1.4 이미지 Push**
+
+```
+podman push <이미지명>:<태그> registry.k-paas.org/<업체명>/<이미지명>:<태그>
+```
+
+---
+
+### 2. Docker를 활용한 사용 방법
+
+**2.1 Docker 설치**
+
+- Docker 설치 방법은 Docker 공식 문서를 참고하세요.
+    
+
+**2.2 레지스트리 로그인**
+
+```
+docker login registry.k-paas.org
+```
+
+- 사용자명과 비밀번호를 입력하여 인증합니다.
+    
+
+**2.3 이미지 Pull**
+
+```
+docker pull registry.k-paas.org/<업체명>/<이미지명>:<태그>
+```
+
+**2.4 이미지 Push**
+
+```
+docker push <이미지명>:<태그> registry.k-paas.org/<업체명>/<이미지명>:<태그>
+```
+
+---
+
+### 3. Nerdctl을 활용한 사용 방법
+
+**3.1 Nerdctl 설치**
+
+- Nerdctl 설치 방법은 [Nerdctl 공식 문서](https://github.com/containerd/nerdctl)를 참고하세요.
+    
+
+**3.2 레지스트리 로그인**
+
+```
+nerdctl login registry.k-paas.org
+```
+
+- 사용자명과 비밀번호를 입력하여 인증합니다.
+    
+
+**3.3 이미지 Pull**
+
+```
+nerdctl pull registry.k-paas.org/<업체명>/<이미지명>:<태그>
+```
+
+**3.4 이미지 Push**
+
+```
+nerdctl push <이미지명>:<태그> registry.k-paas.org/<업체명>/<이미지명>:<태그>
+```
+
+---
+
+### 4. 이미지 보안 점검
+
+K-PaaS 공공 이미지 허브에서는 등록된 모든 이미지를 대상으로 매주 **CVE**(Common Vulnerabilities and Exposures) 및 **CCE**(Common Configuration Enumeration) 점검을 수행합니다. 점검 결과 이상이 발견될 경우 각 사에 통보될 예정입니다. 이를 통해 이미지 보안성을 유지하고, 잠재적인 보안 위협을 사전에 방지합니다.
+
+**이미지 보안 확인 오픈소스 추천**
+
+- **Trivy**: 오픈소스 이미지 스캐너로 컨테이너 이미지, 파일 시스템, Git 리포지토리, Kubernetes 클러스터 등을 스캔하여 취약점을 식별합니다.
+    
+
+**Trivy 설치 및 사용 방법**
+
+1. **Trivy 설치**
+    
+    ```
+    sudo apt install -y trivy  # Ubuntu/Debian 환경
+    # 또는
+    brew install trivy         # macOS 환경
+    ```
+    
+2. **이미지 스캔**
+    
+    ```
+    trivy image registry.k-paas.org/<업체명>/<이미지명>:<태그>
+    ```
+    
+    - 스캔 결과로 취약점 목록과 심각도가 표시됩니다.
+        
+3. **보고서 생성**
+    
+    ```
+    trivy image -f json -o report.json registry.k-paas.org/<업체명>/<이미지명>:<태그>
+    ```
+    
+    - JSON 형식의 보고서를 생성하여 결과를 저장할 수 있습니다.
+        
+
+---
+
+
+## [상세] Trivy를 활용한 컨테이너 이미지 보안
 
 ### 1. 컨테이너 이미지 개요
 
