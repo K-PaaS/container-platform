@@ -27,8 +27,9 @@
     1.2.7. [Vault Secret 상세 조회](#1-2-7)  
     1.2.8. [Vault Secret 생성](#1-2-8)  
     1.2.9. [Vault Secret 적용](#1-2-9)  
-    1.2.10. [Vault Secret 수정](#1-2-10)  
-    1.2.11. [Vault Secret 삭제](#1-2-11)    
+    1.2.10. [Vault Secret 해제](#1-2-10)  
+    1.2.11. [Vault Secret 수정](#1-2-11)  
+    1.2.12. [Vault Secret 삭제](#1-2-12)  
  
 <br>
 
@@ -422,20 +423,26 @@
 <br>
 
 #### <div id='1-2-9'/> 1.2.9. Vault Secret 적용
-- Vault Secret 상세에서 적용 버튼을 클릭할 시 Apply 팝업창에 선택한 Namespace에 대한 Deployment 목록이 나온다. Vault Secret Data를 적용할 Deployment를 선택하여 저장 버튼을 클릭한다.  
+- Vault Secret 상세에서 적용 버튼을 클릭할 시 Application Mapping 팝업 창에 Namespace와 Application 목록이 나온다. Vault Secret Data를 적용할 Namespace와 Application을 선택하여 저장 버튼을 클릭한다.  
   ![IMG_6_2_14]
 
 <br>
 
-#### <div id='1-2-10'/> 1.2.10. Vault Secret 수정
-- Vault Secret 상세에서 Data 목록의 Edit 아이콘을 눌러 Default TTL, Max TTL 값을 수정하고 수정 버튼을 클릭하여 수정한다.  
+#### <div id='1-2-10'/> 1.2.10. Vault Secret 해제
+- Vault Secret 상세에서 해제 버튼을 클릭할 시 Application에 적용한 Vault Secret이 해제가 된다.  
   ![IMG_6_2_15]
 
 <br>
 
-#### <div id='1-2-11'/> 1.2.11. Vault Secret 삭제
-- Vault Secret 상세에서 삭제 버튼을 클릭할 시 Vault Secret 삭제가 완료된다.
+#### <div id='1-2-11'/> 1.2.11. Vault Secret 수정
+- Vault Secret 상세에서 Data 목록의 Edit 아이콘을 눌러 Default TTL, Max TTL 값을 수정하고 수정 버튼을 클릭하여 수정한다.  
   ![IMG_6_2_16]
+
+<br>
+
+#### <div id='1-2-12'/> 1.2.12. Vault Secret 삭제
+- Vault Secret 상세에서 삭제 버튼을 클릭할 시 Vault Secret 삭제가 완료된다.
+  ![IMG_6_2_17]
 
 <br>
 
@@ -463,3 +470,4 @@
 [IMG_6_2_14]:../images/portal/IMG_6_2_14.png
 [IMG_6_2_15]:../images/portal/IMG_6_2_15.png
 [IMG_6_2_16]:../images/portal/IMG_6_2_16.png
+[IMG_6_2_17]:../images/portal/IMG_6_2_17.png
