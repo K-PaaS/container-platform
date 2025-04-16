@@ -119,17 +119,8 @@
 # <div id='2'/> 2. 컨테이너 플랫폼 파이프라인 접속
 ## <div id='2-1'/> 2.1. 컨테이너 플랫폼 파이프라인 접속 설명
 컨테이너 플랫폼 파이프라인에 접속한다.<br><br>
-1. **컨테이너 플랫폼 파이프라인 URL** : `http://pipeline.${HOST_DOMAIN}`
+**컨테이너 플랫폼 파이프라인 URL** : `http://pipeline.${HOST_DOMAIN}`
 + [[컨테이너 플랫폼 파이프라인 변수 정의]](../../install-guide/pipeline/cp-pipeline-standalone-guide.md#3.2) 에서 정의한 `HOST_DOMAIN` 값 입력
-
-2. 컨테이너 플랫폼 파이프라인 접속 초기 정보를 확인한 후 파이프라인에 로그인한다.
-	> 초기 계정정보는 아래 명령어를 통해 확인
-	```
-	$ kubectl get configmap -n cp-portal cp-portal-configmap -o yaml | grep KEYCLOAK_ADMIN
-	```
- 
-    ![image](../images/pipeline/IMG_2_1_1.png)
-    ![image](../images/pipeline/IMG_2_1_2.png)
 
 <br>
 

@@ -90,10 +90,10 @@
 ### 1. Keycloak Admin 계정 정보 조회
 Keycloak Admin 계정 정보는 아래 명령어를 통해 확인한다.
 ```bash
-# Keycloak Admin 계정 조회
-$ kubectl get cm cp-portal-configmap -n cp-portal -o yaml | grep KEYCLOAK_ADMIN
-KEYCLOAK_ADMIN_USERNAME: ********* (Username)
-KEYCLOAK_ADMIN_PASSWORD: ********* (Password)
+# Keycloak Admin Username 조회
+$ kubectl get secret cp-portal-secret -n cp-portal -o jsonpath="{.data.KEYCLOAK_ADMIN_USERNAME}" | base64 -d; echo
+# Keycloak Admin Password 조회
+$ kubectl get secret cp-portal-secret -n cp-portal -o jsonpath="{.data.KEYCLOAK_ADMIN_PASSWORD}" | base64 -d; echo
 ```
 
 <br>

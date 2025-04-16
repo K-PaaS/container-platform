@@ -129,7 +129,7 @@ Istio를 활용하여 **`3개의 클러스터`** 를 기반으로 멀티 클러�
 Istio 멀티 클러스터 구성을 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-  [cp-portal-deployment-v1.6.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/ZcFt4cpeXj8d4o4/download)
+  [cp-portal-deployment-v1.6.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/FQFddRC4wiq5cdj/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -137,13 +137,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/ZcFt4cpeXj8d4o4/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/FQFddRC4wiq5cdj/download
 
 $ ls ~/workspace/container-platform
-  cp-portal-deployment-v1.6.0.tar.gz
+  cp-portal-deployment-v1.6.1.tar.gz
 
 # Deployment 파일 압축 해제
-$ tar -xvf cp-portal-deployment-v1.6.0.tar.gz
+$ tar -xvf cp-portal-deployment-v1.6.1.tar.gz
 ```
 
 <br>
@@ -571,7 +571,7 @@ sleep-5577c64d7c-9zg7w   2/2     Running   0          74s
 ```bash
 # cluster3의 sleep pod에 접속 
 $ kubectl exec -it -n sample --context="${CLUSTER3_CONFIG[CTX]}" \
-"$(kubectl get pod -n sample --context="${CLUSTER3_CONFIG[CTX]}" -l app=sleep -o jsonpath='{.items[0].metadata.name}')" -c sleep sh
+"$(kubectl get pod -n sample --context="${CLUSTER3_CONFIG[CTX]}" -l app=sleep -o jsonpath='{.items[0].metadata.name}')" -c sleep -- sh
 
 # reviews 서비스 curl 통신
 ~ $ curl reviews:9080/reviews/1

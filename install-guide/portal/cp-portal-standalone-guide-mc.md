@@ -108,7 +108,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 |[Vault Secrets Operator](https://github.com/hashicorp/vault-secrets-operator)|0.9.0|0.9.0|
 |[MariaDB](https://github.com/mariadb)|11.4.3|19.0.7|
 |[Harbor](https://github.com/goharbor/harbor)|2.11.1|1.15.1|
-|[Keycloak](https://github.com/keycloak/keycloak)|25.0.4|22.2.1|
+|[Keycloak](https://github.com/keycloak/keycloak)|25.0.6|23.0.0|
 |[ChartMuseum](https://github.com/helm/chartmuseum)|0.16.2|3.10.3|
 |[Chaos Mesh](https://github.com/chaos-mesh/chaos-mesh)|2.7.0|2.7.0|
 
@@ -120,7 +120,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 ### <span id='3.1'>3.1. 컨테이너 플랫폼 포털 Deployment 파일 다운로드
 컨테이너 플랫폼 포털 배포를 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-  [cp-portal-deployment-v1.6.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/ZcFt4cpeXj8d4o4/download)
+  [cp-portal-deployment-v1.6.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/FQFddRC4wiq5cdj/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -128,13 +128,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/ZcFt4cpeXj8d4o4/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/FQFddRC4wiq5cdj/download
 
 $ ls ~/workspace/container-platform
-  cp-portal-deployment-v1.6.0.tar.gz
+  cp-portal-deployment-v1.6.1.tar.gz
 
 # Deployment 파일 압축 해제
-$ tar -xvf cp-portal-deployment-v1.6.0.tar.gz
+$ tar -xvf cp-portal-deployment-v1.6.1.tar.gz
 ```
 
 
@@ -382,10 +382,10 @@ Are you sure you want to delete the container platform portal? <y/n> y # y 입�
 ### 1. Keycloak Admin 계정 정보 조회
 Keycloak Admin 계정 정보는 아래 명령어를 통해 확인한다.
 ```bash
-# Keycloak Admin 계정 조회
-$ kubectl get cm cp-portal-configmap -n cp-portal -o yaml | grep KEYCLOAK_ADMIN
-KEYCLOAK_ADMIN_USERNAME: ********* (Username)
-KEYCLOAK_ADMIN_PASSWORD: ********* (Password)
+# Keycloak Admin Username 조회
+$ kubectl get secret cp-portal-secret -n cp-portal -o jsonpath="{.data.KEYCLOAK_ADMIN_USERNAME}" | base64 -d; echo
+# Keycloak Admin Password 조회
+$ kubectl get secret cp-portal-secret -n cp-portal -o jsonpath="{.data.KEYCLOAK_ADMIN_PASSWORD}" | base64 -d; echo
 ```
 
 <br>

@@ -101,7 +101,7 @@ data-cp-pipeline-postgresql-postgresql-0   Bound    pvc-f61096ac-5e2b-4105-9ed3-
 > 멀티 클러스터 환경의 경우 컨테이너 플랫폼 포털 배포 시 **Cluster1**로 지정했던 클러스터에서 진행한다.
 
 + 컨테이너 플랫폼 파이프라인 Deployment 파일 다운로드 :  
-  [cp-pipeline-deployment-v1.6.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/QZcw7ALyL7ReQmn/download)
+  [cp-pipeline-deployment-v1.6.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/r8qWAadGoAHNcBn/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -109,13 +109,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/QZcw7ALyL7ReQmn/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/r8qWAadGoAHNcBn/download
 
 $ ls ~/workspace/container-platform
-  cp-pipeline-deployment-v1.6.0.tar.gz ...
+  cp-pipeline-deployment-v1.6.1.tar.gz ...
   
 # Deployment 파일 압축 해제
-$ tar -xvf cp-pipeline-deployment-v1.6.0.tar.gz
+$ tar -xvf cp-pipeline-deployment-v1.6.1.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성

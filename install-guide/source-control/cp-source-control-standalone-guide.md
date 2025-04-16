@@ -74,7 +74,7 @@
 > 멀티 클러스터 환경의 경우 컨테이너 플랫폼 포털 배포 시 **Cluster1**로 지정했던 클러스터에서 진행한다.
 
 + 컨테이너 플랫폼 소스 컨트롤 Deployment 파일 다운로드 :  
-  [cp-source-control-deployment-v1.6.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/dkfdTd6zttpi3T2/download)
+  [cp-source-control-deployment-v1.6.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/faHjJRM7tiyLTBj/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -82,13 +82,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/dkfdTd6zttpi3T2/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/faHjJRM7tiyLTBj/download
 
 $ ls ~/workspace/container-platform
-  cp-source-control-deployment-v1.6.0.tar.gz ...
+  cp-source-control-deployment-v1.6.1.tar.gz ...
   
 # Deployment 파일 압축 해제
-$ tar -xvf cp-source-control-deployment-v1.6.0.tar.gz
+$ tar -xvf cp-source-control-deployment-v1.6.1.tar.gz
 ```
 
 - Deployment 파일 디렉토리 구성
