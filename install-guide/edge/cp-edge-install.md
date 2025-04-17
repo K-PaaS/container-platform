@@ -50,7 +50,7 @@ K-PaaS 컨테이너 플랫폼 Edge 노드 구성에 필요한 인스턴스 환�
 |환경|인스턴스 종류|인스턴스 갯수|비고|
 |---|---|---|---|
 |Cloud 환경|-|-|기존 배포한 클러스터의 노드 사용|
-|Edge 환경|Edge|1개 이상|`ARM64` 아키텍쳐 OS로 인스턴스 생성|
+|Edge 환경|Edge|1개 이상|`AMD64` 또는 `ARM64` 아키텍쳐 OS로 인스턴스 생성|
 
 <br><br>
 
@@ -86,8 +86,8 @@ K-PaaS 컨테이너 플랫폼 Edge 배포에 필요한 OS 환경 정보는 다�
 |환경|노드|지원 OS|버전|아키텍쳐|
 |---|---|---|---|---|
 |Cloud 환경|Control Plane<br>Worker|Ubuntu|22.04|amd64|
-|Edge 환경|Edge|Ubuntu|20.04|arm64|
-|Edge 환경|Edge|Ubuntu|22.04|arm64|
+|Edge 환경|Edge|Ubuntu|20.04|amd64 또는 arm64|
+|Edge 환경|Edge|Ubuntu|22.04|amd64 또는 arm64|
 
 <br><br>
 
@@ -96,12 +96,12 @@ K-PaaS 컨테이너 플랫폼 Edge 배포에 필요한 주요 소프트웨어 �
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubernetes Native|v1.30.4|
-|Kubernetes Native (Edge Node)|v1.24.17|
-|CRI-O|1.30.3|
-|CRI-O (Edge Node)|v1.24.0|
-|KubeEdge|v1.14.4|
-|EdgeMesh|v1.12.0|
+|Kubernetes Native|v1.31.4|
+|Kubernetes Native (Edge Node)|v1.30.7|
+|CRI-O|1.31.0|
+|CRI-O (Edge Node)|v1.30.0|
+|KubeEdge|v1.20.0|
+|EdgeMesh|v1.16.0|
 
 <br><br>
 
@@ -254,10 +254,8 @@ $ vi cp-edge-vars.sh
 
 |환경변수|설명|비고|
 |---|---|---|
-|CLOUDCORE_PRIVATE_VIP|MetalLB를 통해 CloudCore Service에서 사용할 인터페이스 Private IP|로드밸런서 서비스 이용 시 **`CLOUDCORE_VIP`** 값과 중복 입력|
-|CLOUDCORE_VIP|CloudCore Service에서 사용할 인터페이스 또는 로드밸런서 서비스에 할당한 Public IP||
-|CLOUDCORE1_NODE_HOSTNAME|CloudCore가 설치될 노드의 호스트명|Control Plane 또는 Worker 노드 중 1개 노드 정보 입력|
-|CLOUDCORE2_NODE_HOSTNAME|CloudCore가 설치될 노드의 호스트명|Control Plane 또는 Worker 노드 중 1개 노드 정보 입력|
+|CLOUDCORE_PRIVATE_IP|MetalLB를 통해 CloudCore Service에서 사용할 인터페이스 Private IP|로드밸런서 서비스 이용 시 **`CLOUDCORE_PUBLIC_IP`** 값과 중복 입력|
+|CLOUDCORE_PUBLIC_IP|CloudCore Service에서 사용할 인터페이스 또는 로드밸런서 서비스에 할당한 Public IP||
 |EDGE_NODE_CNT|Edge 노드의 갯수||
 |EDGE1_NODE_HOSTNAME|Edge 1번 노드의 호스트명||
 |EDGE1_NODE_PUBLIC_IP|Edge 1번 노드의 Public IP||
@@ -269,19 +267,13 @@ $ vi cp-edge-vars.sh
 ```
 #!/bin/bash
 
-export CLOUDCORE_PRIVATE_VIP=
-export CLOUDCORE_VIP=
+export CLOUDCORE_PRIVATE_IP=
+export CLOUDCORE_PUBLIC_IP=
 
-export CLOUDCORE1_NODE_HOSTNAME=
-export CLOUDCORE2_NODE_HOSTNAME=
-
-export EDGE_NODE_CNT=
+export EDGE_HOSTS=
 
 export EDGE1_NODE_HOSTNAME=
 export EDGE1_NODE_PUBLIC_IP=
-...
-export EDGE{n}_NODE_HOSTNAME=
-export EDGE{n}_NODE_PUBLIC_IP=
 ```
 
 <br><br>
@@ -303,11 +295,11 @@ $ source deploy-cp-edge.sh
 ```
 $ kubectl get nodes
 NAME                 STATUS   ROLES                  AGE     VERSION
-cp-edge              Ready    agent,edge             5m40s   v1.24.17-kubeedge-v1.14.4
-cp-master            Ready    control-plane,master   39m     v1.30.4
-cp-worker-1          Ready    <none>                 38m     v1.30.4
-cp-worker-2          Ready    <none>                 38m     v1.30.4
-cp-worker-3          Ready    <none>                 38m     v1.30.4
+cp-edge              Ready    agent,edge             5m40s   v1.30.7-kubeedge-v1.20.0
+cp-master            Ready    control-plane,master   39m     v1.31.4
+cp-worker-1          Ready    <none>                 38m     v1.31.4
+cp-worker-2          Ready    <none>                 38m     v1.31.4
+cp-worker-3          Ready    <none>                 38m     v1.31.4
 
 $ kubectl get pods -n kube-system
 NAME                                       READY   STATUS    RESTARTS   AGE
@@ -327,20 +319,26 @@ kube-proxy-nnh6d                           1/1     Running   0          38m
 kube-proxy-p9srm                           1/1     Running   0          6m4s
 kube-scheduler-cp-master                   1/1     Running   1          39m
 metrics-server-5cd75b7749-57sc2            2/2     Running   0          37m
+nginx-proxy-cp-worker-1                    1/1     Running   0             8m8s
+nginx-proxy-cp-worker-2                    1/1     Running   0             8m8s
+nginx-proxy-cp-worker-3                    1/1     Running   0             8m8s
 nodelocaldns-24vq4                         1/1     Running   0          6m4s
 nodelocaldns-jjrjj                         1/1     Running   0          37m
 nodelocaldns-kgzxb                         1/1     Running   0          37m
 nodelocaldns-l9s47                         1/1     Running   0          37m
 
 $ kubectl get pods -n kubeedge
-NAME                         READY   STATUS    RESTARTS   AGE
-cloudcore-758b4f4b97-4s57p   1/1     Running   0          3m49s
-cloudcore-758b4f4b97-ndxbl   1/1     Running   0          3m49s
-edgemesh-agent-9cmt2         1/1     Running   0          25s
-edgemesh-agent-b8btq         1/1     Running   0          87s
-edgemesh-agent-ntf24         1/1     Running   0          87s
-edgemesh-agent-vhggk         1/1     Running   0          87s
-edgemesh-agent-vzpdj         1/1     Running   0          87s
+NAME                           READY   STATUS    RESTARTS   AGE
+cloud-iptables-manager-j4jm9   1/1     Running   0          3m49s
+cloud-iptables-manager-l4nhp   1/1     Running   0          3m49s
+cloud-iptables-manager-sm7j6   1/1     Running   0          3m49s
+cloud-iptables-manager-tw3k9   1/1     Running   0          3m49s
+cloudcore-758b4f4b97-4s57p     1/1     Running   0          3m49s
+edgemesh-agent-9cmt2           1/1     Running   0          25s
+edgemesh-agent-b8btq           1/1     Running   0          87s
+edgemesh-agent-ntf24           1/1     Running   0          87s
+edgemesh-agent-vhggk           1/1     Running   0          87s
+edgemesh-agent-vzpdj           1/1     Running   0          87s
 ```
 
 <br><br>

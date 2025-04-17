@@ -279,13 +279,15 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 
 |Python 패키지|버전|
 |---|---|
-|ansible|9.8.0|
+|ansible|9.13.0|
+|cryptography|44.0.0|
 |jmespath|1.0.1|
-|jsonschema|4.23.0|
 |netaddr|1.3.0|
-|configparser|>=3.3.0|
-|ipaddress||
-|ruamel.yaml|>=0.15.88|
+|ansible-core|~=2.16.14|
+|cffi|>=1.12|
+|jinja2|>=3.0.0|
+|PyYAML|>=5.1|
+|resolvelib|<1.1.0,>=0.5.3|
 
 <br><br>
 
@@ -296,18 +298,20 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubespray|2.26.0|
-|Kubernetes Native|1.30.4|
-|CRI-O|1.30.3|
-|Calico|3.28.1|
-|MetalLB|0.13.9|
-|Ingress Nginx Controller|1.11.3|
-|Helm|3.15.4|
-|Istio|1.23.2|
+|Kubespray|2.27.0|
+|Kubernetes Native|1.31.4|
+|CRI-O|1.31.0|
+|Calico|3.29.1|
+|MetalLB|0.14.9|
+|Ingress Nginx Controller|1.20.0|
+|Helm|3.16.4|
+|Istio|1.24.3|
 |Podman|3.4.4|
-|OpenTofu|1.8.3|
-|nfs-subdir-external-provisioner|4.0.2|
-|Rook Ceph|1.15.4|
+|OpenTofu|1.9.0|
+|nfs-subdir-external-provisioner|4.0.18|
+|Rook Ceph|1.16.4|
+|Kubeflow|1.7.0|
+|Kyverno|1.13.4|
 
 <br><br>
 
@@ -1375,10 +1379,10 @@ $ source deploy-cp-cluster.sh
 ```
 $ kubectl get nodes --context=cluster1
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster1-master     Ready    control-plane          12m   v1.30.4
-cp-cluster1-worker-1   Ready    <none>                 10m   v1.30.4
-cp-cluster1-worker-2   Ready    <none>                 10m   v1.30.4
-cp-cluster1-worker-3   Ready    <none>                 10m   v1.30.4
+cp-cluster1-master     Ready    control-plane          12m   v1.31.4
+cp-cluster1-worker-1   Ready    <none>                 10m   v1.31.4
+cp-cluster1-worker-2   Ready    <none>                 10m   v1.31.4
+cp-cluster1-worker-3   Ready    <none>                 10m   v1.31.4
 
 $ kubectl get pods -n kube-system --context=cluster1
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -1398,6 +1402,9 @@ kube-proxy-nfttc                              1/1     Running   0             10
 kube-proxy-znfgk                              1/1     Running   0             10m
 kube-scheduler-cp-cluster1-master             1/1     Running   1 (11m ago)   12m
 metrics-server-5cd75b7749-xcrps               2/2     Running   0             7m57s
+nginx-proxy-cp-cluster1-worker-1              1/1     Running   0             8m8s
+nginx-proxy-cp-cluster1-worker-2              1/1     Running   0             8m8s
+nginx-proxy-cp-cluster1-worker-3              1/1     Running   0             8m8s
 nodelocaldns-556gb                            1/1     Running   0             8m8s
 nodelocaldns-8dpnt                            1/1     Running   0             8m8s
 nodelocaldns-pvl6z                            1/1     Running   0             8m8s
@@ -1409,10 +1416,10 @@ nodelocaldns-x7grn                            1/1     Running   0             8m
 ```
 $ kubectl get nodes --context=cluster2
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster2-master     Ready    control-plane          12m   v1.30.4
-cp-cluster2-worker-1   Ready    <none>                 10m   v1.30.4
-cp-cluster2-worker-2   Ready    <none>                 10m   v1.30.4
-cp-cluster2-worker-3   Ready    <none>                 10m   v1.30.4
+cp-cluster2-master     Ready    control-plane          12m   v1.31.4
+cp-cluster2-worker-1   Ready    <none>                 10m   v1.31.4
+cp-cluster2-worker-2   Ready    <none>                 10m   v1.31.4
+cp-cluster2-worker-3   Ready    <none>                 10m   v1.31.4
 
 $ kubectl get pods -n kube-system --context=cluster2
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -1432,6 +1439,9 @@ kube-proxy-nfttc                              1/1     Running   0             10
 kube-proxy-znfgk                              1/1     Running   0             10m
 kube-scheduler-cp-cluster2-master             1/1     Running   1 (11m ago)   12m
 metrics-server-5cd75b7749-xcrps               2/2     Running   0             7m57s
+nginx-proxy-cp-cluster2-worker-1              1/1     Running   0             8m8s
+nginx-proxy-cp-cluster2-worker-2              1/1     Running   0             8m8s
+nginx-proxy-cp-cluster2-worker-3              1/1     Running   0             8m8s
 nodelocaldns-556gb                            1/1     Running   0             8m8s
 nodelocaldns-8dpnt                            1/1     Running   0             8m8s
 nodelocaldns-pvl6z                            1/1     Running   0             8m8s
@@ -1443,10 +1453,10 @@ nodelocaldns-x7grn                            1/1     Running   0             8m
 ```
 $ kubectl get nodes --context=cluster3
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster3-master     Ready    control-plane          12m   v1.30.4
-cp-cluster3-worker-1   Ready    <none>                 10m   v1.30.4
-cp-cluster3-worker-2   Ready    <none>                 10m   v1.30.4
-cp-cluster3-worker-3   Ready    <none>                 10m   v1.30.4
+cp-cluster3-master     Ready    control-plane          12m   v1.31.4
+cp-cluster3-worker-1   Ready    <none>                 10m   v1.31.4
+cp-cluster3-worker-2   Ready    <none>                 10m   v1.31.4
+cp-cluster3-worker-3   Ready    <none>                 10m   v1.31.4
 
 $ kubectl get pods -n kube-system --context=cluster3
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -1466,6 +1476,9 @@ kube-proxy-nfttc                              1/1     Running   0             10
 kube-proxy-znfgk                              1/1     Running   0             10m
 kube-scheduler-cp-cluster2-master             1/1     Running   1 (11m ago)   12m
 metrics-server-5cd75b7749-xcrps               2/2     Running   0             7m57s
+nginx-proxy-cp-cluster3-worker-1              1/1     Running   0             8m8s
+nginx-proxy-cp-cluster3-worker-2              1/1     Running   0             8m8s
+nginx-proxy-cp-cluster3-worker-3              1/1     Running   0             8m8s
 nodelocaldns-556gb                            1/1     Running   0             8m8s
 nodelocaldns-8dpnt                            1/1     Running   0             8m8s
 nodelocaldns-pvl6z                            1/1     Running   0             8m8s
