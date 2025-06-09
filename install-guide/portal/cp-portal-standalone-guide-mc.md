@@ -45,7 +45,7 @@
 <p align="center"><img src="../images/portal/cp-001.png" width="850" height="530"></p>
 
 시스템 구성은 **Kubernetes Cluster(Master, Worker)** 환경과 데이터 관리를 위한 스토리지 서버로 구성되어 있다.
-Kubespray를 통해 설치된 Kubernetes Cluster 환경에 비밀 정보 및 인증 데이터를 관리하는 **Vault**, 메타 데이터를 관리하는 **MariaDB(RDBMS)**, 컨테이너 이미지를 관리하는 **Harbor**,  컨테이너 플랫폼 포털 사용자 인증을 관리하는 **Keycloak**,
+Kubespray를 통해 설치된 Kubernetes Cluster 환경에 비밀 정보 및 인증 데이터를 관리하는 **OpenBao**, 메타 데이터를 관리하는 **MariaDB(RDBMS)**, 컨테이너 이미지를 관리하는 **Harbor**,  컨테이너 플랫폼 포털 사용자 인증을 관리하는 **Keycloak**,
 Helm 차트를 관리하는 **ChartMuseum**, Kubernetes 내 여러 유형의 오류를 시뮬레이션할 수 있는 **Chaos Mesh** 등 미들웨어 환경을 컨테이너로 제공한다.
 총 필요한 VM 환경으로는 **Master VM: 1개, Worker VM: 3개 이상**이 필요하고 본 문서는 Kubernetes Cluster에 컨테이너 플랫폼 포털 환경을 배포하는 내용이다.
 
@@ -104,13 +104,12 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 컨테이너 플랫폼 포털에 포함되어 배포되는 서비스 정보는 다음과 같다.
 |서비스|Application 버전|Chart 버전|
 |:--- | :---:|  :---: |  
-|[Vault](https://github.com/hashicorp/vault)|1.14.0|0.25.0|
-|[Vault Secrets Operator](https://github.com/hashicorp/vault-secrets-operator)|0.9.0|0.9.0|
-|[MariaDB](https://github.com/mariadb)|11.4.3|19.0.7|
-|[Harbor](https://github.com/goharbor/harbor)|2.11.1|1.15.1|
+|[OpenBao](https://github.com/openbao/openbao)|2.2.0|0.12.0|
+|[MariaDB](https://github.com/mariadb)|11.4.7|20.5.6|
+|[Harbor](https://github.com/goharbor/harbor)|2.13.1|1.17.1|
 |[Keycloak](https://github.com/keycloak/keycloak)|25.0.6|23.0.0|
-|[ChartMuseum](https://github.com/helm/chartmuseum)|0.16.2|3.10.3|
-|[Chaos Mesh](https://github.com/chaos-mesh/chaos-mesh)|2.7.0|2.7.0|
+|[ChartMuseum](https://github.com/helm/chartmuseum)|0.16.3|3.10.4|
+|[Chaos Mesh](https://github.com/chaos-mesh/chaos-mesh)|2.7.2|2.7.2|
 
 <br>
 
@@ -120,7 +119,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 ### <span id='3.1'>3.1. 컨테이너 플랫폼 포털 Deployment 파일 다운로드
 컨테이너 플랫폼 포털 배포를 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-  [cp-portal-deployment-v1.6.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/FQFddRC4wiq5cdj/download)
+  [cp-portal-deployment-v1.6.1.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/jyjGsowwx3AHNPk/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -128,13 +127,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/FQFddRC4wiq5cdj/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/jyjGsowwx3AHNPk/download
 
 $ ls ~/workspace/container-platform
-  cp-portal-deployment-v1.6.1.tar.gz
+  cp-portal-deployment-v1.6.1.1.tar.gz
 
 # Deployment 파일 압축 해제
-$ tar -xvf cp-portal-deployment-v1.6.1.tar.gz
+$ tar -xvf cp-portal-deployment-v1.6.1.1.tar.gz
 ```
 
 
@@ -147,7 +146,7 @@ cp-portal-deployment
 ├── images          # 이미지 파일 위치
 ├── charts          # Helm 차트 파일 위치
 ├── values_orig     # Helm 차트 values 파일 위치
-├── vault_orig      # Vault 배포 파일 위치
+├── secmg_orig      # 시크릿 관리 시스템 배포 파일 위치
 └── istio_mc        # Istio 서비스 메시 관련 파일 위치
 ```
 
@@ -246,6 +245,50 @@ TLS_CERT_PATH="/home/ubuntu/tls/mydomain.crt"  # host_domain crt 파일의 절�
 TLS_KEY_PATH="/home/ubuntu/tls/mydomain.key"   # host_domain key 파일의 절대경로 입력
 ```
 
+<details>
+<summary><h4> ⚠️ [참고사항] CRI-O가 아닌 컨테이너 런타임 환경에서 포털 설치 시 </h4></summary>
+<h1></h1>
+
+K-PaaS 클러스터 설치 시 기본 컨테이너 런타임은 **CRI-O (crio)** 이다. K-PaaS 클러스터 설치 사용자는 본 절의 내용을 생략한다.  
+단, 다른 컨테이너 런타임 (containerd 등)을 사용하는 클러스터에 포털 설치 시 아래 설정 변경이 필요하다.
+
+<br>
+
+포털 설치 시 함께 배포되는 **Chaos Mesh**는 Container Runtime 설정이 필요하다. 클러스터 환경별 Runtime 및 socketPath 를 확인한 뒤 아래 값을 수정하여 설치를 진행한다.
+
+<br>
+
+:small_blue_diamond: 멀티 클러스터 환경의 경우, <b>Cluster1</b>로 지정할 클러스터의 컨테이너 런타임을 확인하여 변경한다.
+
+<br>
+
+**참고 설정값**
+
+> 본 가이드는 참고용이며, 정확한 값 및 최신 정보는 [[Install Chaos Mesh in different environments]](https://chaos-mesh.org/docs/production-installation-using-helm/#step-4-install-chaos-mesh-in-different-environments) 문서를 참고한다.
+
+| Runtime      | runtime 값   | socketPath 예시                    |
+|--------------|--------------|-----------------------------------|
+| CRI-O        | `crio`       | `/var/run/crio/crio.sock`         |
+| containerd   | `containerd` | `/run/containerd/containerd.sock` |
+
+#### Runtime, socketPath 수정
+
+```bash
+$ cd ~/workspace/container-platform/cp-portal-deployment/values_orig
+$ vi chaos-mesh.yaml
+```
+
+```yaml
+···
+chaosDaemon:
+  runtime: crio # 변경
+  socketPath: /var/run/crio/crio.sock # 변경
+···
+```
+
+<h1></h1>
+</details>
+
 <br>
 
 ### <span id='3.3'>3.3.  컨테이너 플랫폼 포털 배포 스크립트 실행
@@ -266,13 +309,12 @@ source ~/workspace/container-platform/cp-portal-deployment/script_mc/cp-portal-v
 
 <br>
 
-- **Vault Pod 조회**
->`$ kubectl get pods -n vault --context=${CLUSTER1_CONFIG[CTX]}`
+- **OpenBao Pod 조회**
+>`$ kubectl get pods -n openbao --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
-NAME                                                         READY   STATUS    RESTARTS   AGE
-vault-0                                                      2/2     Running   0          4m34s
-vault-agent-injector-9c6f7bddc-q2bbv                         2/2     Running   0          4m34s
-vault-secrets-operator-controller-manager-67c494cf67-7lr5c   3/3     Running   0          4m33s
+NAME                                      READY   STATUS    RESTARTS   AGE
+openbao-0                                 2/2     Running   0          4m34s
+openbao-agent-injector-5687899c56-kg4jc   2/2     Running   0          4m34s
 ```
 
 - **MariaDB Pod 조회**
@@ -342,12 +384,12 @@ chaos-dns-server-5d58bb59dd-jvrgm           1/1     Running   0          3m56s
 - **서비스 접속 Host 조회**
 >`$ kubectl get virtualservices -n istio-system --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
-NAME          GATEWAYS         HOSTS                                     AGE
-chartmuseum   ["cp-gateway"]   ["chartmuseum.105.xxx.xxx.xxx.nip.io"]    6m21s
-cp-portal     ["cp-gateway"]   ["portal.105.xxx.xxx.xxx.nip.io"]         6m21s
-harbor        ["cp-gateway"]   ["harbor.105.xxx.xxx.xxx.nip.io"]         6m21s
-keycloak      ["cp-gateway"]   ["keycloak.105.xxx.xxx.xxx.nip.io"]       6m21s
-vault         ["cp-gateway"]   ["vault.105.xxx.xxx.xxx.nip.io"]          6m21s
+NAME          GATEWAYS         HOSTS                                    AGE
+chartmuseum   ["cp-gateway"]   ["chartmuseum.133.186.214.117.nip.io"]   6m21s
+cp-portal     ["cp-gateway"]   ["portal.133.186.214.117.nip.io"]        6m21s
+harbor        ["cp-gateway"]   ["harbor.133.186.214.117.nip.io"]        6m21s
+keycloak      ["cp-gateway"]   ["keycloak.133.186.214.117.nip.io"]      6m21s
+openbao       ["cp-gateway"]   ["openbao.133.186.214.117.nip.io"]       6m21s
 ```
 
 <br>

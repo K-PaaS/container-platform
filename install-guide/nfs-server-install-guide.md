@@ -1,21 +1,23 @@
-### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](/install-guide/README.md) > NFS Server 설치 가이드
+### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Install](https://github.com/K-PaaS/container-platform/blob/master/install-guide/Readme.md) > NFS Server 설치 가이드
 
 <br>
 
-# NFS 서버 설치
+# NFS Server 설치 가이드
 
 <br>
 
 ## Table of Contents
 
 1. [문서 개요](#1)<br>
-  1.1. [목적](#1.1)<br>
-  1.2. [범위](#1.2)
+   1.1. [목적](#1.1)<br>
+   1.2. [범위](#1.2)
 
 2. [NFS Server 설치](#2)<br>
-  2.1. [Prerequisite](#2.1)<br>
-  2.2. [설치](#2.2)<br>
-  2.3. [동작확인](#2.3)
+   2.1. [Prerequisite](#2.1)<br>
+   2.2. [설치](#2.2)<br>
+   2.3. [동작확인](#2.3)
+
+3. [NFS Subdir External Provisioner 설치](#3)
 
 <br>
 
@@ -48,14 +50,14 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보�
 <br>
 
 ### <div id='2.2'> 2.2. 설치
-APT 업데이트를 진행한다.
+APT 패키지 목록을 업데이트한다.
 ```
 $ sudo apt-get update
 ```
 
 <br>
 
-NFS Server를 위한 APT 패키지 설치를 진행한다.
+NFS Server 관련 APT 패키지를 설치한다.
 ```
 $ sudo apt-get install -y nfs-common nfs-kernel-server portmap
 ```
@@ -100,7 +102,7 @@ $ sudo systemctl restart portmap
 <br>
 
 ### <div id='2.3'> 2.3. 동작 확인
-NFS Server 설정을 확인한다.
+NFS Export 설정을 확인한다.
 ```
 $ sudo exportfs -v
 ```
@@ -108,6 +110,89 @@ $ sudo exportfs -v
 ```
 /home/share/nfs
                 <world>(rw,async,wdelay,no_root_squash,no_subtree_check,sec=sys,rw,secure,no_root_squash,no_all_squash)
+```
+
+
+<br>
+
+
+## <div id='3'> 3. NFS Subdir External Provisioner 설치
+> **참고:** K-PaaS 클러스터 설치 시 스토리지 구성이 NFS 일 경우 NFS Subdir External Provisioner가 자동으로 설치된다. K-PaaS 클러스터 설치 사용자는 본 절의 수동 설치 과정을 생략한다. 아래 내용은 NFS Provisioner를 수동 설치하는 경우에 참고한다.
+
+<br>
+
+Kubernetes 클러스터에서 NFS 기반 동적 PersistentVolume 프로비저닝을 지원하기 위해 [`nfs-subdir-external-provisioner`](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)를 설치한다.  
+해당 Provisioner는 PVC 생성 요청 시 NFS 서버의 지정된 디렉터리 하위에 전용 하위 디렉터리를 자동으로 생성한다.
+
+### 사전 준비
+- **NFS Server 설치 및 구성 완료**  
+  Provisioner가 사용할 NFS Server는 사전에 [설치 및 구성](#2)되어 있어야 한다. <br>
+  `/home/share/nfs` 경로를 NFS Export로 공유하도록 설정한다.
+
+<br>
+
+### values.yaml 작성
+> **참고 :** 아래 values.yaml은 K-PaaS 클러스터 설치 시 사용되는 기본 값이다. 필요 시 환경에 맞게 추가 설정을 적용한다.<br>
+
+⚠️ `nfs.server` 값은 반드시 실제 설치된 NFS Server IP로 변경한다.
+```yaml
+nfs:
+  server: {NFS Server IP}                     # NFS Server IP 입력
+  path: /home/share/nfs                       # NFS Export Path (Provisioner가 사용할 디렉터리)
+
+storageClass:
+  provisionerName: cp-nfs-provisioner         # StorageClass에 사용할 Provisioner 이름 설정
+  defaultClass: true                          # 기본 StorageClass로 지정할지 여부
+  name: cp-storageclass                       # 생성할 StorageClass 이름 설정
+  reclaimPolicy: Retain                       # PV Reclaim 정책 (Retain: PV 유지, Delete: 자동 삭제)
+  allowVolumeExpansion: false                 # PVC 확장 기능 여부
+  archiveOnDelete: false                      # PVC 삭제 시 NFS 디렉터리 아카이브 여부
+```
+
+<br>
+
+### Helm Chart 설치
+
+#### 1. Helm Repo 추가
+
+```bash
+$ helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+$ helm repo update nfs-subdir-external-provisioner
+```
+
+#### 2. Provisioner 설치
+
+```bash
+$ helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+  -f values.yaml --version 4.0.18
+```
+
+<br>
+
+### 설치 확인
+
+설치 후 다음 명령어로 정상 설치 여부를 확인한다.
+
+```bash
+$ helm list -n default
+NAME                            NAMESPACE       REVISION       STATUS         CHART                                    APP VERSION
+nfs-subdir-external-provisioner default         1              deployed       nfs-subdir-external-provisioner-4.0.18   4.0.2
+```
+```bash
+$ kubectl get all -l app=nfs-subdir-external-provisioner
+NAME                                                   READY   STATUS    RESTARTS   AGE
+pod/nfs-subdir-external-provisioner-5cdc76bcd9-jtjh4   1/1     Running   0          3m20s
+
+NAME                                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nfs-subdir-external-provisioner   1/1     1            1           3m20s
+
+NAME                                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/nfs-subdir-external-provisioner-5cdc76bcd9   1         1         1       3m20s
+```
+```bash
+$ kubectl get storageclass
+NAME                        PROVISIONER          RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+cp-storageclass (default)   cp-nfs-provisioner   Retain          Immediate           false                  3m46s
 ```
 
 <br>

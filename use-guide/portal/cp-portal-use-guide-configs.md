@@ -23,13 +23,6 @@
     1.2.3.6. [kubernetes.io/service-account-token 타입](#1-2-3-6)  
     1.2.4. [Secret 수정](#1-2-4)  
     1.2.5. [Secret 삭제](#1-2-5)  
-    1.2.6. [Vault Secret 목록 조회](#1-2-6)  
-    1.2.7. [Vault Secret 상세 조회](#1-2-7)  
-    1.2.8. [Vault Secret 생성](#1-2-8)  
-    1.2.9. [Vault Secret 적용](#1-2-9)  
-    1.2.10. [Vault Secret 해제](#1-2-10)  
-    1.2.11. [Vault Secret 수정](#1-2-11)  
-    1.2.12. [Vault Secret 삭제](#1-2-12)  
  
 <br>
 
@@ -368,85 +361,6 @@
 
 <br>
 
-#### <div id='1-2-6'/> 1.2.6. Vault Secret 목록 조회
-- Configs의 Secrets를 클릭하여 Vault 탭을 선택하여 Vault Secret 목록 페이지로 이동한다.
-  ![IMG_6_2_11]
-
-<br>
-
-#### <div id='1-2-7'/> 1.2.7. Vault Secret 상세 조회
-- Vault Secret 목록에서 Vault Secret명을 클릭하여 Vault Secret 상세 페이지로 이동한다.
-  ![IMG_6_2_12]
-
-<br>
-
-#### <div id='1-2-8'/> 1.2.8. Vault Secret 생성
-- Vault Secret 목록에서 생성 버튼을 클릭할 시 Secret 생성 페이지로 이동한다.
-- Vault Secret은 데이터베이스의 계정 정보를 Database secrets engine에 저장을 한다. ault Secret을 생성하기 위해서는 사전에 Postgresql DB가 설치되어 있어야한다.  
-  ![IMG_6_2_13]
-
-  <table>
-    <thead>
-      <tr>
-        <th>항목</th>
-        <th>설명</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Storage Backend</td>
-        <td>암호화된 Secret 데이터가 저장될 스토리지를 선택한다.</td>
-      </tr>
-      <tr>
-        <td>Name</td>
-        <td>Secret의 Name을 입력한다.</td>
-      </tr>
-      <tr>
-        <td>DB Types</td>
-        <td>Vault Secret 데이터가 사용될 DB Type을 선택한다.</td>
-      </tr>      
-      <tr>
-        <td>DB Service</td>
-        <td>Vault Secret 데이터가 사용될 DB Service를 선택한다. </td>
-      </tr>
-      <tr>
-        <td>Default TTL</td>
-        <td>Default TTL은 Vault Secret을 사용할 유효한 시간을 입력한다.</td>
-      </tr>     
-      <tr>
-        <td>Max TTL</td>
-        <td>Max TTL은 Default TTL시간 동안 최대한으로 유효 가능한 시간을 입력한다.</td>
-      </tr>    
-    </tbody>
-  </table>
-
-<br>
-
-#### <div id='1-2-9'/> 1.2.9. Vault Secret 적용
-- Vault Secret 상세에서 적용 버튼을 클릭할 시 Application Mapping 팝업 창에 Namespace와 Application 목록이 나온다. Vault Secret Data를 적용할 Namespace와 Application을 선택하여 저장 버튼을 클릭한다.  
-  ![IMG_6_2_14]
-
-<br>
-
-#### <div id='1-2-10'/> 1.2.10. Vault Secret 해제
-- Vault Secret 상세에서 해제 버튼을 클릭할 시 Application에 적용한 Vault Secret이 해제가 된다.  
-  ![IMG_6_2_15]
-
-<br>
-
-#### <div id='1-2-11'/> 1.2.11. Vault Secret 수정
-- Vault Secret 상세에서 Data 목록의 Edit 아이콘을 눌러 Default TTL, Max TTL 값을 수정하고 수정 버튼을 클릭하여 수정한다.  
-  ![IMG_6_2_16]
-
-<br>
-
-#### <div id='1-2-12'/> 1.2.12. Vault Secret 삭제
-- Vault Secret 상세에서 삭제 버튼을 클릭할 시 Vault Secret 삭제가 완료된다.
-  ![IMG_6_2_17]
-
-<br>
-
-
 ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](../Readme.md) >  [포털 사용 가이드](./cp-portal-use-guide.md) > Configs 메뉴
 
 [IMG_6_1_1]:../images/portal/IMG_6_1_1.png
@@ -464,10 +378,3 @@
 [IMG_6_2_8]:../images/portal/IMG_6_2_8.png
 [IMG_6_2_9]:../images/portal/IMG_6_2_9.png
 [IMG_6_2_10]:../images/portal/IMG_6_2_10.png
-[IMG_6_2_11]:../images/portal/IMG_6_2_11.png
-[IMG_6_2_12]:../images/portal/IMG_6_2_12.png
-[IMG_6_2_13]:../images/portal/IMG_6_2_13.png
-[IMG_6_2_14]:../images/portal/IMG_6_2_14.png
-[IMG_6_2_15]:../images/portal/IMG_6_2_15.png
-[IMG_6_2_16]:../images/portal/IMG_6_2_16.png
-[IMG_6_2_17]:../images/portal/IMG_6_2_17.png
