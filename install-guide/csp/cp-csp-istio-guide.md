@@ -129,7 +129,7 @@ Istio를 활용하여 **`3개의 클러스터`** 를 기반으로 멀티 클러�
 Istio 멀티 클러스터 구성을 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-  [cp-portal-deployment-v1.6.1.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/jyjGsowwx3AHNPk/download)
+  [cp-portal-deployment-v1.6.1.1.tar.gz](https://nextcloud.k-paas.org/index.php/s/Stz3f8F2oHWfYRb/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -137,7 +137,7 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/jyjGsowwx3AHNPk/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/Stz3f8F2oHWfYRb/download
 
 $ ls ~/workspace/container-platform
   cp-portal-deployment-v1.6.1.1.tar.gz
