@@ -271,11 +271,11 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 |Python 패키지|버전|
 |---|---|
 |ansible|9.13.0|
-|cryptography|44.0.0|
+|cryptography|45.0.0|
 |jmespath|1.0.1|
 |netaddr|1.3.0|
 |ansible-core|~=2.16.14|
-|cffi|>=1.12|
+|cffi|>=1.14|
 |jinja2|>=3.0.0|
 |PyYAML|>=5.1|
 |resolvelib|<1.1.0,>=0.5.3|
@@ -289,20 +289,20 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubespray|2.27.0|
-|Kubernetes Native|1.31.4|
-|CRI-O|1.31.0|
-|Calico|3.29.1|
+|Kubespray|2.28.0|
+|Kubernetes Native|1.32.5|
+|CRI-O|1.32.0|
+|Calico|3.29.3|
 |MetalLB|0.14.9|
-|Ingress Nginx Controller|1.20.0|
-|Helm|3.16.4|
+|Ingress Nginx Controller|1.12.1|
+|Helm|3.17.0|
 |Istio|1.24.3|
 |Podman|3.4.4|
 |OpenTofu|1.9.0|
 |nfs-subdir-external-provisioner|4.0.18|
 |Rook Ceph|1.16.4|
 |Kubeflow|1.7.0|
-|Kyverno|1.13.4|
+|Kyverno|1.13.6|
 
 <br><br>
 
@@ -1312,10 +1312,10 @@ $ source deploy-cp-cluster.sh
 ```
 $ kubectl get nodes
 NAME                 STATUS   ROLES                  AGE   VERSION
-cp-master            Ready    control-plane          12m   v1.31.4
-cp-worker-1          Ready    <none>                 10m   v1.31.4
-cp-worker-2          Ready    <none>                 10m   v1.31.4
-cp-worker-3          Ready    <none>                 10m   v1.31.4
+cp-master            Ready    control-plane          12m   v1.32.5
+cp-worker-1          Ready    <none>                 10m   v1.32.5
+cp-worker-2          Ready    <none>                 10m   v1.32.5
+cp-worker-3          Ready    <none>                 10m   v1.32.5
 
 $ kubectl get pods -n kube-system
 NAME                                          READY   STATUS    RESTARTS      AGE
