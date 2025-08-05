@@ -306,7 +306,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 |Ingress Nginx Controller|1.12.1|
 |Helm|3.17.0|
 |Istio|1.24.3|
-|Podman|3.4.4|
+|Podman|3.4.7|
 |OpenTofu|1.9.0|
 |nfs-subdir-external-provisioner|4.0.18|
 |Rook Ceph|1.16.4|
