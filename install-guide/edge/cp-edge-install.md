@@ -86,6 +86,7 @@ K-PaaS 컨테이너 플랫폼 Edge 배포에 필요한 OS 환경 정보는 다�
 |환경|노드|지원 OS|버전|아키텍쳐|
 |---|---|---|---|---|
 |Cloud 환경|Control Plane<br>Worker|Ubuntu|22.04|amd64|
+|Cloud 환경|Control Plane<br>Worker|Ubuntu|24.04|amd64|
 |Edge 환경|Edge|Ubuntu|20.04|amd64 또는 arm64|
 |Edge 환경|Edge|Ubuntu|22.04|amd64 또는 arm64|
 
@@ -96,9 +97,9 @@ K-PaaS 컨테이너 플랫폼 Edge 배포에 필요한 주요 소프트웨어 �
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubernetes Native|v1.31.4|
+|Kubernetes Native|v1.32.5|
 |Kubernetes Native (Edge Node)|v1.30.7|
-|CRI-O|1.31.0|
+|CRI-O|1.32.0|
 |CRI-O (Edge Node)|v1.30.0|
 |KubeEdge|v1.20.0|
 |EdgeMesh|v1.16.0|
@@ -188,6 +189,16 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 |---|---|---|
 |인터페이스 추가|1개 Control Plane 노드에 Public IP가 할당된 신규 인터페이스 추가|Public IP 사용에 대한 비용만 발생<br>HA 구성에서 해당 노드 장애 시 CloudCore 서비스 외부 접근 불가|
 |로드밸런서 생성|Public IP가 할당된 로드밸런서 서비스 생성|로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 CloudCore 서비스 정상<br>운영 환경에서 권장|
+
+<br>
+
+> K-PaaS 컨테이너 플랫폼 클러스터 v1.6.2 릴리즈에서는 로드밸런서 컨트롤러 설치 시 ***`자동으로 로드밸런서 서비스를 생성 및 할당`*** 하며 MetalLB는 설치되지 않는다. (NHN 클라우드 환경만 해당)
+
+<br>
+
+|방식|설명|비고|
+|---|---|---|
+|로드밸런서 컨트롤러|Public IP가 할당된 로드밸런서 서비스 자동 생성|***`NHN 클라우드만 지원`***<br>***`MetalLB 미설치`***<br>로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
 
 <br>
 

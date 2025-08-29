@@ -148,6 +148,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 OS 환경 정보�
 |지원 OS|버전|
 |---|---|
 |Ubuntu|22.04|
+|Ubuntu|24.04|
 
 <br>
 
@@ -271,7 +272,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 |Python 패키지|버전|
 |---|---|
 |ansible|9.13.0|
-|cryptography|45.0.0|
+|cryptography|45.0.2|
 |jmespath|1.0.1|
 |netaddr|1.3.0|
 |ansible-core|~=2.16.14|
@@ -387,6 +388,16 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 |---|---|---|
 |인터페이스 추가|1개 Control Plane 노드에 Public IP가 할당된 신규 인터페이스 추가|Public IP 사용에 대한 비용만 발생<br>HA 구성에서 해당 노드 장애 시 Ingress Nginx 서비스 외부 접근 불가|
 |로드밸런서 생성|Public IP가 할당된 로드밸런서 서비스 생성|로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
+
+<br>
+
+> K-PaaS 컨테이너 플랫폼 클러스터 v1.6.2 릴리즈에서는 로드밸런서 컨트롤러 설치 시 ***`자동으로 로드밸런서 서비스를 생성 및 할당`*** 하며 MetalLB는 설치되지 않는다. (NHN 클라우드 환경만 해당)
+
+<br>
+
+|방식|설명|비고|
+|---|---|---|
+|로드밸런서 컨트롤러|Public IP가 할당된 로드밸런서 서비스 자동 생성|***`NHN 클라우드만 지원`***<br>***`MetalLB 미설치`***<br>로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
 
 <br><br>
 
@@ -1220,8 +1231,8 @@ LoadBalancer Service
 
 |환경변수|설명|비고|
 |---|---|---|
-|METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역|Control Plane 노드와 동일한 네트워크 서브넷 대역 설정|
-|INGRESS_NGINX_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정|
+|METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역|Control Plane 노드와 동일한 네트워크 서브넷 대역 설정<br>**`CSP_TYPE`** NHN 경우 미설정|
+|INGRESS_NGINX_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정<br>**`CSP_TYPE`** NHN 경우 미설정|
 
 <br>
 
@@ -1230,6 +1241,18 @@ Kyverno
 |환경변수|설명|비고|
 |---|---|---|
 |INSTALL_KYVERNO|Kyverno 정책 배포 여부||
+
+<br>
+
+Controller
+
+|환경변수|설명|비고|
+|---|---|---|
+|CSP_TYPE|CSP 정보|현재 **`NHN`** 만 지원|
+|NHN_USERNAME|NHN 클라우드 계정|클러스터 설치 완료 후 입력값 자동 삭제|
+|NHN_PASSWORD|NHN 클라우드 패스워드|클러스터 설치 완료 후 입력값 자동 삭제|
+|NHN_TENANT_ID|NHN 클라우드 계정 테넌트 ID|클러스터 설치 완료 후 입력값 자동 삭제|
+|NHN_VIP_SUBNET_ID|NHN 클라우드 로드밸런서 생성할 서브넷 ID|클러스터 설치 완료 후 입력값 자동 삭제|
 
 <br>
 
@@ -1292,6 +1315,15 @@ export INGRESS_NGINX_IP=
 # Install Kyverno (eg. Y, N)
 # PSS(Pod Security Standards) and cp-policy(Network isolation between namespaces) implemented as Kyverno policies.
 export INSTALL_KYVERNO=
+
+# Enter only if the CSP is NHN Cloud (eg. NHN)
+export CSP_TYPE=
+
+# if CSP_TYPE=NHN
+export NHN_USERNAME=
+export NHN_PASSWORD=
+export NHN_TENANT_ID=
+export NHN_VIP_SUBNET_ID=
 ```
 
 <br><br>
