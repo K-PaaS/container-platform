@@ -244,6 +244,8 @@ $ sudo cat ~/.ssh/id_rsa.pub
 
 전체 인스턴스에서 아래 과정을 진행한다.
 
+<br>
+
 ```
 $ sudo useradd -m -s /bin/bash ubuntu
 $ echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
@@ -303,6 +305,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 |Rook Ceph|1.16.4|
 |Kubeflow|1.7.0|
 |Kyverno|1.13.6|
+|OpenBAO|2.2.0|
 
 <br><br>
 
