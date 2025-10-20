@@ -25,10 +25,16 @@ K-PaaS 레지스트리에 웹 브라우저를 통해 접속합니다.
 https://registry.k-paas.org
 ```
 
-<img width="1647" height="875" alt="Image" src="https://github.com/user-attachments/assets/451568e1-0ac4-4140-b6d2-778ce9087a0d" />
+**[K-PaaS 레지스트리 포털 화면]**
+
+<img width="1647" height="875" alt="K-PaaS 레지스트리 포털 화면" src="https://github.com/user-attachments/assets/451568e1-0ac4-4140-b6d2-778ce9087a0d" />
 
 ### 2. 관리자 계정 로그인
-기업에 제공된 관리자 계정 정보로 로그인합니다.
+기업에 제공된 관리자 계정 정보로 로그인합니다. 우측상단 '로그인' 버튼 클릭 후 입력
+
+**[로그인 화면]**
+
+<img width="894" height="678" alt="로그인 화면" src="https://github.com/user-attachments/assets/67e4a5a0-1554-4d0a-b486-837376bea7a8" />
 
 ```sh
 # 관리자 로그인 정보 (기업별 제공)
@@ -105,6 +111,10 @@ Password: <회원가입한_비밀번호>
 
 ### 2. Secret 토큰 확인
 사용자 프로필 화면에서 다음 정보를 확인할 수 있습니다.
+
+**[사용자 프로필 화면 - CLI Secret 확인]**
+
+<img width="1652" height="873" alt="사용자 프로필 화면 - CLI Secret 확인" src="https://github.com/user-attachments/assets/50d88961-3175-4787-ae0e-c5a911731ddd" />
 
 - 사용자명, 이메일 등 기본 정보
 - **CLI 시크릿(Secret)**
