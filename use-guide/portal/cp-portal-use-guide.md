@@ -89,7 +89,11 @@
   <tr>
     <td>SSH Keys</td>
     <td>SSH Keys 정보 관리</td>
-  </tr>   
+  </tr>  
+  <tr>
+    <td>Federation</td>
+    <td>Federation 정보 관리</td>
+  </tr> 
   <tr>
     <td rowspan="3">🔗<a href="./cp-portal-use-guide-clusters.md"><b>Clusters</b></a></td>
     <td>Overview</td>
