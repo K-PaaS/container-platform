@@ -69,10 +69,10 @@
 </thead>
 <tbody>
   <tr>
-    <td rowspan="5">🔗<a href="./cp-portal-use-guide-global.md"><b>Global</b></a></td>
+    <td rowspan="6">🔗<a href="./cp-portal-use-guide-global.md"><b>Global</b></a></td>
     <td>Overview</td>
     <td>클러스터 정보 대시보드</td>
-    <td rowspan="5">Super Admin <br> Cluster Admin (조회 권한)</td>
+    <td rowspan="6">Super Admin <br> Cluster Admin (조회 권한)</td>
   </tr>
   <tr>
     <td>Clusters</td>
