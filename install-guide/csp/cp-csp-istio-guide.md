@@ -13,29 +13,29 @@
    2.1. [Prerequisite](#2.1)  
    2.2. [설치 목록](#2.2)  
    2.3. [방화벽 정보](#2.3)  
-   2.4. [시연 클러스터 환경](#2.4)  
-   
+   2.4. [시연 클러스터 환경](#2.4)
+
 3. [Istio 멀티 클러스터 구성](#3)  
    3.1. [Deployment 파일 다운로드](#3.1)   
    3.2. [도구 설치](#3.2)  
    3.3. [멀티 클러스터 접근 구성](#3.3)       
-   3.4. [Istio 멀티 클러스터 구성 스크립트 실행](#3.4)   
+   3.4. [Istio 멀티 클러스터 구성 스크립트 실행](#3.4)
 
 4. [샘플 애플리케이션 배포](#4)  
    4.1. [멀티 클러스터 샘플 애플리케이션 배포](#4.1)     
-   4.2. [멀티 클러스터 통신 테스트](#4.2)    
+   4.2. [멀티 클러스터 통신 테스트](#4.2)
 
-5. [Istio 멀티 클러스터 구성 삭제](#5)  
+5. [Istio 멀티 클러스터 구성 삭제](#5)
 
 6. [컨테이너 플랫폼 포털 배포 시 사전 설정](#6)    
    6.1. [StorageClass 설정](#6.1)  
    6.2. [Metrics Server 설치](#6.2)  
-   6.3. [Cilium CNI 사용 클러스터 설정 변경](#6.3)    
-  
+   6.3. [Cilium CNI 사용 클러스터 설정 변경](#6.3)
+
 7. [참고](#7)  
    7.1. [Istio Ingressgateway EXTERNAL-IP 수동 구성](#7.1)  
-   7.2. [Horizontal Pod Autoscaling unknown 조치](#7.2)  
-    
+   7.2. [Horizontal Pod Autoscaling unknown 조치](#7.2)
+
 
 <br>
 
@@ -79,23 +79,23 @@
 설치되는 도구 목록은 아래와 같다.
 | 도구 | 버전 |
 | :---: | :---: |  
-| kubectl | v1.32.3 |
-| Helm | v3.16.4 |
+| kubectl | v1.33.4 |
+| Helm | v3.18.4 |
 | step | 0.24.4 |
 | Podman | - |
 | ca-certificates | - |
-| Istio | 1.26.0 |
+| Istio | 1.28.0 |
 
 | Istio 버전 | [Kubernetes 지원 버전](https://istio.io/latest/docs/releases/supported-releases/#support-status-of-istio-releases)|  
 |:--------:| :---: |  
-|  `1.26`  |1.29, 1.30, 1.31, 1.32|  
+|  `1.28`  |1.30, 1.31, 1.32, 1.33, 1.34|  
 
 <br>
 
 ### <span id='2.3'>2.3. 방화벽 정보
 IaaS Security Group의 열어줘야할 Port를 설정한다.
 |프로토콜|포트|비고|
-| :---: | :---: | --- | 
+| :---: | :---: | --- |
 |TCP|15021|Istio ingressgateway status|
 |TCP|80|Istio ingressgateway http|
 |TCP|443|Istio ingressgateway https|
@@ -129,7 +129,7 @@ Istio를 활용하여 **`3개의 클러스터`** 를 기반으로 멀티 클러�
 Istio 멀티 클러스터 구성을 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
 
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-  [cp-portal-deployment-v1.6.2.tar.gz](https://nextcloud.k-paas.org/index.php/s/x7ccTRQYrBHsTD4/download)
+  [cp-portal-deployment-v1.7.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/qrApL4sP5eC2WMX/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -137,13 +137,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/x7ccTRQYrBHsTD4/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/qrApL4sP5eC2WMX/download
 
 $ ls ~/workspace/container-platform
-  cp-portal-deployment-v1.6.2.tar.gz
+  cp-portal-deployment-v1.7.0.tar.gz
 
 # Deployment 파일 압축 해제
-$ tar -xvf cp-portal-deployment-v1.6.2.tar.gz
+$ tar -xvf cp-portal-deployment-v1.7.0.tar.gz
 ```
 
 <br>
@@ -161,12 +161,12 @@ $ vi istio-vars-mc.sh
 ```bash
 # 설치할 버전으로 변경 
 # command line tool
-KUBECTL_VERSION="1.32.3"
-HELM_VERSION="3.16.4"
+KUBECTL_VERSION="1.33.4"
+HELM_VERSION="3.18.4"
 STEP_VERSION="0.24.4"
 
 # Istio
-ISTIO_VERSION="1.26.0"
+ISTIO_VERSION="1.28.0"
 ...
 ```
 
@@ -207,22 +207,22 @@ CURRENT   NAME     CLUSTER      AUTHINFO     NAMESPACE
 ```bash
 # cluster1 (kt) 노드 조회
 $ kubectl get nodes --context=kt
-NAME                       STATUS   ROLES           AGE    VERSION
-kt-k2p-standard.master01   Ready    control-plane   5d6h   v1.30.4
-kt-k2p-standard.worker01   Ready    <none>          5d6h   v1.30.4
-kt-k2p-standard.worker02   Ready    <none>          5d6h   v1.30.4
+NAME                       STATUS   ROLES           AGE    ···
+kt-k2p-standard.master01   Ready    control-plane   5d6h
+kt-k2p-standard.worker01   Ready    <none>          5d6h
+kt-k2p-standard.worker02   Ready    <none>          5d6h
 
 # cluster2 (ncloud) 노드 조회
 $ kubectl get nodes --context=ncloud
-NAME                    STATUS   ROLES    AGE    VERSION
-ncloud-nks-w-2lmr       Ready    <none>   5d6h   v1.28.10
-ncloud-nks-w-2lms       Ready    <none>   5d6h   v1.28.10
+NAME                    STATUS   ROLES    AGE    ···
+ncloud-nks-w-2lmr       Ready    <none>   5d6h
+ncloud-nks-w-2lms       Ready    <none>   5d6h
 
 # cluster3 (nhn) 노드 조회
 $ kubectl get nodes --context=nhn
-NAME                                STATUS   ROLES    AGE    VERSION
-nhn-nks-default-worker-node-0       Ready    <none>   5d6h   v1.30.3
-nhn-nks-default-worker-node-1       Ready    <none>   5d6h   v1.30.3
+NAME                                STATUS   ROLES    AGE    ···
+nhn-nks-default-worker-node-0       Ready    <none>   5d6h
+nhn-nks-default-worker-node-1       Ready    <none>   5d6h
 ```
 
 <br>
@@ -418,7 +418,7 @@ $ source ~/workspace/container-platform/cp-portal-deployment/istio_mc/istio-vars
 LoadBalancer 생성 및 서비스 istio-ingressgateway의 EXTERNAL-IP 값 할당을 위해 아래 가이드를 참고하여 처리한다. <br>
 또한 HorizontalPodAutoscaler Targets 값이 `unknown`인 경우 아래 가이드를 참고한다.
 > [[7.1. Istio Ingressgateway EXTERNAL-IP 수동 구성]](#7.1) <br>
-> [[7.2. Horizontal Pod Autoscaling unknown 조치]](#7.2) 
+> [[7.2. Horizontal Pod Autoscaling unknown 조치]](#7.2)
 
 ```bash
 $ kubectl get all -n ${ISTIO_NAMESPACE} --context=${CLUSTER1_CONFIG[CTX]}
@@ -447,7 +447,7 @@ horizontalpodautoscaler.autoscaling/istio-ingressgateway   Deployment/istio-ingr
 **Ncloud Kubernetes Service**는 기본 CNI로 `Cilium`을 제공한다. <br>
 Cilium을 사용하는 Kubernetes 클러스터에서 Istio 사용과 관련된 내용을 참고한다.
 > [[Cilium’s integration with Istio]](https://docs.cilium.io/en/stable/network/servicemesh/istio) <br>
-> [(참고) [6.3.Cilium CNI 사용 클러스터 설정 변경]](#6.3) 
+> [(참고) [6.3.Cilium CNI 사용 클러스터 설정 변경]](#6.3)
 
 
 ```bash
@@ -518,7 +518,7 @@ $ mkdir -p ~/workspace/container-platform/cp-portal-deployment/istio_mc/sample
 $ cd ~/workspace/container-platform/cp-portal-deployment/istio_mc/sample
 
 # bookinfo 서비스 배포 yaml 다운로드
-$ wget https://raw.githubusercontent.com/istio/istio/release-1.24/samples/bookinfo/platform/kube/bookinfo.yaml
+$ wget https://raw.githubusercontent.com/istio/istio/master/samples/bookinfo/platform/kube/bookinfo.yaml
 # sleep 서비스 배포 yaml 다운로드
 $ wget https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml
 ```
@@ -632,13 +632,13 @@ nks-block-storage (default)   blk.csi.ncloud.com   Delete          WaitForFirstC
 
 ### <span id='6.2'>6.2. Metrics Server 설치
 컨테이너 플랫폼 관리 클러스터의 Metrics 정보 수집을 위해 Metrics Server 설치가 필요하다.
-> [Metrics Server 설치](#metrics-server-설치) 
+> [Metrics Server 설치](#metrics-server-설치)
 
 <br>
 
-### <span id='6.3'>6.3. Cilium CNI 사용 클러스터 설정 변경 
-CNI로 `Cilium`을 사용하는 클러스터에서 Istio 구성 시 아래 설정 변경이 필요하다.  
-> [Cilium’s integration with Istio](https://docs.cilium.io/en/stable/network/servicemesh/istio) 
+### <span id='6.3'>6.3. Cilium CNI 사용 클러스터 설정 변경
+CNI로 `Cilium`을 사용하는 클러스터에서 Istio 구성 시 아래 설정 변경이 필요하다.
+> [Cilium’s integration with Istio](https://docs.cilium.io/en/stable/network/servicemesh/istio)
 
 #### Cilium Configmap 수정
 ```bash
@@ -647,9 +647,9 @@ $ kubectl edit configmaps cilium-config -n kube-system
 ```yaml
 # 추가
 bpf-lb-sock-hostns-only: "true"
-cni-exclusive: "false"
 
 # 수정
+cni-exclusive: "false"
 enable-l7-proxy: "false" 
 ```
 
@@ -668,7 +668,7 @@ cilium-sqps5   1/1     Running   0          4m32s
 
 <br> 
 
-## <span id='7'>7. 참고 
+## <span id='7'>7. 참고
 
 ### <span id='7.1'>7.1. Istio Ingressgateway EXTERNAL-IP 수동 구성
 > KT K2P Standard(K8S) 서비스를 예시로 한다.
@@ -742,10 +742,10 @@ istiod                 ClusterIP      10.100.252.167   <none>        15010/TCP,1
 ###### (예시) 포트 `15021` LoadBalancer 생성
 ![image 001]
 
-###### (예시) 포트 `80` LoadBalancer 생성 
+###### (예시) 포트 `80` LoadBalancer 생성
 ![image 003]
 
-###### (예시) 생성한 LoadBalancer 목록 
+###### (예시) 생성한 LoadBalancer 목록
 ![image 004]
 
 #### VM 연결
@@ -819,7 +819,7 @@ istio-ingressgateway   LoadBalancer   10.101.94.112    210.xxx.xxx.xxx # (Public
 
 <br>
 
-### <span id='7.2'>7.2. Horizontal Pod Autoscaling unknown 조치 
+### <span id='7.2'>7.2. Horizontal Pod Autoscaling unknown 조치
 Istio 설치 후 HorizontalPodAutoscaler Targets 값이 `unknown`인 경우 **Metrics Server** 설치가 필요하다.
 ```bash
 $ kubectl get horizontalpodautoscaler.autoscaling -n istio-system
@@ -846,7 +846,7 @@ $ wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/downloa
 136         - --secure-port=10250
 ···
 ```
-##### Metrics Server 배포 
+##### Metrics Server 배포
 ```bash
 $ kubectl apply -f components.yaml
 ```
