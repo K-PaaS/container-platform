@@ -272,14 +272,15 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 Python 패
 
 |Python 패키지|버전|
 |---|---|
-|ansible|9.13.0|
-|cryptography|45.0.2|
+|ansible|10.7.0|
+|cryptography|46.0.2|
 |jmespath|1.0.1|
 |netaddr|1.3.0|
-|ansible-core|~=2.16.14|
-|cffi|>=1.14|
-|jinja2|>=3.0.0|
+|ansible-core|~=2.17.7|
+|typing-extensions|>=4.13.2|
+|cffi|>=2.0.0|
 |PyYAML|>=5.1|
+|jinja2|>=3.0.0|
 |resolvelib|<1.1.0,>=0.5.3|
 
 <br><br>
@@ -291,20 +292,20 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubespray|2.28.0|
-|Kubernetes Native|1.32.5|
-|CRI-O|1.32.0|
-|Calico|3.29.3|
+|Kubespray|2.29.0|
+|Kubernetes Native|1.33.5|
+|CRI-O|1.33.5|
+|Calico|3.30.3|
 |MetalLB|0.14.9|
-|Ingress Nginx Controller|1.12.1|
-|Helm|3.17.0|
-|Istio|1.24.3|
+|Ingress Nginx Controller|1.13.3|
+|Helm|3.17.4-1|
+|Istio|1.27.3|
 |Podman|3.4.7|
-|OpenTofu|1.9.0|
+|OpenTofu|1.10.6|
 |nfs-subdir-external-provisioner|4.0.18|
-|Rook Ceph|1.16.4|
+|Rook Ceph|1.18.5|
 |Kubeflow|1.7.0|
-|Kyverno|1.13.6|
+|Kyverno|1.15.2|
 |OpenBAO|2.2.0|
 
 <br><br>
@@ -597,7 +598,7 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개 이상의 Public I
 |---|---|---|
 |이름|맴버 그룹 이름을 입력||
 |프로토콜|HTTP 선택||
-|포트|Ingress IngressGateway 서비스의 80 포트에 할당된 노드포트 값 입력||
+|포트|Istio IngressGateway 서비스의 80 포트에 할당된 노드포트 값 입력||
 |상태 확인 프로토콜|TCP 선택||
 |상태 확인 포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
 |맴버 목록|전체 노드 인스턴스 추가||
@@ -1193,7 +1194,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 Deployment를 다
 
 git clone 명령을 통해 HOME 디렉토리 경로에서 K-PaaS 컨테이너 플랫폼 클러스터 Deployment 다운로드를 진행한다.
 ```
-$ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.6.x
+$ git clone https://github.com/K-PaaS/cp-deployment.git -b branch_v1.7.x
 ```
 
 <br><br>
@@ -1219,12 +1220,12 @@ $ vi create-vars.sh
 
 ```
 ...
-export CLUSTER_CNT={클러스터 갯수}
+CLUSTER_CNT={클러스터 갯수}
 ...
 ```
 
 ```
-$ source create-vars.sh
+$ ./create-vars.sh
 ```
 
 <br>
@@ -1245,18 +1246,18 @@ Control Plane
 |환경변수|설명|비고|
 |---|---|---|
 |KUBE_CONTROL_HOSTS|Control Plane 노드의 갯수||
+|MASTER1_NODE_HOSTNAME|Control Plane 1번 노드의 호스트명||
+|MASTER1_NODE_USER|Bastion 서버의 사용자 계정|기본값 : **`ubuntu`**|
+|MASTER1_NODE_PRIVATE_IP|Control Plane 1번 노드의 Private IP||
+|MASTER1_NODE_PUBLIC_IP|Control Plane 1번 노드의 Public IP|Control Plane 1번 노드만 Public IP 정보 필요|
+|MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
+|MASTER{n}_NODE_PRIVATE_IP|Control Plane n번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
 |ETCD_TYPE|ETCD 배포 방식<br>external : 별도의 노드에 ETCD 구성<br>stacked : Control Plane 노드에 ETCD 구성|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정|
 |LOADBALANCER_DOMAIN|사전에 구성한 로드밸런서의 VIP 또는 Domain 정보|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정|
 |ETCD1_NODE_HOSTNAME|ETCD 1번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정|
 |ETCD1_NODE_PRIVATE_IP|ETCD 1번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정|
 |ETCD{n}_NODE_HOSTNAME|ETCD n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
 |ETCD{n}_NODE_PRIVATE_IP|ETCD n번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
-|MASTER1_NODE_HOSTNAME|Control Plane 1번 노드의 호스트명||
-|MASTER1_NODE_PUBLIC_IP|Control Plane 1번 노드의 Public IP|Control Plane 1번 노드만 Public IP 정보 필요|
-|MASTER1_NODE_PRIVATE_IP|Control Plane 1번 노드의 Private IP||
-|MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
-|MASTER{n}_NODE_PRIVATE_IP|Control Plane n번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
-
 <br>
 
 Worker
@@ -1306,83 +1307,164 @@ Controller
 
 |환경변수|설명|비고|
 |---|---|---|
-|CSP_TYPE|CSP 정보|현재 **`NHN`** 만 지원|
+|CSP_TYPE|CSP 정보|**`NHN, NAVER`**  지원|
 |NHN_USERNAME|NHN 클라우드 계정|클러스터 설치 완료 후 입력값 자동 삭제|
 |NHN_PASSWORD|NHN 클라우드 패스워드|클러스터 설치 완료 후 입력값 자동 삭제|
 |NHN_TENANT_ID|NHN 클라우드 계정 테넌트 ID|클러스터 설치 완료 후 입력값 자동 삭제|
 |NHN_VIP_SUBNET_ID|NHN 클라우드 로드밸런서 생성할 서브넷 ID|클러스터 설치 완료 후 입력값 자동 삭제|
+|NHN_API_BASE_URL|NHN 클라우드 API URL|기본값 : **`https://kr1-api-network-infrastructure.nhncloudservice.com`**|
+|NAVER_CLOUD_API_KEY|NAVER 클라우드 API Key|클러스터 설치 완료 후 입력값 자동 삭제|
+|NAVER_CLOUD_API_SECRET|NAVER 클라우드 API Secret|클러스터 설치 완료 후 입력값 자동 삭제|
+|NAVER_CLOUD_REGION|NAVER 클라우드 리전|기본값 : **`KR'**|
+|NAVER_CLOUD_VPC_NO|NAVER 클라우드 VPC NO|클러스터 설치 완료 후 입력값 자동 삭제|
+|NAVER_CLOUD_SUBNET_NO|NAVER 클라우드 서브넷 NO|클러스터 설치 완료 후 입력값 자동 삭제|
 
 <br>
 
 ```
 #!/bin/bash
 
-export CLUSTER_CNT=3
+CLUSTER_CNT=3
 
-#################################
+######################################################################
 # CLUSTER1
-#################################
+######################################################################
 
-# Master Node Count Variable (eg. 1, 3, 5 ...)
-export CLUSTER1_KUBE_CONTROL_HOSTS=
+# --------------------------------------------------------------------
+# Control Plane 노드 설정
+# --------------------------------------------------------------------
 
-# if KUBE_CONTROL_HOSTS > 1 (eg. external, stacked)
-export CLUSTER1_ETCD_TYPE=
+# Control Plane (Master) 노드 개수 (예: 1, 3, 5 ...)
+CLUSTER1_KUBE_CONTROL_HOSTS=
 
-# if KUBE_CONTROL_HOSTS > 1
-# HA Control Plane LoadBalanncer IP or Domain
-export CLUSTER1_LOADBALANCER_DOMAIN=
+# Control Plane (Master) 노드 정보
+# Control Plane 노드 개수에 맞춰 설정
+CLUSTER1_MASTER1_NODE_HOSTNAME=
+CLUSTER1_MASTER1_NODE_PUBLIC_IP=
+CLUSTER1_MASTER1_NODE_PRIVATE_IP=
+CLUSTER1_MASTER2_NODE_HOSTNAME=
+CLUSTER1_MASTER2_NODE_PRIVATE_IP=
+CLUSTER1_MASTER3_NODE_HOSTNAME=
+CLUSTER1_MASTER3_NODE_PRIVATE_IP=
 
-# if ETCD_TYPE=external
-# The number of ETCD node variable is set equal to the number of KUBE_CONTROL_HOSTS
-export CLUSTER1_ETCD1_NODE_HOSTNAME=
-export CLUSTER1_ETCD1_NODE_PRIVATE_IP=
-export CLUSTER1_ETCD2_NODE_HOSTNAME=
-export CLUSTER1_ETCD2_NODE_PRIVATE_IP=
-export CLUSTER1_ETCD3_NODE_HOSTNAME=
-export CLUSTER1_ETCD3_NODE_PRIVATE_IP=
+# --------------------------------------------------------------------
+# LoadBalancer 설정
+# --------------------------------------------------------------------
 
-...
+# Control Plane 노드가 2개 이상일 때 필수 설정
+# 외부 로드밸런서 도메인 또는 IP
+CLUSTER1_LOADBALANCER_DOMAIN=
 
-# MetalLB Ingress Nginx Controller LoadBalancer Service External IP
-export CLUSTER1_INGRESS_NGINX_IP=
+# --------------------------------------------------------------------
+# ETCD 노드 설정
+# --------------------------------------------------------------------
 
-# MetalLB Istio Gateway LoadBalancer Service External IP
-export CLUSTER1_ISTIO_GATEWAY_PRIVATE_IP=
-export CLUSTER1_ISTIO_GATEWAY_PUBLIC_IP=
+# ETCD 구성 방식
+# Control Plane 노드가 2개 이상일 때 필수 설정 (예: external, stacked)
+# - external : 별도 ETCD 노드 구성
+# - stacked : Control Plane 노드에 ETCD가 통합된 구성
+CLUSTER1_ETCD_TYPE=
 
-# Enter only if the CSP is NHN Cloud (eg. NHN)
-export CSP_TYPE=
+# ETCD_TYPE=external 일 때 필수 설정
+# Control Plane 노드 수와 동일 개수로 설정
+CLUSTER1_ETCD1_NODE_HOSTNAME=
+CLUSTER1_ETCD1_NODE_PRIVATE_IP=
+CLUSTER1_ETCD2_NODE_HOSTNAME=
+CLUSTER1_ETCD2_NODE_PRIVATE_IP=
+CLUSTER1_ETCD3_NODE_HOSTNAME=
+CLUSTER1_ETCD3_NODE_PRIVATE_IP=
 
-# if CSP_TYPE=NHN
-export NHN_USERNAME=
-export NHN_PASSWORD=
-export NHN_TENANT_ID=
-export NHN_VIP_SUBNET_ID=
+# --------------------------------------------------------------------
+# Worker 노드 설정
+# --------------------------------------------------------------------
 
-#################################
+# Worker 노드 개수
+CLUSTER1_KUBE_WORKER_HOSTS=
+
+# Worker 노드 정보
+# Worker 노드 개수에 맞춰 설정
+CLUSTER1_WORKER1_NODE_HOSTNAME=
+CLUSTER1_WORKER1_NODE_PRIVATE_IP=
+CLUSTER1_WORKER2_NODE_HOSTNAME=
+CLUSTER1_WORKER2_NODE_PRIVATE_IP=
+CLUSTER1_WORKER3_NODE_HOSTNAME=
+CLUSTER1_WORKER3_NODE_PRIVATE_IP=
+
+# --------------------------------------------------------------------
+# Storage 설정
+# --------------------------------------------------------------------
+
+# Storage 구성 방식 (예: nfs, rook-ceph)
+CLUSTER1_STORAGE_TYPE=
+
+# Storage 구성 방식 'nfs'일 때 NFS 서버 Private IP
+CLUSTER1_NFS_SERVER_PRIVATE_IP=
+
+# --------------------------------------------------------------------
+# MetalLB 설정
+# --------------------------------------------------------------------
+
+# MetalLB Address Pool 범위 (예: 192.168.0.150-192.168.0.160)
+CLUSTER1_METALLB_IP_RANGE=
+
+# Ingress Nginx Controller LoadBalancer Service용 External IP
+# - 인터페이스 추가 방식 : 인터페이스 Private IP 입력
+# - LoadBalance 서비스 방식 : LoadBalance 서비스 Public IP 입력
+CLUSTER1_INGRESS_NGINX_IP=
+
+# Istio Gateway LoadBalancer Service용 External IP
+CLUSTER1_ISTIO_GATEWAY_PRIVATE_IP=
+CLUSTER1_ISTIO_GATEWAY_PUBLIC_IP=
+
+# --------------------------------------------------------------------
+# CSP LoadBalancer Controller 설정
+# --------------------------------------------------------------------
+
+# CSP 설정 (예: NHN, NAVER)
+CLUSTER1_CSP_TYPE=
+
+# NHN Cloud 환경 변수 (CSP_TYPE=NHN 일때 필수 입력)
+CLUSTER1_NHN_USERNAME=
+CLUSTER1_NHN_PASSWORD=
+CLUSTER1_NHN_TENANT_ID=
+CLUSTER1_NHN_VIP_SUBNET_ID=
+CLUSTER1_NHN_API_BASE_URL=https://kr1-api-network-infrastructure.nhncloudservice.com
+
+# NAVER Cloud 환경 변수 (CSP_TYPE=NAVER 일때 필수 입력)
+CLUSTER1_NAVER_CLOUD_API_KEY=
+CLUSTER1_NAVER_CLOUD_API_SECRET=
+CLUSTER1_NAVER_CLOUD_REGION=KR
+CLUSTER1_NAVER_CLOUD_VPC_NO=
+CLUSTER1_NAVER_CLOUD_SUBNET_NO=
+
+######################################################################
 # CLUSTER2
-#################################
+######################################################################
 
-# Master Node Count Variable (eg. 1, 3, 5 ...)
-export CLUSTER2_KUBE_CONTROL_HOSTS=
+# --------------------------------------------------------------------
+# Control Plane 노드 설정
+# --------------------------------------------------------------------
 
-# if KUBE_CONTROL_HOSTS > 1 (eg. external, stacked)
-export CLUSTER2_ETCD_TYPE=
+# Control Plane (Master) 노드 개수 (예: 1, 3, 5 ...)
+CLUSTER2_KUBE_CONTROL_HOSTS=
 
-# if KUBE_CONTROL_HOSTS > 1
-# HA Control Plane LoadBalanncer IP or Domain
-export CLUSTER2_LOADBALANCER_DOMAIN=
+# Control Plane (Master) 노드 정보
+# Control Plane 노드 개수에 맞춰 설정
+CLUSTER2_MASTER1_NODE_HOSTNAME=
+CLUSTER2_MASTER1_NODE_PUBLIC_IP=
+CLUSTER2_MASTER1_NODE_PRIVATE_IP=
+CLUSTER2_MASTER2_NODE_HOSTNAME=
+CLUSTER2_MASTER2_NODE_PRIVATE_IP=
+CLUSTER2_MASTER3_NODE_HOSTNAME=
+CLUSTER2_MASTER3_NODE_PRIVATE_IP=
 
-# if ETCD_TYPE=external
-# The number of ETCD node variable is set equal to the number of KUBE_CONTROL_HOSTS
-export CLUSTER2_ETCD1_NODE_HOSTNAME=
-export CLUSTER2_ETCD1_NODE_PRIVATE_IP=
-export CLUSTER2_ETCD2_NODE_HOSTNAME=
-export CLUSTER2_ETCD2_NODE_PRIVATE_IP=
-export CLUSTER2_ETCD3_NODE_HOSTNAME=
-export CLUSTER2_ETCD3_NODE_PRIVATE_IP=
+# --------------------------------------------------------------------
+# LoadBalancer 설정
+# --------------------------------------------------------------------
 
+# Control Plane 노드가 2개 이상일 때 필수 설정
+# 외부 로드밸런서 도메인 또는 IP
+CLUSTER2_LOADBALANCER_DOMAIN=
 ...
 ```
 
@@ -1392,7 +1474,7 @@ export CLUSTER2_ETCD3_NODE_PRIVATE_IP=
 쉘 스크립트를 통해 필요 패키지 설치, 클러스터 설치 환경변수 설정, Ansible playbook을 통한 K-PaaS 컨테이너 플랫폼 클러스터 설치를 순차적으로 진행한다.
 
 ```
-$ source deploy-cp-cluster.sh
+$ ./deploy-cp-cluster.sh
 ```
 
 <br><br>
@@ -1404,10 +1486,10 @@ $ source deploy-cp-cluster.sh
 ```
 $ kubectl get nodes --context=cluster1
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster1-master     Ready    control-plane          12m   v1.32.5
-cp-cluster1-worker-1   Ready    <none>                 10m   v1.32.5
-cp-cluster1-worker-2   Ready    <none>                 10m   v1.32.5
-cp-cluster1-worker-3   Ready    <none>                 10m   v1.32.5
+cp-cluster1-master     Ready    control-plane          12m   v1.33.5
+cp-cluster1-worker-1   Ready    <none>                 10m   v1.33.5
+cp-cluster1-worker-2   Ready    <none>                 10m   v1.33.5
+cp-cluster1-worker-3   Ready    <none>                 10m   v1.33.5
 
 $ kubectl get pods -n kube-system --context=cluster1
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -1441,10 +1523,10 @@ nodelocaldns-x7grn                            1/1     Running   0             8m
 ```
 $ kubectl get nodes --context=cluster2
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster2-master     Ready    control-plane          12m   v1.32.5
-cp-cluster2-worker-1   Ready    <none>                 10m   v1.32.5
-cp-cluster2-worker-2   Ready    <none>                 10m   v1.32.5
-cp-cluster2-worker-3   Ready    <none>                 10m   v1.32.5
+cp-cluster2-master     Ready    control-plane          12m   v1.33.5
+cp-cluster2-worker-1   Ready    <none>                 10m   v1.33.5
+cp-cluster2-worker-2   Ready    <none>                 10m   v1.33.5
+cp-cluster2-worker-3   Ready    <none>                 10m   v1.33.5
 
 $ kubectl get pods -n kube-system --context=cluster2
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -1478,10 +1560,10 @@ nodelocaldns-x7grn                            1/1     Running   0             8m
 ```
 $ kubectl get nodes --context=cluster3
 NAME                   STATUS   ROLES                  AGE   VERSION
-cp-cluster3-master     Ready    control-plane          12m   v1.32.5
-cp-cluster3-worker-1   Ready    <none>                 10m   v1.32.5
-cp-cluster3-worker-2   Ready    <none>                 10m   v1.32.5
-cp-cluster3-worker-3   Ready    <none>                 10m   v1.32.5
+cp-cluster3-master     Ready    control-plane          12m   v1.33.5
+cp-cluster3-worker-1   Ready    <none>                 10m   v1.33.5
+cp-cluster3-worker-2   Ready    <none>                 10m   v1.33.5
+cp-cluster3-worker-3   Ready    <none>                 10m   v1.33.5
 
 $ kubectl get pods -n kube-system --context=cluster3
 NAME                                          READY   STATUS    RESTARTS      AGE
@@ -1518,7 +1600,7 @@ nodelocaldns-x7grn                            1/1     Running   0             8m
 <br>
 
 ```
-$ source reset-cp-cluster.sh
+$ ./reset-cp-cluster.sh
 ```
 
 <br><br>
