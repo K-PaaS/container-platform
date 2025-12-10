@@ -599,6 +599,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 ```
 $ kubectl get svc istio-ingressgateway -n istio-system
+```
 
 <br>
 
