@@ -35,7 +35,7 @@
 - CSP Kubernetes Service 활용
   + [Linkerd 멀티 클러스터 구성 가이드](csp/cp-csp-linkerd-guide.md)
 
-### Karmada 기반 Multi Cloud 배포
+### Federation 기반 Multi Cloud 배포
 - 클러스터 설치
   + [클러스터 설치 가이드](standalone/cp-cluster-install-federation.md)
 - 포털 설치
