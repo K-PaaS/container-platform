@@ -66,7 +66,7 @@ Helm 차트를 관리하는 **ChartMuseum**, Kubernetes 내 여러 유형의 오
 필요한 경우 멤버 클러스터를 구성하여 연동할 수 있으며, 멤버 클러스터가 준비되지 않은 환경에서는 해당 단계를 생략할 수 있다.
 
 클러스터 설치·구성 절차는 아래 가이드를 참고한다.
-> [Karmada 기반 클러스터 구성 가이드](../fed/cp-cluster-fed-guide.md)
+> [페더레이션 클러스터 구성 가이드](../standalone/cp-cluster-install-federation.md)
 
 <br>
 
