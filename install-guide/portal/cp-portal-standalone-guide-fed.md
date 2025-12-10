@@ -42,7 +42,7 @@
 <br>
 
 ### <span id='1.3'>1.3. 시스템 구성도
-<p align="center"><img src="../images/portal/cp-001.png" width="850" height="530"></p>
+<p align="center"><img src="../images/portal/cp-022.png"></p>
 
 시스템 구성은 **Kubernetes Cluster(Master, Worker)** 환경과 데이터 관리를 위한 스토리지 서버로 구성되어 있다.
 Kubespray를 통해 설치된 Kubernetes Cluster 환경에 비밀 정보 및 인증 데이터를 관리하는 **OpenBao**, 메타 데이터를 관리하는 **MariaDB(RDBMS)**, 컨테이너 이미지를 관리하는 **Harbor**,  컨테이너 플랫폼 포털 사용자 인증을 관리하는 **Keycloak**,
