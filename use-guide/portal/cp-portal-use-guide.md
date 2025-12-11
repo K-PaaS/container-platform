@@ -69,10 +69,10 @@
 </thead>
 <tbody>
   <tr>
-    <td rowspan="6">🔗<a href="./cp-portal-use-guide-global.md"><b>Global</b></a></td>
+    <td rowspan="7">🔗<a href="./cp-portal-use-guide-global.md"><b>Global</b></a></td>
     <td>Overview</td>
     <td>클러스터 정보 대시보드</td>
-    <td rowspan="6">Super Admin <br> Cluster Admin (조회 권한)</td>
+    <td rowspan="7">Super Admin <br> Cluster Admin (조회 권한)</td>
   </tr>
   <tr>
     <td>Clusters</td>
@@ -93,6 +93,10 @@
   <tr>
     <td>Federation</td>
     <td>Federation 정보 관리</td>
+  </tr> 
+  <tr>
+    <td>Migration</td>
+    <td>Migration 정보 관리</td>
   </tr> 
   <tr>
     <td rowspan="3">🔗<a href="./cp-portal-use-guide-clusters.md"><b>Clusters</b></a></td>

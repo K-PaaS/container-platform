@@ -5,52 +5,64 @@
 <table>
 <thead>
   <tr>
-    <th width="100">플랫폼</th>
-    <th width="250"><a href="https://github.com/K-PaaS/cp-deployment">컨테이너 플랫폼</a></th>
-    <th width="250">&nbsp;&nbsp;&nbsp;<a href="https://github.com/K-PaaS/sidecar-deployment.git">사이드카</a>&nbsp;&nbsp;&nbsp;</th>
-  </tr>
-</thead>
+    <th align="center" style="text-align:center;width=100;">플랫폼</th>
+    <th align="center" colspan="2" style="text-align:center; width=100;">컨테이너 플랫폼</th>
+    <th align="center" style="text-align:center;width=250;">사이드카</th>
+  </tr></thead>
 <tbody>
   <tr>
     <td align="center">포털</td>
-    <td align="center"><a href="https://github.com/K-PaaS/cp-portal-release">CP 포털</a></td>
+    <td align="center" colspan="2"><a href="https://github.com/K-PaaS/cp-portal-release">CP 포털</a></td>
     <td align="center"><a href="https://github.com/K-PaaS/sidecar-deployment/tree/master/install-scripts/portal">사이드카 포털</a></td>
   </tr>
   <tr>
-    <td rowspan="8">Component <br>/서비스</td>
+    <td rowspan="8">Component<br>/서비스</td>
     <td align="center"><a href="https://github.com/K-PaaS/cp-portal-ui">Portal UI</a></td>
+    <td align="center"><a href="https://github.com/K-PaaS/cp-remote-api">Remote API</a></td>
     <td align="center"><a href="https://github.com/K-PaaS/sidecar-portal-ui">Portal UI</a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/K-PaaS/cp-portal-api">Portal API</a></td>
+    <td align="center"><a href="https://github.com/K-PaaS/cp-migration-ui">Migration UI</a></td>
     <td align="center"><a href="https://github.com/K-PaaS/sidecar-portal-api">Portal API</a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/K-PaaS/cp-portal-common-api">Common API</a></td>
+    <td align="center"><a href="https://github.com/K-PaaS/cp-migration-api">Migration API</a></td>
     <td align="center"></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/K-PaaS/cp-metrics-api">Metric API</a></td>
+    <td align="center"><a href="https://github.com/K-PaaS/cp-migration-auth-api">Migration Auth API</a></td>
     <td align="center"></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/K-PaaS/cp-terraman">Terraman API</a></td>
+    <td align="center"><a href="https://github.com/K-PaaS/cp-federation-ui">Federation UI</a></td>
     <td align="center"></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/K-PaaS/cp-catalog-api">Catalog API</a></td>
+    <td align="center"><a href="https://github.com/K-PaaS/cp-federation-api">Federation API</a></td>
     <td align="center"></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/K-PaaS/cp-chaos-api">Chaos API</a></td>
+    <td align="center"><a href="https://github.com/K-PaaS/cp-federation-collector">Federation Collector</a></td>
     <td align="center"></td>
   </tr>
   <tr>
-    <td align="center"><a href="https://github.com/K-PaaS/cp-chaos-collector">Chaos Collector API</a></td>
-    <td align="center"></td>
+  <td align="center">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://github.com/K-PaaS/cp-chaos-collector">Chaos Collector</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center"></td>
+  <td align="center"></td>
   </tr>
 </tbody></table>
-<i>🚩 You are here.</i>
+
+<br>
 
 ## Notice
 #### 릴리즈의 경로가 https://nextcloud.paas-ta.org/ 에서 https://nextcloud.k-paas.org/ 로 변경되었습니다
@@ -77,8 +89,11 @@
   + [Kubeflow 파이프라인 튜토리얼 가이드](install-guide/standalone/cp-kubeflow-sample-guide.md)
 
 ### Multi Cloud 배포
-- 클러스터 설치
+> Multi Cloud 환경은 두 가지 방식으로 구성할 수 있다. 아래 환경에 맞는 구성을 선택하여 진행한다.
+- K-PaaS 표준 모델 기반으로 클러스터를 직접 설치하여 구성하는 방식
   + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-multi.md)
+- CSP Kubernetes 서비스를 활용해 서비스 메시(Istio)를 구성하는 방식
+  + [Istio 멀티 클러스터 구성 가이드](install-guide/csp/cp-csp-istio-guide.md)
 - 포털 설치
   + [포털 설치 가이드](install-guide/portal/cp-portal-standalone-guide-mc.md)
   + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
@@ -90,8 +105,19 @@
   + [Linkerd 설치 가이드](install-guide/multicluster/cp-linkerd-install.md)
   + [Karmada 설치 가이드](install-guide/multicluster/cp-karmada-install.md)
 - CSP Kubernetes Service 활용
-  + [Istio 멀티 클러스터 구성 가이드](install-guide/csp/cp-csp-istio-guide.md)
   + [Linkerd 멀티 클러스터 구성 가이드](install-guide/csp/cp-csp-linkerd-guide.md)
+
+### Federation 기반 Multi Cloud 배포
+- 클러스터 설치
+  + [클러스터 설치 가이드](install-guide/standalone/cp-cluster-install-federation.md)
+- 포털 설치
+  + [포털 설치 가이드](install-guide/portal/cp-portal-standalone-guide-fed.md)
+  + [설치 및 배포 파일](https://github.com/K-PaaS/cp-helm-chart)
+  + [릴리즈 파일](https://github.com/K-PaaS/cp-portal-release)
+- 서비스 설치
+  + [파이프라인 설치 가이드](install-guide/pipeline/cp-pipeline-standalone-guide.md)
+  + [소스 컨트롤 설치 가이드](install-guide/source-control/cp-source-control-standalone-guide.md)
+
 
 ### Edge 배포
 - Edge 설치
@@ -121,20 +147,6 @@
 - 소스 컨트롤 서비스
   + [소스 컨트롤 서비스 사용 가이드](use-guide/source-control/cp-source-control-use-guide.md)
 
-
-<br>
-
-## Project
-
-### 포털 프로젝트
-- [cp-portal-ui](https://github.com/K-PaaS/cp-portal-ui)
-- [cp-portal-api](https://github.com/K-PaaS/cp-portal-api)
-- [cp-portal-common-api](https://github.com/K-PaaS/cp-portal-common-api)
-- [cp-metrics-api](https://github.com/K-PaaS/cp-metrics-api)
-- [cp-terraman](https://github.com/K-PaaS/cp-terraman)
-- [cp-catalog-api](https://github.com/K-PaaS/cp-catalog-api)
-- [cp-chaos-api](https://github.com/K-PaaS/cp-chaos-api)
-- [cp-chaos-collector](https://github.com/K-PaaS/cp-chaos-collector)
 
 <br>
 

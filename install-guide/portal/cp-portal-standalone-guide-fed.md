@@ -1,4 +1,4 @@
-### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 싱글 클러스터 컨테이너 플랫폼 포털 배포 가이드
+### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 페더레이션 클러스터 컨테이너 플랫폼 포털 배포 가이드
 
 <br>
 
@@ -17,36 +17,36 @@
 
 3. [컨테이너 플랫폼 포털 배포](#3)   
    3.1. [컨테이너 플랫폼 포털 Deployment 파일 다운로드](#3.1)  
-   3.2. [컨테이너 플랫폼 포털 변수 정의](#3.2)    
-   3.3. [컨테이너 플랫폼 포털 배포 스크립트 실행](#3.3)  
-   3.4. [(참고) 컨테이너 플랫폼 포털 리소스 삭제](#3.4)
+   3.2. [컨테이너 플랫폼 포털 변수 정의](#3.2)  
+   3.3. [페더레이션 멤버 클러스터 설정 구성](#3.3)  
+   3.4. [컨테이너 플랫폼 포털 배포 스크립트 실행](#3.4)  
+   3.5. [(참고) 컨테이너 플랫폼 포털 리소스 삭제](#3.5)  
 
-4. [컨테이너 플랫폼 포털 접속](#4)      
+5. [컨테이너 플랫폼 포털 접속](#4)      
    4.1. [컨테이너 플랫폼 포털 관리자 계정 로그인](#4.1)      
    4.2. [컨테이너 플랫폼 포털 사용자 계정 로그인](#4.2)      
    4.3. [컨테이너 플랫폼 포털 사용 가이드](#4.3)
 
-5. [컨네이너 플랫폼 포털 참고](#5)       
+6. [컨네이너 플랫폼 포털 참고](#5)       
    5.1. [Kubernetes 리소스 생성 시 주의사항](#5.1)
 
 <br>
 
 ## <span id='1'>1. 문서 개요
 ### <span id='1.1'>1.1. 목적
-본 문서(싱글 클러스터 컨테이너 플랫폼 포털 배포 가이드)는 쿠버네티스 클러스터를 설치하고 컨테이너 플랫폼 포털 배포 방법을 기술하였다. <br><br>
-
+본 문서(페더레이션 클러스터 컨테이너 플랫폼 포털 배포 가이드)는 페더레이션 기반 호스트·멤버 클러스터 환경에서 컨테이너 플랫폼 포털 배포 방법을 기술하였다. <br><br>
 
 ### <span id='1.2'>1.2. 범위
-설치 범위는 쿠버네티스 클러스터 배포를 기준으로 작성하였다.
+설치 범위는 페더레이션 호스트 클러스터와 멤버 클러스터로 구성된 환경을 기준으로 작성하였다.
 
 <br>
 
 ### <span id='1.3'>1.3. 시스템 구성도
-<p align="center"><img src="../images/portal/cp-001.png"></p>
+<p align="center"><img src="../images/portal/cp-022.png"></p>
 
 시스템 구성은 **Kubernetes Cluster(Master, Worker)** 환경과 데이터 관리를 위한 스토리지 서버로 구성되어 있다.
 Kubespray를 통해 설치된 Kubernetes Cluster 환경에 비밀 정보 및 인증 데이터를 관리하는 **OpenBao**, 메타 데이터를 관리하는 **MariaDB(RDBMS)**, 컨테이너 이미지를 관리하는 **Harbor**,  컨테이너 플랫폼 포털 사용자 인증을 관리하는 **Keycloak**,
-Helm 차트를 관리하는 **ChartMuseum**, Kubernetes 내 여러 유형의 오류를 시뮬레이션할 수 있는 **Chaos Mesh** 등 미들웨어 환경을 컨테이너로 제공한다.
+Helm 차트를 관리하는 **ChartMuseum**, Kubernetes 내 여러 유형의 오류를 시뮬레이션할 수 있는 **Chaos Mesh**, 페더레이션 클러스터의 상태·메트릭 정보를 전달하는 **NATS** 등 미들웨어 환경을 컨테이너로 제공한다.
 총 필요한 VM 환경으로는 **Master VM: 1개, Worker VM: 3개 이상**이 필요하고 본 문서는 Kubernetes Cluster에 컨테이너 플랫폼 포털 환경을 배포하는 내용이다.
 
 <br>    
@@ -60,6 +60,13 @@ Helm 차트를 관리하는 **ChartMuseum**, Kubernetes 내 여러 유형의 오
 
 ### <span id='2.1'>2.1. Prerequisite
 본 설치 가이드는 **Ubuntu 22.04** 환경에서 설치하는 것을 기준으로 한다.
+
+#### 페더레이션 기반 호스트·멤버 클러스터 환경 구성
+컨테이너 플랫폼 포털을 배포하기 위해서는 페더레이션 기반의 호스트 클러스터가 사전에 구축되어 있어야 한다. <br>
+필요한 경우 멤버 클러스터를 구성하여 연동할 수 있으며, 멤버 클러스터가 준비되지 않은 환경에서는 해당 단계를 생략할 수 있다.
+
+클러스터 설치·구성 절차는 아래 가이드를 참고한다.
+> [페더레이션 클러스터 구성 가이드](../standalone/cp-cluster-install-federation.md)
 
 <br>
 
@@ -104,7 +111,7 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 |[Keycloak](https://github.com/keycloak/keycloak)|26.3.3|25.2.0 (Bitnami)|
 |[ChartMuseum](https://github.com/helm/chartmuseum)|0.16.3|3.10.4|
 |[Chaos Mesh](https://github.com/chaos-mesh/chaos-mesh)|2.8.0|2.8.0|
-
+|[NATS](https://github.com/nats-io/nats-server)|2.11.8|9.0.28 (Bitnami)|
 <br>
 
 ## <span id='3'>3. 컨테이너 플랫폼 포털 배포
@@ -281,12 +288,123 @@ chaosDaemon:
 
 <br>
 
-### <span id='3.3'>3.3. 컨테이너 플랫폼 포털 배포 스크립트 실행
-컨테이너 플랫폼 포털 배포를 위한 스크립트를 실행한다.
+### <span id='3.3'>3.3. 페더레이션 멤버 클러스터 설정 구성
+> 멤버 클러스터가 준비되지 않은 경우에는 본 구성 단계를 생략할 수 있다.
+
+멤버 클러스터 정보를 구성하려면 `kubectl config`에 해당 클러스터의 컨텍스트가 미리 설정되어 있어야 하므로, 각 클러스터에 접근 가능한 컨텍스트를 사전에 준비해야 한다.
+
+:loudspeaker: 각 클러스터 kubeconfig 파일 내 cluster, context, user 명이 중복되지 않도록 한다.
+```bash
+# .kube 디렉터리 생성 및 이동
+$ mkdir -p ${HOME}/.kube
+$ cd ${HOME}/.kube
+
+# 각 cluster kubeconfig 파일 위치 (아래 파일명은 예시이다.)
+$ ls ${HOME}/.kube
+host.config  member1.config  member2.config
+
+# kubeconfig 파일 경로 설정
+$ export KUBECONFIG="${HOME}/.kube/host.config:${HOME}/.kube/member1.config:${HOME}/.kube/member2.config"
+```
+##### :bulb:  `NAME`, `CLUSTER`, `AUTHINFO` 값 출력 정상 확인
+```bash
+# 컨텍스트 조회
+$ kubectl config get-contexts
+CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
+*         host      host      host
+          member1   member1   member1
+          member2   member2   member2
+```
+##### 멤버 클러스터 접근 정상 확인
+```bash
+$ kubectl get nodes --context=member1
+NAME        STATUS   ROLES           AGE   VERSION
+cp-mem1-1   Ready    control-plane   2d    v1.33.5
+cp-mem1-2   Ready    <none>          2d    v1.33.5
+
+$ kubectl get nodes --context=member2
+NAME                    STATUS   ROLES    AGE   VERSION
+default-worker-node-0   Ready    <none>   2d    v1.33.4
+default-worker-node-1   Ready    <none>   2d    v1.33.4
+default-worker-node-2   Ready    <none>   2d    v1.33.4
+```
+
+등록할 멤버 클러스터의 개수와 각 클러스터의 정보를 구성하기 위해 아래 스크립트를 실행한다. <br> 스크립트 실행 시 선택한 컨텍스트 정보를 바탕으로 API 서버와 클러스터명이 채워진 설정 파일이 생성된다.
+```bash
+$ cd ~/workspace/container-platform/cp-portal-deployment/script_fed
+$ chmod +x gen-cluster-config.sh
+$ ./gen-cluster-config.sh
+```
 
 ```bash
-$ chmod +x deploy-cp-portal.sh
-$ ./deploy-cp-portal.sh
+# 선택된 컨텍스트는 이후 선택 목록에서 중복 방지를 위해 자동으로 제외된다.
+# 멤버 클러스터 2개 등록 예시
+
+▶ Member Cluster Configuration Generator
+How many member clusters do you want to register? (1-10): 2
+
+You selected 2 member cluster(s).
+
+▶ Select context for cluster 1
+  1) host
+  2) member1
+  3) member2
+Enter the number of the context for cluster 1: 2  # 컨텍스트 선택
+Selected context       : member1
+Cluster name in config : member1
+Detected API server    : https://xxx.xxx.xxx.xxx:6443
+
+▶ Select context for cluster 2
+  1) host
+  2) member2
+Enter the number of the context for cluster 2: 2  # 컨텍스트 선택
+Selected context       : member2
+Cluster name in config : member2
+Detected API server    : https://default.container.com:6443
+
+
+Configuration written to: member-cluster-config.sh
+Please review API_SERVER, NAME, and fill IAAS_TYPE before deployment.
+```
+
+스크립트 실행 후 `member-cluster-config.sh` 파일이 생성되며, 선택한 컨텍스트 정보를 바탕으로 채워진 기본 값이 포함된다. <br>
+:bulb: 환경에 맞게 API 서버 엔드포인트와 클러스터명은 필요 시 수정하며, **IAAS 타입은 수동 입력이 필요하다.**
+
+```bash
+$ vi member-cluster-config.sh
+```
+```bash
+# Auto-generated member cluster config
+# Edit API_SERVER or NAME if needed, and fill IAAS_TYPE manually.
+
+# Cluster 1
+CLUSTER1_CTX="member1"
+CLUSTER1_API_SERVER="https://xxx.xxx.xxx.xxx:6443"   # Auto-detected. Change if using a different endpoint.
+CLUSTER1_NAME="member1"                              # Auto-detected. Change if naming differs from your env.
+CLUSTER1_IAAS_TYPE="1"                               # Fill manually (1 OPENSTACK, 2 NAVER, 3 NHN, 4 KT)
+
+# Cluster 2
+CLUSTER2_CTX="member2"
+CLUSTER2_API_SERVER="https://default.container.com:6443"   # Auto-detected. Change if using a different endpoint.
+CLUSTER2_NAME="member2"                                    # Auto-detected. Change if naming differs from your env.
+CLUSTER2_IAAS_TYPE="3"                                     # Fill manually (1 OPENSTACK, 2 NAVER, 3 NHN, 4 KT)
+```
+
+<br>
+
+### <span id='3.4'>3.4. 컨테이너 플랫폼 포털 배포 스크립트 실행
+컨테이너 플랫폼 포털 배포 스크립트는 기본적으로 포털 구성 요소만 설치하며, 멤버 클러스터 등록 기능을 포함하려면 `--join` 옵션을 추가하여 실행한다.
+```bash
+$ cd ~/workspace/container-platform/cp-portal-deployment/script_fed
+$ chmod +x deploy-cp-portal-fed.sh
+```
+* 포털만 설치
+```bash
+$ ./deploy-cp-portal-fed.sh
+```
+* 멤버 클러스터 등록 포함하여 포털 설치
+```bash
+$ ./deploy-cp-portal-fed.sh --join
 ```
 <br>
 
@@ -302,97 +420,103 @@ Pod 재시작이 반복될 수 있으며, Keycloak이 Ready 상태가 되면 순
 >`$ kubectl get pods -n openbao`
 ```bash
 NAME                                      READY   STATUS    RESTARTS   AGE
-openbao-0                                 1/1     Running   0          8m38s
-openbao-agent-injector-59777b5b64-cdks2   1/1     Running   0          8m38s
+openbao-0                                 1/1     Running   0          6m12s
+openbao-agent-injector-59777b5b64-zz27b   1/1     Running   0          6m12s
 ```
 
 - **MariaDB Pod 조회**
 >`$ kubectl get pods -n mariadb`
 ```bash
 NAME        READY   STATUS    RESTARTS   AGE
-mariadb-0   1/1     Running   0          8m37s
+mariadb-0   1/1     Running   0          6m24s
 ```    
 
 - **Harbor Pod 조회**
 >`$ kubectl get pods -n harbor`
 ```bash
 NAME                                 READY   STATUS    RESTARTS   AGE
-harbor-core-689ffcd797-tbpmn         1/1     Running   0          8m47s
-harbor-database-0                    1/1     Running   0          8m47s
-harbor-jobservice-6c7d64dc58-jlk28   1/1     Running   0          8m47s
-harbor-portal-645d97998c-x22b6       1/1     Running   0          8m47s
-harbor-redis-0                       1/1     Running   0          8m47s
-harbor-registry-7c9769495b-z7247     2/2     Running   0          8m47s
-harbor-trivy-0                       1/1     Running   0          8m47s
+harbor-core-bd5d959b4-5tptp          1/1     Running   0          6m29s
+harbor-database-0                    1/1     Running   0          6m29s
+harbor-jobservice-76f4ccd496-j4jlx   1/1     Running   0          6m29s
+harbor-portal-645d97998c-s4jr5       1/1     Running   0          6m29s
+harbor-redis-0                       1/1     Running   0          6m29s
+harbor-registry-78c8bbf446-85twg     2/2     Running   0          6m29s
+harbor-trivy-0                       1/1     Running   0          6m29s
 ```  
 
 - **Keycloak Pod 조회**
 >`$ kubectl get pods -n keycloak`
 ```bash
 NAME         READY   STATUS    RESTARTS   AGE
-keycloak-0   1/1     Running   0          7m37s
-keycloak-1   1/1     Running   0          7m37s
+keycloak-0   1/1     Running   0          5m54s
+keycloak-1   1/1     Running   0          5m53s
 ```
 
 - **컨테이너 플랫폼 포털 Pod 조회**
 >`$ kubectl get pods -n cp-portal`
 ```bash
-NAME                                                    READY   STATUS    RESTARTS   AGE
-cp-portal-api-deployment-6b5c84fbdf-6bcn2               1/1     Running   0          7m16s
-cp-portal-catalog-api-deployment-85795db844-zfgch       1/1     Running   0          7m15s
-cp-portal-chaos-api-deployment-68f8dc64fc-q7gjl         1/1     Running   0          7m16s
-cp-portal-chaos-collector-deployment-859df489f4-tsjvp   1/1     Running   0          7m15s
-cp-portal-common-api-deployment-59f65d7dd6-57wmx        1/1     Running   0          7m15s
-cp-portal-metric-api-deployment-756b4585d5-rjz2v        1/1     Running   0          7m16s
-cp-portal-migration-api-deployment-9b79789c6-q78sp      1/1     Running   0          7m15s
-cp-portal-migration-auth-deployment-96995bc65-rnk6q     1/1     Running   0          7m15s
-cp-portal-migration-ui-deployment-c5948cc9c-vrl95       1/1     Running   0          7m16s
-cp-portal-remote-api-deployment-788f46bc9d-kt6gf        1/1     Running   0          7m15s
-cp-portal-terraman-deployment-57dd8649cd-llqps          1/1     Running   0          7m15s
-cp-portal-ui-deployment-7df6cbc75c-kt6tb                1/1     Running   0          7m16s
+NAME                                                         READY   STATUS    RESTARTS   AGE
+cp-portal-api-deployment-6b5c84fbdf-jhnpl                    1/1     Running   0          5m29s
+cp-portal-catalog-api-deployment-85795db844-snwkn            1/1     Running   0          5m28s
+cp-portal-chaos-api-deployment-68f8dc64fc-6kh85              1/1     Running   0          5m28s
+cp-portal-chaos-collector-deployment-859df489f4-7vg6l        1/1     Running   0          5m29s
+cp-portal-common-api-deployment-59f65d7dd6-z9j2p             1/1     Running   0          5m29s
+cp-portal-federation-api-deployment-755cdc5b8-zz2q2          1/1     Running   0          5m29s
+cp-portal-federation-collector-deployment-7b8c8ff7bf-vq6cz   1/1     Running   0          5m29s
+cp-portal-federation-ui-deployment-869fd6c6b9-gvlsd          1/1     Running   0          5m29s
+cp-portal-metric-api-deployment-756b4585d5-72wjx             1/1     Running   0          5m29s
+cp-portal-migration-api-deployment-9b79789c6-5f5q2           1/1     Running   0          5m29s
+cp-portal-migration-auth-deployment-96995bc65-hckg7          1/1     Running   0          5m29s
+cp-portal-migration-ui-deployment-c5948cc9c-v7tz9            1/1     Running   0          5m29s
+cp-portal-remote-api-deployment-788f46bc9d-kmdbs             1/1     Running   0          5m29s
+cp-portal-terraman-deployment-57dd8649cd-rjmqv               1/1     Running   0          5m29s
+cp-portal-ui-deployment-7df6cbc75c-nbxnc                     1/1     Running   0          5m29s
+nats-0                                                       1/1     Running   0          5m32s
 ```
 
 - **ChartMuseum Pod 조회**
 >`$ kubectl get pods -n chartmuseum`
 ```bash
 NAME                           READY   STATUS    RESTARTS   AGE
-chartmuseum-648968c7dd-sgn8c   1/1     Running   0          8m7s
+chartmuseum-648968c7dd-ck2k2   1/1     Running   0          6m27s
 ```
 
 - **Chaos Mesh Pod 조회**
 >`$ kubectl get pods -n chaos-mesh`
 ```bash
 NAME                                        READY   STATUS    RESTARTS   AGE
-chaos-controller-manager-778684cd75-979jl   1/1     Running   0          7m54s
-chaos-daemon-brc8m                          1/1     Running   0          7m54s
-chaos-daemon-d9gwf                          1/1     Running   0          7m54s
-chaos-daemon-wpgsm                          1/1     Running   0          7m54s
-chaos-dashboard-799b6d9f6-mc49j             1/1     Running   0          7m54s
-chaos-dns-server-5f9bb85c75-5tpc2           1/1     Running   0          7m54s
+chaos-controller-manager-7c4857547f-r7mcv   1/1     Running   0          6m10s
+chaos-daemon-48768                          1/1     Running   0          6m11s
+chaos-daemon-8r86r                          1/1     Running   0          6m10s
+chaos-daemon-wz8gk                          1/1     Running   0          6m11s
+chaos-dashboard-799b6d9f6-2njzr             1/1     Running   0          6m10s
+chaos-dns-server-5f9bb85c75-hcjlr           1/1     Running   0          6m10s
 ```
 
 - **서비스 접속 Host 조회**
 >`$ kubectl get ingress -A`
 ```bash
 NAMESPACE     NAME                CLASS   HOSTS                                ADDRESS         PORTS     AGE
-chartmuseum   chartmuseum         nginx   chartmuseum.xxx.xxx.xxx.xxx.nip.io   172.xx.xx.xxx   80, 443   8m39s
-cp-portal     cp-portal-ingress   nginx   portal.xxx.xxx.xxx.xxx.nip.io        172.xx.xx.xxx   80, 443   8m3s
-harbor        harbor-ingress      nginx   harbor.xxx.xxx.xxx.xxx.nip.io        172.xx.xx.xxx   80, 443   10m
-keycloak      keycloak            nginx   keycloak.xxx.xxx.xxx.xxx.nip.io      172.xx.xx.xxx   80, 443   8m40s
-openbao       openbao             nginx   openbao.xxx.xxx.xxx.xxx.nip.io       172.xx.xx.xxx   80, 443   10m
+chartmuseum   chartmuseum         nginx   chartmuseum.xxx.xxx.xxx.xxx.nip.io   172.xx.xx.xxx   80, 443   6m51s
+cp-portal     cp-portal-ingress   nginx   portal.xxx.xxx.xxx.xxx.nip.io        172.xx.xx.xxx   80, 443   6m15s
+harbor        harbor-ingress      nginx   harbor.xxx.xxx.xxx.xxx.nip.io        172.xx.xx.xxx   80, 443   7m44s
+keycloak      keycloak            nginx   keycloak.xxx.xxx.xxx.xxx.nip.io      172.xx.xx.xxx   80, 443   6m52s
+openbao       openbao             nginx   openbao.xxx.xxx.xxx.xxx.nip.io       172.xx.xx.xxx   80, 443   7m55s
 ```
 
 <br>
 
-#### <span id='3.4'>3.4. (참고) 컨테이너 플랫폼 포털 리소스 삭제
+#### <span id='3.5'>3.5. (참고) 컨테이너 플랫폼 포털 리소스 삭제
+※ 본 스크립트는 포털 관련 리소스만 삭제하며, 페더레이션 시스템 구성 요소에는 영향을 주지 않는다.
+
 배포된 컨테이너 플랫폼 포털 리소스의 삭제를 원하는 경우 아래 스크립트를 실행한다.<br>
 :loudspeaker: (주의) 컨테이너 플랫폼 포털이 운영되는 상태에서 해당 스크립트 실행 시, **포털 운영에 필요한 리소스가 삭제** 되므로 주의가 필요하다.<br>
 > 컨테이너 플랫폼을 통해 설치된 클러스터의 StorageClass 타입이 `NFS`인 경우 reclaim 정책은 `Retain`이다.<br>
 > `Retain`정책은 Persistent Volume을 삭제하여도 스토리지 NFS 서버에 데이터가 여전히 존재하므로<br> 수동으로 데이터 정리가 필요하다.
 ```bash
-$ cd ~/workspace/container-platform/cp-portal-deployment/script
-$ chmod +x uninstall-cp-portal.sh
-$ ./uninstall-cp-portal.sh
+$ cd ~/workspace/container-platform/cp-portal-deployment/script_fed
+$ chmod +x uninstall-cp-portal-fed.sh
+$ ./uninstall-cp-portal-fed.sh
 Are you sure you want to delete the container platform portal? <y/n> y # y 입력
 ```
 
@@ -515,7 +639,7 @@ Keycloak Admin Console에 접속 후 조회한 Keycloak Admin 계정으로 로�
 
 <br>
 
-### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 싱글 클러스터 컨테이너 플랫폼 포털 배포 가이드
+### [Index](https://github.com/K-PaaS/Guide/blob/master/README.md) > [CP Install](/install-guide/Readme.md) > 페더레이션 클러스터 컨테이너 플랫폼 포털 배포 가이드
 
 [image 001]:../images/portal/cp-001.png
 [image 002]:../images/portal/cp-002.png

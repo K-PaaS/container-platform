@@ -17,7 +17,7 @@
   2.1.3. [주요 소프트웨어](#2.1.3)<br>
   2.1.4. [방화벽](#2.1.4)<br>
   2.1.5. [스토리지](#2.1.5)<br>
-  2.1.6. [Ingress Nginx 서비스 설정](#2.1.6)<br>
+  2.1.6. [Ingress Nginx 및 Istio Gateway 서비스 설정](#2.1.6)<br>
   2.1.6.1. [Control Plane 노드 추가 인터페이스](#2.1.6.1)<br>
   2.1.6.2. [클라우드 로드밸런서 서비스](#2.1.6.2)<br>
   2.1.7. [HA Control Plane 로드밸런서](#2.1.7)<br>
@@ -33,8 +33,6 @@
 
 4. [Resource 생성 시 주의사항](#4)
 
-5. [Kubeflow 설치](#5)
-
 <br><br>
 
 ## <div id='1'> 1. 문서 개요
@@ -45,16 +43,16 @@
 <br><br>
 
 ### <div id='1.2'> 1.2. 범위
-설치 범위는 K-PaaS 컨테이너 플랫폼 환경의 기반이 되는 클러스터 설치를 **`단일 클라우드`** 환경 기준으로 작성하였다.
+설치 범위는 K-PaaS 컨테이너 플랫폼 환경의 기반이 되는 클러스터 설치를 **`페더레이션 클러스터`** 환경 기준으로 작성하였다.
 
 <br><br>
 
 ### <div id='1.3'> 1.3. 시스템 구성도
-시스템 구성은 쿠버네티스 **`단일 클러스터`** (Control Plane, Worker) 환경으로 구성되어 있다.
+시스템 구성은 쿠버네티스 **`페더레이션 클러스터`** (Control Plane, Worker) 환경으로 구성되어 있다.
 
 <br>
 
-K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 **`단일 클러스터`** 를 구성하고 각 리소스를 통해 K-PaaS 컨테이너 플랫폼 포털 환경을 배포하여 대시보드, 데이터베이스, 레파지토리 등의 환경을 제공한다.
+K-PaaS 컨테이너 플랫폼 Deployment를 통해 쿠버네티스 **`페더레이션 클러스터`** 를 구성하고 각 리소스를 통해 K-PaaS 컨테이너 플랫폼 포털 환경을 배포하여 대시보드, 데이터베이스, 레파지토리 등의 환경을 제공한다.
 
 <br>
 
@@ -65,10 +63,10 @@ K-PaaS 컨테이너 플랫폼 클러스터에 필요한 인스턴스 환경으�
 |인스턴스 종류|인스턴스 갯수|필수|비고|
 |---|---|---|---|
 |Install|1개||Install 인스턴스 구성을 권장<br>Control Plane 인스턴스로 대체 가능|
-|Control Plane|1개 이상|O|테스트 환경 1개<br>운영 환경 3개 이상|
-|Worker|1~3개 이상|O|NFS 스토리지 사용 시 1개 이상<br>Rook-Ceph 스토리지 사용시 3개 이상|
-|Storage|1개||NFS 스토리지 사용 시 필요|
-|LoadBalancer|1~2개||Private 클라우드 HA Control Plane 구성 시 필요|
+|Control Plane|각 클라우드 당 1개 이상|O|테스트 환경 1개<br>운영 환경 3개 이상|
+|Worker|각 클라우드 당 1~3개 이상|O|NFS 스토리지 사용 시 1개 이상<br>Rook-Ceph 스토리지 사용시 3개 이상|
+|Storage|각 클라우드 당 1개||NFS 스토리지 사용 시 필요|
+|LoadBalancer|각 클라우드 당 1~2개||Private 클라우드 HA Control Plane 구성 시 필요|
 
 <br>
 
@@ -362,14 +360,24 @@ Root Volume 이외에 ***`추가 Volume을 각 Worker 노드에 사전에 할당
 
 <br><br>
 
-### <div id='2.1.6'> 2.1.6. Ingress Nginx 서비스 설정 (***`필수 설정`***)
-K-PaaS 컨테이너 플랫폼 서비스 구성을 위해 필요한 Ingress Nginx 서비스 설정 정보는 다음과 같다.
+### <div id='2.1.6'> 2.1.6. Ingress Nginx 및 Istio Gateway 서비스 설정 (***`필수 설정`***)
+K-PaaS 컨테이너 플랫폼 서비스 구성을 위해 필요한 Ingress Nginx 및 Istio Gateway 서비스 설정 정보는 다음과 같다.
 
 <br>
+
+호스트 클러스터
 
 |서비스|설명|비고|
 |---|---|---|
 |Ingress Nginx Controller|K-PaaS 컨테이너 플랫폼 서비스를<br>Ingress로 외부 노출하기 위한 서비스|***`1개 인터페이스 또는 1개 로드밸런서`*** 생성 필요<br>Public IP 할당 필요|
+
+<br>
+
+멤버 클러스터
+
+|서비스|설명|비고|
+|---|---|---|
+|Istio Ingress Gateway<br>(Eastwest Gateway 기능 포함)|외부 서비스 통신과<br>멀티 클라우드간 서비스 통신을 위한<br>게이트웨이 서비스|각 클라우드에 ***`1개 인터페이스 또는 1개 로드밸런서`*** 생성 필요<br>Public IP 할당 필요|
 
 <br>
 
@@ -469,7 +477,7 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 ![image if kt 003]
 
 <br><br>
-5. 생성된 Public IP 선택 후 "접속 설정" 버튼 클릭하여 Virtual IP 선택 후 80, 443 포트에 대한 Port Forwarding 설정을 진행한다.
+5. 생성된 Public IP 선택 후 "접속 설정" 버튼 클릭하여 Virtual IP 선택 후 80, 443 포트 (Ingress Nginx Controller 서비스) 또는 80, 443, 15021, 15443, 15012, 15017 포트 (Istio Ingress Gateway 서비스)에 대한 Port Forwarding 설정을 진행한다.
 
 ![image if kt 004]
 
@@ -572,7 +580,7 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 |---|---|---|
 |이름|맴버 그룹 이름을 입력||
 |프로토콜|HTTP 선택||
-|포트|Ingress Nginx 서비스의 80 포트에 할당된 노드포트 값 입력||
+|포트|Ingress Nginx 서비스 또는 Istio IngressGateway 서비스의 80 포트에 할당된 노드포트 값 입력||
 |상태 확인 프로토콜|TCP 선택||
 |상태 확인 포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
 |맴버 목록|전체 노드 인스턴스 추가||
@@ -583,6 +591,14 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 
 ```
 $ kubectl get svc ingress-nginx-controller -n ingress-nginx
+```
+
+<br>
+
+> Istio Gateway 서비스 포트 확인<br>
+
+```
+$ kubectl get svc istio-ingressgateway -n istio-system
 ```
 
 <br>
@@ -608,7 +624,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 |---|---|---|
 |이름|맴버 그룹 이름을 입력||
 |프로토콜|HTTPS 선택||
-|포트|Ingress Nginx 서비스의 443 포트에 할당된 노드포트 값 입력||
+|포트|Ingress Nginx 서비스 또는 Istio IngressGateway 서비스의 443 포트에 할당된 노드포트 값 입력||
 |상태 확인 프로토콜|TCP 선택||
 |상태 확인 포트|인스턴스 상태체크가 가능한 포트 입력|예 : 인스턴스 SSH 포트 (TCP 22)|
 |맴버 목록|전체 노드 인스턴스 추가||
@@ -618,13 +634,16 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb nhn 005]
 
 <br><br>
-6. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
+6. (Istio IngressGateway 서비스의 경우) 15021, 15443, 15012, 15017 포트의 리스너, 맴버 그룹 추가를 5번 과정과 동일하게 진행한다.
 
 <br><br>
-7. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
+7. 하단의 "로드 밸런서 생성" 버튼을 클릭한다.
 
 <br><br>
-8. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.
+8. 생성한 로드밸런서 선택 후 "플로팅 IP 관리" 버튼을 클릭한다.
+
+<br><br>
+9. 기존에 생성된 플로팅 IP 선택(1번 과정에서 생성), 생성한 인터페이스 선택 후 "연결" 버튼을 클릭한다.
 
 ![image lb nhn 006]
 
@@ -689,10 +708,13 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb kt 003]
 
 <br><br>
-6. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443 포트 로드밸런서 모두)
+6. (Istio IngressGateway 서비스의 경우) 15021, 15443, 15012, 15017 포트의 로드밸런서 추가를 5번 과정과 동일하게 진행한다.
 
 <br><br>
-7. 정보를 입력 후 "추가" 버튼을 클릭한다.
+7. 생성한 로드밸런서 선택 후 "VM 연결/해제" 버튼을 클릭한다. (80, 443 포트 로드밸런서 모두)
+
+<br><br>
+8. 정보를 입력 후 "추가" 버튼을 클릭한다.
 
 |항목|설명|비고|
 |---|---|---|
@@ -710,6 +732,14 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
+> Istio Gateway 서비스 포트 확인<br>
+
+```
+$ kubectl get svc istio-ingressgateway -n istio-system
+```
+
+<br>
+
 ![image lb kt 004]
 
 ![image lb kt 005]
@@ -717,7 +747,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb kt 006]
 
 <br><br>
-8. <b><code>Servers > Networking</code></b> 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
+9. <b><code>Servers > Networking</code></b> 메뉴로 이동하여 기존에 생성한 Public IP 선택(1번 과정에서 생성), "Static NAT" 버튼을 클릭하여 생성한 로드밸런서 중 1개를 선택한다.
 
 ![image lb kt 004]
 
@@ -726,7 +756,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb kt 006]
 
 <br><br>
-9. "방화벽 설정" 버튼 클릭하여 등록한 Static NAT 설정으로 방화벽을 등록한다.
+10. "방화벽 설정" 버튼 클릭하여 등록한 Static NAT 설정으로 방화벽을 등록한다.
 
 ![image lb kt 008]
 
@@ -778,6 +808,14 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 
 <br>
 
+> Istio Gateway 서비스 포트 확인<br>
+
+```
+$ kubectl get svc istio-ingressgateway -n istio-system
+```
+
+<br>
+
 ![image lb naver 003]
 
 <br><br>
@@ -803,12 +841,15 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 6. 2~5번 과정을 반복하여 TCP 443 포트로 Target Group을 추가 생성한다.
 
 <br><br>
-7. <b><code>Load Balancer > Load Balancer</code></b> 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
+7. (Istio IngressGateway 서비스의 경우) 2~5번 과정을 반복하여 TCP 443, 15021, 15443, 15012, 15017 포트로 Target Group을 추가 생성한다.
+
+<br><br>
+8. <b><code>Load Balancer > Load Balancer</code></b> 메뉴에서 "로드밸런서 생성" 버튼 클릭 후 "네트워크 프록시 로드밸런서" 버튼을 클릭한다.
 
 ![image lb naver 007]
 
 <br><br>
-8. 아래 로드밸런서 정보를 입력 후 "다음" 버튼을 클릭한다.
+9. 아래 로드밸런서 정보를 입력 후 "다음" 버튼을 클릭한다.
 
 |항목|설명|비고|
 |---|---|---|
@@ -823,7 +864,7 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb naver 008]
 
 <br><br>  
-9. 리스너 설정 정보를 입력 후 "추가", "다음" 버튼을 클릭한다.
+10. 리스너 설정 정보를 입력 후 "추가", "다음" 버튼을 클릭한다.
 
 |항목|설명|비고|
 |---|---|---|
@@ -835,23 +876,26 @@ $ kubectl get svc ingress-nginx-controller -n ingress-nginx
 ![image lb naver 009]
 
 <br><br>
-10. Target Group 선택 후 로드밸런서를 생성한다.
+11. Target Group 선택 후 로드밸런서를 생성한다.
 
 ![image lb naver 010]
 
 <br><br>
-11. 생성한 로드밸런서 선택 후 "리스너 설정 변경" 버튼을 클릭, "리스너 추가" 버튼을 클릭한다.
+12. 생성한 로드밸런서 선택 후 "리스너 설정 변경" 버튼을 클릭, "리스너 추가" 버튼을 클릭한다.
 
 ![image lb naver 011]
 
 <br><br>
-12. 443 포트에 대한 리스너 설정 정보를 입력 후 리스너를 추가한다.
+13. 443 포트에 대한 리스너 설정 정보를 입력 후 리스너를 추가한다.
 
 |항목|설명|비고|
 |---|---|---|
 |프로토콜|TCP 선택||
 |포트|443 포트 입력||
 |Target Group|443 포트 기준으로 설정한 Target Group 선택||
+
+<br><br>
+14. (Istio IngressGateway 서비스의 경우) 15021, 15443, 15012, 15017 포트에 대한 리스너 설정 정보를 입력 후 리스너를 추가한다.
 
 <br>
 
@@ -1169,14 +1213,31 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수를 �
 
 K-PaaS 컨테이너 플랫폼 클러스터 설치경로로 이동한다.
 ```
-$ cd ~/cp-deployment/single
+$ cd ~/cp-deployment/federation
 ```
 
 <br>
 
-K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 환경변수 정보를 입력한다.
+K-PaaS 컨테이너 플랫폼 페더레이션 멤버 클러스터의 갯수를 설정 후 환경변수 스크립트 파일을 생성한다.
 ```
-$ vi cp-cluster-vars.sh
+$ vi create-vars.sh
+```
+
+```
+...
+CLUSTER_CNT={클러스터 갯수}
+...
+```
+
+```
+$ ./create-vars.sh
+```
+
+<br>
+
+K-PaaS 컨테이너 플랫폼 페더레이션 호스트 클러스터 설치에 필요한 환경변수 정보를 입력한다.
+```
+$ vi host-cp-cluster-vars.sh
 ```
 
 <br>
@@ -1373,6 +1434,246 @@ NAVER_CLOUD_VPC_NO=
 NAVER_CLOUD_SUBNET_NO=
 ```
 
+<br>
+
+K-PaaS 컨테이너 플랫폼 페더레이션 멤버 클러스터 설치에 필요한 환경변수 정보를 입력한다.
+```
+## K-PaaS 컨테이너 플랫폼 클러스터 환경변수
+$ vi member-cp-cluster-vars.sh
+```
+
+<br>
+
+클러스터 구분은 아래의 환경변수 앞에 CLUSTER{n}_ 으로 구분한다.<br>
+ex) CLUSTER1_KUBE_CONTROL_HOSTS, CLUSTER2_KUBE_CONTROL_HOSTS, CLUSTER3_KUBE_CONTROL_HOSTS...
+
+Control Plane
+
+|환경변수|설명|비고|
+|---|---|---|
+|KUBE_CONTROL_HOSTS|Control Plane 노드의 갯수||
+|MASTER1_NODE_HOSTNAME|Control Plane 1번 노드의 호스트명||
+|MASTER1_NODE_USER|Bastion 서버의 사용자 계정|기본값 : **`ubuntu`**|
+|MASTER1_NODE_PRIVATE_IP|Control Plane 1번 노드의 Private IP||
+|MASTER1_NODE_PUBLIC_IP|Control Plane 1번 노드의 Public IP|Control Plane 1번 노드만 Public IP 정보 필요|
+|MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
+|MASTER{n}_NODE_PRIVATE_IP|Control Plane n번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
+|ETCD_TYPE|ETCD 배포 방식<br>external : 별도의 노드에 ETCD 구성<br>stacked : Control Plane 노드에 ETCD 구성|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정|
+|LOADBALANCER_DOMAIN|사전에 구성한 로드밸런서의 VIP 또는 Domain 정보|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정|
+|ETCD1_NODE_HOSTNAME|ETCD 1번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정|
+|ETCD1_NODE_PRIVATE_IP|ETCD 1번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정|
+|ETCD{n}_NODE_HOSTNAME|ETCD n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
+|ETCD{n}_NODE_PRIVATE_IP|ETCD n번 노드의 Private IP|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`ETCD_TYPE`** 값이 external 일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
+<br>
+
+Worker
+
+|환경변수|설명|비고|
+|---|---|---|
+|KUBE_WORKER_HOSTS|Worker 노드의 갯수||
+|WORKER1_NODE_HOSTNAME|Worker 1번 노드의 호스트명||
+|WORKER1_NODE_PRIVATE_IP|Worker 1번 노드의 Private IP||
+|WORKER{n}_NODE_HOSTNAME|Worker n번 노드의 호스트명|**`KUBE_WORKER_HOSTS`** 값만큼 설정|
+|WORKER{n}_NODE_PRIVATE_IP|Worker n번 노드의 Private IP|**`KUBE_WORKER_HOSTS`** 값만큼 설정|
+
+<br>
+
+Storage
+
+|환경변수|설명|비고|
+|---|---|---|
+|STORAGE_TYPE|Storage 정보<br>nfs : NFS 스토리지<br>rook-ceph : Rook Ceph 스토리지||
+|NFS_SERVER_PRIVATE_IP|NFS Server 인스턴스의 Private IP|**`STORAGE_TYPE`** 값 nfs 일 경우 설정|
+
+<br>
+
+> 멀티 클라우드 배포에서는 Istio IngressGateway를 통해 Ingress Nginx Controller에 대한 기능을 대체한다. 
+
+LoadBalancer Service
+
+|환경변수|설명|비고|
+|---|---|---|
+|METALLB_IP_RANGE|MetalLB에서 사용할 Private IP 대역|Control Plane 노드와 동일한 네트워크 서브넷 대역 설정<br>**`CSP_TYPE`** NHN 경우 미설정|
+|INGRESS_NGINX_IP|MetalLB를 통해 Ingress Nginx Controller Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정<br>**`CSP_TYPE`** NHN 경우 미설정|
+
+<br>
+
+> 멀티 클라우드 배포에서는 Istio Gateway 서비스에 대한 설정이 추가되었다.
+
+Istio Service
+
+|환경변수|설명|비고|
+|---|---|---|
+|ISTIO_GATEWAY_PRIVATE_IP|MetalLB를 통해 Istio Gateway Service에서 사용할 ***`Private IP (인터페이스 일 경우) 또는 Public IP (로드밸런서 서비스 일 경우)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정<br>로드밸런서 서비스 일 경우 **`ISTIO_GATEWAY_PUBLIC_IP`** 값과 중복되도록 입력<br>**`CSP_TYPE`** NHN 경우 미설정|
+|ISTIO_GATEWAY_PUBLIC_IP|Istio Gateway Service에서 사용할 인터페이스에 할당한 ***`Public IP (인터페이스, 로드밸런서 서비스)`***|**`METALLB_IP_RANGE`** 값과 중복되지 않도록 설정<br>**`CSP_TYPE`** NHN 경우 미설정|
+
+<br>
+
+Controller
+
+|환경변수|설명|비고|
+|---|---|---|
+|CSP_TYPE|CSP 정보|**`NHN, NAVER`**  지원|
+|NHN_USERNAME|NHN 클라우드 계정|클러스터 설치 완료 후 입력값 자동 삭제|
+|NHN_PASSWORD|NHN 클라우드 패스워드|클러스터 설치 완료 후 입력값 자동 삭제|
+|NHN_TENANT_ID|NHN 클라우드 계정 테넌트 ID|클러스터 설치 완료 후 입력값 자동 삭제|
+|NHN_VIP_SUBNET_ID|NHN 클라우드 로드밸런서 생성할 서브넷 ID|클러스터 설치 완료 후 입력값 자동 삭제|
+|NHN_API_BASE_URL|NHN 클라우드 API URL|기본값 : **`https://kr1-api-network-infrastructure.nhncloudservice.com`**|
+|NAVER_CLOUD_API_KEY|NAVER 클라우드 API Key|클러스터 설치 완료 후 입력값 자동 삭제|
+|NAVER_CLOUD_API_SECRET|NAVER 클라우드 API Secret|클러스터 설치 완료 후 입력값 자동 삭제|
+|NAVER_CLOUD_REGION|NAVER 클라우드 리전|기본값 : **`KR'**|
+|NAVER_CLOUD_VPC_NO|NAVER 클라우드 VPC NO|클러스터 설치 완료 후 입력값 자동 삭제|
+|NAVER_CLOUD_SUBNET_NO|NAVER 클라우드 서브넷 NO|클러스터 설치 완료 후 입력값 자동 삭제|
+
+<br>
+
+```
+#!/bin/bash
+
+CLUSTER_CNT=3
+
+######################################################################
+# CLUSTER1
+######################################################################
+
+# --------------------------------------------------------------------
+# Control Plane 노드 설정
+# --------------------------------------------------------------------
+
+# Control Plane (Master) 노드 개수 (예: 1, 3, 5 ...)
+CLUSTER1_KUBE_CONTROL_HOSTS=
+
+# Control Plane (Master) 노드 정보
+# Control Plane 노드 개수에 맞춰 설정
+CLUSTER1_MASTER1_NODE_HOSTNAME=
+CLUSTER1_MASTER1_NODE_PUBLIC_IP=
+CLUSTER1_MASTER1_NODE_PRIVATE_IP=
+CLUSTER1_MASTER2_NODE_HOSTNAME=
+CLUSTER1_MASTER2_NODE_PRIVATE_IP=
+CLUSTER1_MASTER3_NODE_HOSTNAME=
+CLUSTER1_MASTER3_NODE_PRIVATE_IP=
+
+# --------------------------------------------------------------------
+# LoadBalancer 설정
+# --------------------------------------------------------------------
+
+# Control Plane 노드가 2개 이상일 때 필수 설정
+# 외부 로드밸런서 도메인 또는 IP
+CLUSTER1_LOADBALANCER_DOMAIN=
+
+# --------------------------------------------------------------------
+# ETCD 노드 설정
+# --------------------------------------------------------------------
+
+# ETCD 구성 방식
+# Control Plane 노드가 2개 이상일 때 필수 설정 (예: external, stacked)
+# - external : 별도 ETCD 노드 구성
+# - stacked : Control Plane 노드에 ETCD가 통합된 구성
+CLUSTER1_ETCD_TYPE=
+
+# ETCD_TYPE=external 일 때 필수 설정
+# Control Plane 노드 수와 동일 개수로 설정
+CLUSTER1_ETCD1_NODE_HOSTNAME=
+CLUSTER1_ETCD1_NODE_PRIVATE_IP=
+CLUSTER1_ETCD2_NODE_HOSTNAME=
+CLUSTER1_ETCD2_NODE_PRIVATE_IP=
+CLUSTER1_ETCD3_NODE_HOSTNAME=
+CLUSTER1_ETCD3_NODE_PRIVATE_IP=
+
+# --------------------------------------------------------------------
+# Worker 노드 설정
+# --------------------------------------------------------------------
+
+# Worker 노드 개수
+CLUSTER1_KUBE_WORKER_HOSTS=
+
+# Worker 노드 정보
+# Worker 노드 개수에 맞춰 설정
+CLUSTER1_WORKER1_NODE_HOSTNAME=
+CLUSTER1_WORKER1_NODE_PRIVATE_IP=
+CLUSTER1_WORKER2_NODE_HOSTNAME=
+CLUSTER1_WORKER2_NODE_PRIVATE_IP=
+CLUSTER1_WORKER3_NODE_HOSTNAME=
+CLUSTER1_WORKER3_NODE_PRIVATE_IP=
+
+# --------------------------------------------------------------------
+# Storage 설정
+# --------------------------------------------------------------------
+
+# Storage 구성 방식 (예: nfs, rook-ceph)
+CLUSTER1_STORAGE_TYPE=
+
+# Storage 구성 방식 'nfs'일 때 NFS 서버 Private IP
+CLUSTER1_NFS_SERVER_PRIVATE_IP=
+
+# --------------------------------------------------------------------
+# MetalLB 설정
+# --------------------------------------------------------------------
+
+# MetalLB Address Pool 범위 (예: 192.168.0.150-192.168.0.160)
+CLUSTER1_METALLB_IP_RANGE=
+
+# Ingress Nginx Controller LoadBalancer Service용 External IP
+# - 인터페이스 추가 방식 : 인터페이스 Private IP 입력
+# - LoadBalance 서비스 방식 : LoadBalance 서비스 Public IP 입력
+CLUSTER1_INGRESS_NGINX_IP=
+
+# Istio Gateway LoadBalancer Service용 External IP
+CLUSTER1_ISTIO_GATEWAY_PRIVATE_IP=
+CLUSTER1_ISTIO_GATEWAY_PUBLIC_IP=
+
+# --------------------------------------------------------------------
+# CSP LoadBalancer Controller 설정
+# --------------------------------------------------------------------
+
+# CSP 설정 (예: NHN, NAVER)
+CLUSTER1_CSP_TYPE=
+
+# NHN Cloud 환경 변수 (CSP_TYPE=NHN 일때 필수 입력)
+CLUSTER1_NHN_USERNAME=
+CLUSTER1_NHN_PASSWORD=
+CLUSTER1_NHN_TENANT_ID=
+CLUSTER1_NHN_VIP_SUBNET_ID=
+CLUSTER1_NHN_API_BASE_URL=https://kr1-api-network-infrastructure.nhncloudservice.com
+
+# NAVER Cloud 환경 변수 (CSP_TYPE=NAVER 일때 필수 입력)
+CLUSTER1_NAVER_CLOUD_API_KEY=
+CLUSTER1_NAVER_CLOUD_API_SECRET=
+CLUSTER1_NAVER_CLOUD_REGION=KR
+CLUSTER1_NAVER_CLOUD_VPC_NO=
+CLUSTER1_NAVER_CLOUD_SUBNET_NO=
+
+######################################################################
+# CLUSTER2
+######################################################################
+
+# --------------------------------------------------------------------
+# Control Plane 노드 설정
+# --------------------------------------------------------------------
+
+# Control Plane (Master) 노드 개수 (예: 1, 3, 5 ...)
+CLUSTER2_KUBE_CONTROL_HOSTS=
+
+# Control Plane (Master) 노드 정보
+# Control Plane 노드 개수에 맞춰 설정
+CLUSTER2_MASTER1_NODE_HOSTNAME=
+CLUSTER2_MASTER1_NODE_PUBLIC_IP=
+CLUSTER2_MASTER1_NODE_PRIVATE_IP=
+CLUSTER2_MASTER2_NODE_HOSTNAME=
+CLUSTER2_MASTER2_NODE_PRIVATE_IP=
+CLUSTER2_MASTER3_NODE_HOSTNAME=
+CLUSTER2_MASTER3_NODE_PRIVATE_IP=
+
+# --------------------------------------------------------------------
+# LoadBalancer 설정
+# --------------------------------------------------------------------
+
+# Control Plane 노드가 2개 이상일 때 필수 설정
+# 외부 로드밸런서 도메인 또는 IP
+CLUSTER2_LOADBALANCER_DOMAIN=
+...
+```
+
 <br><br>
 
 ### <div id='2.5'> 2.5. K-PaaS 컨테이너 플랫폼 클러스터 설치
@@ -1389,14 +1690,14 @@ $ ./deploy-cp-cluster.sh
 구성에 따라 조회되는 노드 및 Pod의 정보는 다를 수 있으며 아래는 단일 Control Plane 구성으로 배포했을때의 조회 결과이다. 
 
 ```
-$ kubectl get nodes
+$ kubectl get nodes --context=host-cluster
 NAME                 STATUS   ROLES                  AGE   VERSION
-cp-master            Ready    control-plane          12m   v1.33.5
-cp-worker-1          Ready    <none>                 10m   v1.33.5
-cp-worker-2          Ready    <none>                 10m   v1.33.5
-cp-worker-3          Ready    <none>                 10m   v1.33.5
+cp-host-master       Ready    control-plane          12m   v1.33.5
+cp-host-worker-1     Ready    <none>                 10m   v1.33.5
+cp-host-worker-2     Ready    <none>                 10m   v1.33.5
+cp-host-worker-3     Ready    <none>                 10m   v1.33.5
 
-$ kubectl get pods -n kube-system
+$ kubectl get pods -n kube-system --context=host-cluster
 NAME                                          READY   STATUS    RESTARTS      AGE
 calico-kube-controllers-b5f8f6849-hhbgh       1/1     Running   0             9m22s
 calico-node-d8sg6                             1/1     Running   0             9m22s
@@ -1406,13 +1707,13 @@ calico-node-nc58v                             1/1     Running   0             10
 coredns-657959df74-td5c2                      1/1     Running   0             8m15s
 coredns-657959df74-ztnjj                      1/1     Running   0             8m7s
 dns-autoscaler-b5c786945-rhlkd                1/1     Running   0             8m9s
-kube-apiserver-cp-master                      1/1     Running   0             12m
-kube-controller-manager-cp-master             1/1     Running   1 (11m ago)   12m
+kube-apiserver-cp-host-master                 1/1     Running   0             12m
+kube-controller-manager-cp-host-master        1/1     Running   1 (11m ago)   12m
 kube-proxy-dj5c8                              1/1     Running   0             10m
 kube-proxy-kkvhk                              1/1     Running   0             10m
 kube-proxy-nfttc                              1/1     Running   0             10m
 kube-proxy-znfgk                              1/1     Running   0             10m
-kube-scheduler-cp-master                      1/1     Running   1 (11m ago)   12m
+kube-scheduler-cp-host-master                 1/1     Running   1 (11m ago)   12m
 metrics-server-5cd75b7749-xcrps               2/2     Running   0             7m57s
 nginx-proxy-cp-worker-1                       1/1     Running   0             8m8s
 nginx-proxy-cp-worker-2                       1/1     Running   0             8m8s
@@ -1421,6 +1722,117 @@ nodelocaldns-556gb                            1/1     Running   0             8m
 nodelocaldns-8dpnt                            1/1     Running   0             8m8s
 nodelocaldns-pvl6z                            1/1     Running   0             8m8s
 nodelocaldns-x7grn                            1/1     Running   0             8m8s
+```
+
+<br>
+
+```
+$ kubectl get nodes --context=cluster1
+NAME                       STATUS   ROLES                  AGE   VERSION
+cp-mem-cluster1-master     Ready    control-plane          12m   v1.33.5
+cp-mem-cluster1-worker-1   Ready    <none>                 10m   v1.33.5
+cp-mem-cluster1-worker-2   Ready    <none>                 10m   v1.33.5
+cp-mem-cluster1-worker-3   Ready    <none>                 10m   v1.33.5
+
+$ kubectl get pods -n kube-system --context=cluster1
+NAME                                             READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-b5f8f6849-hhbgh          1/1     Running   0             9m22s
+calico-node-d8sg6                                1/1     Running   0             9m22s
+calico-node-kfvjx                                1/1     Running   0             10m
+calico-node-khwdz                                1/1     Running   0             10m
+calico-node-nc58v                                1/1     Running   0             10m
+coredns-657959df74-td5c2                         1/1     Running   0             8m15s
+coredns-657959df74-ztnjj                         1/1     Running   0             8m7s
+dns-autoscaler-b5c786945-rhlkd                   1/1     Running   0             8m9s
+kube-apiserver-cp-mem-cluster1-master            1/1     Running   0             12m
+kube-controller-manager-cp-mem-cluster1-master   1/1     Running   1 (11m ago)   12m
+kube-proxy-dj5c8                                 1/1     Running   0             10m
+kube-proxy-kkvhk                                 1/1     Running   0             10m
+kube-proxy-nfttc                                 1/1     Running   0             10m
+kube-proxy-znfgk                                 1/1     Running   0             10m
+kube-scheduler-cp-mem-cluster1-master            1/1     Running   1 (11m ago)   12m
+metrics-server-5cd75b7749-xcrps                  2/2     Running   0             7m57s
+nginx-proxy-cp-cluster1-worker-1                 1/1     Running   0             8m8s
+nginx-proxy-cp-cluster1-worker-2                 1/1     Running   0             8m8s
+nginx-proxy-cp-cluster1-worker-3                 1/1     Running   0             8m8s
+nodelocaldns-556gb                               1/1     Running   0             8m8s
+nodelocaldns-8dpnt                               1/1     Running   0             8m8s
+nodelocaldns-pvl6z                               1/1     Running   0             8m8s
+nodelocaldns-x7grn                               1/1     Running   0             8m8s
+```
+
+<br>
+
+```
+$ kubectl get nodes --context=cluster2
+NAME                       STATUS   ROLES                  AGE   VERSION
+cp-mem-cluster2-master     Ready    control-plane          12m   v1.33.5
+cp-mem-cluster2-worker-1   Ready    <none>                 10m   v1.33.5
+cp-mem-cluster2-worker-2   Ready    <none>                 10m   v1.33.5
+cp-mem-cluster2-worker-3   Ready    <none>                 10m   v1.33.5
+
+$ kubectl get pods -n kube-system --context=cluster2
+NAME                                             READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-b5f8f6849-hhbgh          1/1     Running   0             9m22s
+calico-node-d8sg6                                1/1     Running   0             9m22s
+calico-node-kfvjx                                1/1     Running   0             10m
+calico-node-khwdz                                1/1     Running   0             10m
+calico-node-nc58v                                1/1     Running   0             10m
+coredns-657959df74-td5c2                         1/1     Running   0             8m15s
+coredns-657959df74-ztnjj                         1/1     Running   0             8m7s
+dns-autoscaler-b5c786945-rhlkd                   1/1     Running   0             8m9s
+kube-apiserver-cp-mem-cluster2-master            1/1     Running   0             12m
+kube-controller-manager-cp-mem-cluster2-master   1/1     Running   1 (11m ago)   12m
+kube-proxy-dj5c8                                 1/1     Running   0             10m
+kube-proxy-kkvhk                                 1/1     Running   0             10m
+kube-proxy-nfttc                                 1/1     Running   0             10m
+kube-proxy-znfgk                                 1/1     Running   0             10m
+kube-scheduler-cp-mem-cluster2-master            1/1     Running   1 (11m ago)   12m
+metrics-server-5cd75b7749-xcrps                  2/2     Running   0             7m57s
+nginx-proxy-cp-cluster2-worker-1                 1/1     Running   0             8m8s
+nginx-proxy-cp-cluster2-worker-2                 1/1     Running   0             8m8s
+nginx-proxy-cp-cluster2-worker-3                 1/1     Running   0             8m8s
+nodelocaldns-556gb                               1/1     Running   0             8m8s
+nodelocaldns-8dpnt                               1/1     Running   0             8m8s
+nodelocaldns-pvl6z                               1/1     Running   0             8m8s
+nodelocaldns-x7grn                               1/1     Running   0             8m8s
+```
+
+<br>
+
+```
+$ kubectl get nodes --context=cluster3
+NAME                       STATUS   ROLES                  AGE   VERSION
+cp-mem-cluster3-master     Ready    control-plane          12m   v1.33.5
+cp-mem-cluster3-worker-1   Ready    <none>                 10m   v1.33.5
+cp-mem-cluster3-worker-2   Ready    <none>                 10m   v1.33.5
+cp-mem-cluster3-worker-3   Ready    <none>                 10m   v1.33.5
+
+$ kubectl get pods -n kube-system --context=cluster1
+NAME                                             READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-b5f8f6849-hhbgh          1/1     Running   0             9m22s
+calico-node-d8sg6                                1/1     Running   0             9m22s
+calico-node-kfvjx                                1/1     Running   0             10m
+calico-node-khwdz                                1/1     Running   0             10m
+calico-node-nc58v                                1/1     Running   0             10m
+coredns-657959df74-td5c2                         1/1     Running   0             8m15s
+coredns-657959df74-ztnjj                         1/1     Running   0             8m7s
+dns-autoscaler-b5c786945-rhlkd                   1/1     Running   0             8m9s
+kube-apiserver-cp-mem-cluster3-master            1/1     Running   0             12m
+kube-controller-manager-cp-mem-cluster3-master   1/1     Running   1 (11m ago)   12m
+kube-proxy-dj5c8                                 1/1     Running   0             10m
+kube-proxy-kkvhk                                 1/1     Running   0             10m
+kube-proxy-nfttc                                 1/1     Running   0             10m
+kube-proxy-znfgk                                 1/1     Running   0             10m
+kube-scheduler-cp-mem-cluster1-master            1/1     Running   1 (11m ago)   12m
+metrics-server-5cd75b7749-xcrps                  2/2     Running   0             7m57s
+nginx-proxy-cp-cluster3-worker-1                 1/1     Running   0             8m8s
+nginx-proxy-cp-cluster3-worker-2                 1/1     Running   0             8m8s
+nginx-proxy-cp-cluster3-worker-3                 1/1     Running   0             8m8s
+nodelocaldns-556gb                               1/1     Running   0             8m8s
+nodelocaldns-8dpnt                               1/1     Running   0             8m8s
+nodelocaldns-pvl6z                               1/1     Running   0             8m8s
+nodelocaldns-x7grn                               1/1     Running   0             8m8s
 ```
 
 <br><br>
@@ -1457,17 +1869,6 @@ $ ./reset-cp-cluster.sh
 ||cp-high-limitrange|
 |Pod|nodes|
 ||resources|
-
-<br><br>
-
-## <div id='5'> 5. Kubeflow 설치 (선택)
-**`단일 클라우드`** 환경 기준에서는 클러스터 배포 이후에 별도의 쉘 스크립트를 통해 Kubeflow 설치를 지원한다.
-
-<br>
-
-```
-$ ./deploy-cp-kubeflow.sh
-```
 
 <br><br>
 

@@ -42,7 +42,7 @@
 <br>
 
 ### <span id='1.3'>1.3. 시스템 구성도
-<p align="center"><img src="../images/portal/cp-001.png" width="850" height="530"></p>
+<p align="center"><img src="../images/portal/cp-001.png"></p>
 
 시스템 구성은 **Kubernetes Cluster(Master, Worker)** 환경과 데이터 관리를 위한 스토리지 서버로 구성되어 있다.
 Kubespray를 통해 설치된 Kubernetes Cluster 환경에 비밀 정보 및 인증 데이터를 관리하는 **OpenBao**, 메타 데이터를 관리하는 **MariaDB(RDBMS)**, 컨테이너 이미지를 관리하는 **Harbor**,  컨테이너 플랫폼 포털 사용자 인증을 관리하는 **Keycloak**,
@@ -103,13 +103,13 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 ### <span id='2.3'>2.3. 설치 목록
 컨테이너 플랫폼 포털에 포함되어 배포되는 서비스 정보는 다음과 같다.
 |서비스|Application 버전|Chart 버전|
-|:--- | :---:|  :---: |  
-|[OpenBao](https://github.com/openbao/openbao)|2.2.0|0.12.0|
-|[MariaDB](https://github.com/mariadb)|11.4.7|20.5.6|
-|[Harbor](https://github.com/goharbor/harbor)|2.13.1|1.17.1|
-|[Keycloak](https://github.com/keycloak/keycloak)|25.0.6|23.0.0|
+|:--- | :---:|  :--- |  
+|[OpenBao](https://github.com/openbao/openbao)|v2.4.1|0.19.0|
+|[MariaDB](https://github.com/mariadb)|12.0.2|23.2.1 (Bitnami)|
+|[Harbor](https://github.com/goharbor/harbor)|2.14.0|1.18.0|
+|[Keycloak](https://github.com/keycloak/keycloak)|26.3.3|25.2.0 (Bitnami)|
 |[ChartMuseum](https://github.com/helm/chartmuseum)|0.16.3|3.10.4|
-|[Chaos Mesh](https://github.com/chaos-mesh/chaos-mesh)|2.7.2|2.7.2|
+|[Chaos Mesh](https://github.com/chaos-mesh/chaos-mesh)|2.8.0|2.8.0|
 
 <br>
 
@@ -118,8 +118,9 @@ IaaS Security Group의 열어줘야할 Port를 설정한다.
 
 ### <span id='3.1'>3.1. 컨테이너 플랫폼 포털 Deployment 파일 다운로드
 컨테이너 플랫폼 포털 배포를 위해 컨테이너 플랫폼 포털 Deployment 파일을 다운로드 받아 아래 경로로 위치시킨다.<br>
+[[CSP 쿠버네티스 서비스 Istio 멀티 클러스터 구성 가이드]](../csp/cp-csp-istio-guide.md) 로 구성한 경우, Deployment 파일을 이미 다운로드한 상태이므로 바로 3.2 단계로 진행한다. <br>
 + 컨테이너 플랫폼 포털 Deployment 파일 다운로드 :
-  [cp-portal-deployment-v1.6.2.tar.gz](https://nextcloud.k-paas.org/index.php/s/x7ccTRQYrBHsTD4/download)
+  [cp-portal-deployment-v1.7.0.tar.gz](https://nextcloud.k-paas.org/index.php/s/qrApL4sP5eC2WMX/download)
 
 ```bash
 # Deployment 파일 다운로드 경로 생성
@@ -127,13 +128,13 @@ $ mkdir -p ~/workspace/container-platform
 $ cd ~/workspace/container-platform
 
 # Deployment 파일 다운로드 및 파일 경로 확인
-$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/x7ccTRQYrBHsTD4/download
+$ wget --content-disposition https://nextcloud.k-paas.org/index.php/s/qrApL4sP5eC2WMX/download
 
 $ ls ~/workspace/container-platform
-  cp-portal-deployment-v1.6.2.tar.gz
+  cp-portal-deployment-v1.7.0.tar.gz
 
 # Deployment 파일 압축 해제
-$ tar -xvf cp-portal-deployment-v1.6.2.tar.gz
+$ tar -xvf cp-portal-deployment-v1.7.0.tar.gz
 ```
 
 
@@ -143,9 +144,10 @@ $ tar -xvf cp-portal-deployment-v1.6.2.tar.gz
 cp-portal-deployment
 ├── script          # (싱글) 포털 배포를 위한 변수 및 스크립트 파일 위치
 ├── script_mc       # (멀티) 포털 배포를 위한 변수 및 스크립트 파일 위치
-├── values_orig     # Helm 차트 values 파일 위치
-├── secmg_orig      # 시크릿 관리 시스템 배포 파일 위치
-└── istio_mc        # Istio 서비스 메시 관련 파일 위치
+├── script_fed      # (페더레이션) 포털 배포를 위한 변수 및 스크립트 파일 위치
+├── values_orig     #  Helm 차트 values 파일 위치
+├── secmg_orig      #  시크릿 관리 시스템 배포 파일 위치
+└── istio_mc        #  Istio 서비스 메시 관련 파일 위치
 ```
 
 <br>
@@ -299,7 +301,13 @@ $ ./deploy-cp-portal-mc.sh
 <br>
 
 컨테이너 플랫폼 포털 관련 리소스가 정상적으로 배포되었는지 확인한다.<br>
-리소스 Pod의 경우 Node에 바인딩 및 컨테이너 생성 후 Running 상태로 전환되기까지 몇 초가 소요된다.
+리소스 Pod의 경우 Node에 바인딩 및 컨테이너 생성 후 Running 상태로 전환되기까지 몇 초가 소요된다. <br>
+
+> **Keycloak**은 초기 기동에 수 분이 소요될 수 있다. 이 기간 동안 OIDC 기반으로 동작하는 UI는 인증 서버가 준비되지 않아
+Pod 재시작이 반복될 수 있으며, Keycloak이 Ready 상태가 되면 순차적으로 안정화된다.
+
+<br>
+
 ##### 클러스터 컨텍스트 정보 변수 설정
 ```bash
 source ~/workspace/container-platform/cp-portal-deployment/script_mc/cp-portal-vars-mc.sh
@@ -311,90 +319,96 @@ source ~/workspace/container-platform/cp-portal-deployment/script_mc/cp-portal-v
 >`$ kubectl get pods -n openbao --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
 NAME                                      READY   STATUS    RESTARTS   AGE
-openbao-0                                 2/2     Running   0          4m34s
-openbao-agent-injector-5687899c56-kg4jc   2/2     Running   0          4m34s
+openbao-0                                 2/2     Running   0          6m56s
+openbao-agent-injector-65b78b458b-4fjdt   2/2     Running   0          6m56s
 ```
 
 - **MariaDB Pod 조회**
 >`$ kubectl get pods -n mariadb --context=${CLUSTER2_CONFIG[CTX]}`
 ```bash
 NAME        READY   STATUS    RESTARTS   AGE
-mariadb-0   2/2     Running   0          4m37s
+mariadb-0   2/2     Running   0          6m58s
 ```    
 
 - **Harbor Pod 조회**
 >`$ kubectl get pods -n harbor --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
 NAME                                 READY   STATUS    RESTARTS   AGE
-harbor-core-fc4678b57-stf5g          1/1     Running   0          4m43s
-harbor-database-0                    1/1     Running   0          4m43s
-harbor-jobservice-849bd887dd-xp25j   1/1     Running   0          4m43s
-harbor-nginx-5f6cf644c6-zq44q        1/1     Running   0          4m43s
-harbor-portal-67f54c96f6-ws4p8       1/1     Running   0          4m43s
-harbor-redis-0                       1/1     Running   0          4m43s
-harbor-registry-675656d75d-zrmds     2/2     Running   0          4m43s
-harbor-trivy-0                       1/1     Running   0          4m43s
+harbor-core-7476c98945-kjd6v         1/1     Running   0          7m3s
+harbor-database-0                    1/1     Running   0          7m3s
+harbor-jobservice-755886bd87-cqwjl   1/1     Running   0          7m3s
+harbor-nginx-6ff95fdfbc-wkgr9        1/1     Running   0          7m3s
+harbor-portal-854ff6c585-t5vhx       1/1     Running   0          7m3s
+harbor-redis-0                       1/1     Running   0          7m3s
+harbor-registry-6d95d597f-vrl4c      2/2     Running   0          7m3s
+harbor-trivy-0                       1/1     Running   0          7m3s
 ```  
 
 - **Keycloak Pod 조회**
 >`$ kubectl get pods -n keycloak --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
 NAME         READY   STATUS    RESTARTS   AGE
-keycloak-0   2/2     Running   0          3m36s
-keycloak-1   2/2     Running   0          3m36s
+keycloak-0   2/2     Running   0          6m14s
+keycloak-1   2/2     Running   0          6m14s
 ```
 
 - **컨테이너 플랫폼 포털 Pod 조회**
 >`$ kubectl get pods -n cp-portal --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
 NAME                                                    READY   STATUS    RESTARTS   AGE
-cp-portal-api-deployment-768d6b9ccb-hxbp2               2/2     Running   0          3m12s
-cp-portal-catalog-api-deployment-64947556ff-q5z68       2/2     Running   0          3m12s
-cp-portal-chaos-api-deployment-777c5678b4-cqc92         2/2     Running   0          3m12s
-cp-portal-chaos-collector-deployment-5d86f48545-x22gp   2/2     Running   0          3m12s
-cp-portal-terraman-deployment-7b584498c7-96ght          2/2     Running   0          3m12s
-cp-portal-ui-deployment-c7ff7cf67-xxkpw                 2/2     Running   0          3m12s
+cp-portal-api-deployment-9dfbfc655-p7nht                2/2     Running   0          5m57s
+cp-portal-catalog-api-deployment-56c5b74b9d-kwvcp       2/2     Running   0          5m57s
+cp-portal-chaos-api-deployment-76944f64ff-nqq4k         2/2     Running   0          5m57s
+cp-portal-chaos-collector-deployment-6f9b69584d-w7dwz   2/2     Running   0          5m57s
+cp-portal-migration-api-deployment-5cc978cc6b-r5tx2     2/2     Running   0          5m57s
+cp-portal-migration-auth-deployment-6c89fcd447-gg85x    2/2     Running   0          5m56s
+cp-portal-migration-ui-deployment-5c857dddff-jjg8v      2/2     Running   0          5m57s
+cp-portal-remote-api-deployment-8656b556d-jbz58         2/2     Running   0          5m56s
+cp-portal-terraman-deployment-559d664d96-bmvdb          2/2     Running   0          5m57s
+cp-portal-ui-deployment-5cdc8f6879-2nqb2                2/2     Running   0          5m56s
 ```
 >`$ kubectl get pods -n cp-portal --context=${CLUSTER2_CONFIG[CTX]}`
 ```bash
 NAME                                               READY   STATUS    RESTARTS   AGE
-cp-portal-common-api-deployment-6d49b449bf-vjngc   2/2     Running   0          3m28s
-cp-portal-metric-api-deployment-64c5745d76-wpdf4   2/2     Running   0          3m28s
+cp-portal-common-api-deployment-7cb898686d-74c8x   2/2     Running   0          6m31s
+cp-portal-metric-api-deployment-6484648b75-rgjgc   2/2     Running   0          6m31s
 ```
 
 - **ChartMuseum Pod 조회**
 >`$ kubectl get pods -n chartmuseum  --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
 NAME                          READY   STATUS    RESTARTS   AGE
-chartmuseum-dd99f7685-vrm4c   1/1     Running   0          4m15s
+chartmuseum-bdd579f9d-mfcbz   1/1     Running   0          7m13s
 ```
 - **Chaos Mesh Pod 조회**
 >`$ kubectl get pods -n chaos-mesh --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
 NAME                                        READY   STATUS    RESTARTS   AGE
-chaos-controller-manager-744b49d8f4-f27dk   1/1     Running   0          3m56s
-chaos-daemon-dspdl                          1/1     Running   0          3m56s
-chaos-daemon-nmlcg                          1/1     Running   0          3m56s
-chaos-dashboard-6f76b99746-km9wf            1/1     Running   0          3m56s
-chaos-dns-server-5d58bb59dd-jvrgm           1/1     Running   0          3m56s
+chaos-controller-manager-77c59b89f7-c78s4   1/1     Running   0          7m5s
+chaos-daemon-8v6bh                          1/1     Running   0          7m5s
+chaos-daemon-grtvv                          1/1     Running   0          7m5s
+chaos-daemon-kqrn5                          1/1     Running   0          7m5s
+chaos-daemon-sdgsv                          1/1     Running   0          7m5s
+chaos-dashboard-548db4f5c4-bm8v6            1/1     Running   0          7m5s
+chaos-dns-server-6b877f78d5-pg6v7           1/1     Running   0          7m5s
 ```
 
 - **서비스 접속 Host 조회**
 >`$ kubectl get virtualservices -n istio-system --context=${CLUSTER1_CONFIG[CTX]}`
 ```bash
 NAME          GATEWAYS         HOSTS                                    AGE
-chartmuseum   ["cp-gateway"]   ["chartmuseum.133.186.214.117.nip.io"]   6m21s
-cp-portal     ["cp-gateway"]   ["portal.133.186.214.117.nip.io"]        6m21s
-harbor        ["cp-gateway"]   ["harbor.133.186.214.117.nip.io"]        6m21s
-keycloak      ["cp-gateway"]   ["keycloak.133.186.214.117.nip.io"]      6m21s
-openbao       ["cp-gateway"]   ["openbao.133.186.214.117.nip.io"]       6m21s
+chartmuseum   ["cp-gateway"]   ["chartmuseum.xxx.xxx.xxx.xxx.nip.io"]   9m34s
+cp-portal     ["cp-gateway"]   ["portal.xxx.xxx.xxx.xxx.nip.io"]        9m34s
+harbor        ["cp-gateway"]   ["harbor.xxx.xxx.xxx.xxx.nip.io"]        9m34s
+keycloak      ["cp-gateway"]   ["keycloak.xxx.xxx.xxx.xxx.nip.io"]      9m34s
+openbao       ["cp-gateway"]   ["openbao.xxx.xxx.xxx.xxx.nip.io"]       9m34s
 ```
 
 <br>
 
 ### <span id='3.4'>3.4. (참고) 컨테이너 플랫폼 포털 리소스 삭제
 배포된 컨테이너 플랫폼 포털 리소스의 삭제를 원하는 경우 아래 스크립트를 실행한다.<br>
-:loudspeaker: (주의) 컨테이너 플랫폼 포털이 운영되는 상태에서 해당 스크립트 실행 시, **운영에 필요한 리소스가 모두 삭제**되므로 주의가 필요하다.<br>
+:loudspeaker: (주의) 컨테이너 플랫폼 포털이 운영되는 상태에서 해당 스크립트 실행 시, **포털 운영에 필요한 리소스가 삭제** 되므로 주의가 필요하다.<br>
 > 컨테이너 플랫폼을 통해 설치된 클러스터의 StorageClass 타입이 `NFS`인 경우 reclaim 정책은 `Retain`이다.<br>
 > `Retain`정책은 Persistent Volume을 삭제하여도 스토리지 NFS 서버에 데이터가 여전히 존재하므로<br> 수동으로 데이터 정리가 필요하다.
 ```bash
