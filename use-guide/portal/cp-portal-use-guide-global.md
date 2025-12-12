@@ -511,7 +511,7 @@ K-PaaS 컨테이너플랫폼을 통해 S3기반 스토리지 간 마이그레이
 
 #### <div id='1-7-3'/> 1.7.3. Storage Account 생성
 - Storage Account를 생성한다.
-1. **Name** : 연결결할 스토리지 명을 입력한다.
+1. **Name** : 연결할 스토리지 명을 입력한다.
 2. **Storage Type** : 연결할 스토리지의 Storage Type을 선택한다.(S3)
 3. **Endpoint** : 연결할 스토리지의 Enpoint 정보를 입력한다.
 4. **Access Key Id** : 연결할 스토리지의 Access Key Id 정보를 입력한다.
