@@ -56,7 +56,15 @@
    1.6.22. [ConfigMaps&Secrets 생성](#1-6-22)   
    1.6.23. [ConfigMaps&Secrets 상세 조회](#1-6-23)   
    1.6.24. [ConfigMaps&Secrets 수정](#1-6-24)   
-   1.6.25. [ConfigMaps&Secrets 삭제](#1-6-25)   
+   1.6.25. [ConfigMaps&Secrets 삭제](#1-6-25)  
+  1.7. [Migration](#1-7)  
+  1.7.1. [Storage Account 목록 조회](#1-7-1)  
+  1.7.2. [Storage Account 상세 조회](#1-7-2)  
+  1.7.3. [Storage Account 생성](#1-7-3)  
+  1.7.4. [Storage Account 삭제](#1-7-4)  
+  1.7.5. [Migration Bucket List 조회](#1-7-5)  
+  1.7.6. [Migration 복사 (Copy)](#1-7-6)  
+  1.7.7. [Migration 동기 (Sync)](#1-7-7)  
 
    <br>
 
@@ -486,6 +494,66 @@ Federation을 통해 멀티클러스터 통합 관리, 애플리케이션 멀티
 
 <br>
 
+
+### <div id='1-7'/> 1.7. Migration
+K-PaaS 컨테이너플랫폼을 통해 S3기반 스토리지 간 마이그레이션을 할 수 있다.
+#### <div id='1-7-1'/> 1.7.1. Storage Account 목록 조회
+- Storage Account 목록을 조회한다.
+  ![IMG_1_7_1]
+
+<br>
+
+#### <div id='1-7-2'/> 1.7.2. Storage Account 상세 조회
+- Storage Account 정보를 상세 조회한다.
+  ![IMG_1_7_2]
+
+<br>
+
+#### <div id='1-7-3'/> 1.7.3. Storage Account 생성
+- Storage Account를 생성한다.
+1. **Name** : 연결결할 스토리지 명을 입력한다.
+2. **Storage Type** : 연결할 스토리지의 Storage Type을 선택한다.(S3)
+3. **Endpoint** : 연결할 스토리지의 Enpoint 정보를 입력한다.
+4. **Access Key Id** : 연결할 스토리지의 Access Key Id 정보를 입력한다.
+5. **Secret Access Key** : 연결할 스토리지의 Secret Access Key 정보를 입력한다.
+  ![IMG_1_7_3]
+
+<br>
+
+#### <div id='1-7-4'/> 1.7.4. Storage Account 삭제
+- Storage Account를 삭제한다.
+- 상세화면의 하단 삭제 버튼을 클릭하면 해당 Storage Account가 삭제된다.
+  ![IMG_1_7_4]
+
+<br>
+
+#### <div id='1-7-5'/> 1.7.5. Migration Bucket List 조회
+- Souce 및 Destination 스토리지 버킷을 선택한다.
+- 마이그레이션을 진행할(Source) 스토리지와 해당 스토리지에 속한 버킷을 선택한다.
+- 마이그레이션을 받을(Destination) 스토리지와 해당 스토리지에 속한 버킷을 선택한다.
+  ![IMG_1_7_5]
+  ![IMG_1_7_6]
+  ![IMG_1_7_7]
+  ![IMG_1_7_8]
+
+<br>
+
+#### <div id='1-7-6'/> 1.7.6. Migration 복사 (Copy)
+- Souce 스토리지 버킷의 모든 내용을 Destination 스토리지 버킷으로 복사한다.
+- 상세화면의 하단 복사 버튼을 클릭하면 Source 버킷의 내용물 전체가 Destination 버킷으로 복제된다.
+  ![IMG_1_7_9]
+
+<br>
+
+#### <div id='1-7-7'/> 1.7.7. Migration 동기 (Sync)
+- Souce 스토리지 버킷의 모든 내용을 Destination 스토리지 버킷으로 동기화한다.
+- 상세화면의 하단 동기 버튼을 클릭하면 Source 버킷의 내용물을 기준으로 Destination 버킷을 완전히 일치시킨다.
+- **주의**: Source에 없는 파일은 Destination에서 사라지므로, 중요한 데이터 손실이 발생하지 않도록 주의해야 한다.
+  ![IMG_1_7_10]
+
+<br>
+
+
 ### [Index](https://github.com/K-PaaS/container-platform/blob/master/README.md) > [CP Use](../Readme.md) > [포털 사용 가이드](./cp-portal-use-guide.md) > Global 메뉴
 
 [IMG_1_1_1]: ../images/portal/IMG_1_1_1.png
@@ -539,3 +607,14 @@ Federation을 통해 멀티클러스터 통합 관리, 애플리케이션 멀티
 [IMG_1_6_23]: ../images/portal/IMG_1_6_23.png
 [IMG_1_6_24]: ../images/portal/IMG_1_6_24.png
 [IMG_1_6_25]: ../images/portal/IMG_1_6_25.png
+[IMG_1_7_1]:../images/portal/IMG_1_7_1.png
+[IMG_1_7_2]:../images/portal/IMG_1_7_2.png
+[IMG_1_7_3]:../images/portal/IMG_1_7_3.png
+[IMG_1_7_4]:../images/portal/IMG_1_7_4.png
+[IMG_1_7_5]:../images/portal/IMG_1_7_5.png
+[IMG_1_7_6]:../images/portal/IMG_1_7_6.png
+[IMG_1_7_7]:../images/portal/IMG_1_7_7.png
+[IMG_1_7_8]:../images/portal/IMG_1_7_8.png
+[IMG_1_7_9]:../images/portal/IMG_1_7_9.png
+[IMG_1_7_10]:../images/portal/IMG_1_7_10.png
+
