@@ -97,9 +97,9 @@ K-PaaS 컨테이너 플랫폼 Edge 배포에 필요한 주요 소프트웨어 �
 
 |주요 소프트웨어|버전|
 |---|---|
-|Kubernetes Native|v1.32.5|
+|Kubernetes Native|v1.33.5|
 |Kubernetes Native (Edge Node)|v1.30.7|
-|CRI-O|1.32.0|
+|CRI-O|1.33.5|
 |CRI-O (Edge Node)|v1.30.0|
 |KubeEdge|v1.20.0|
 |EdgeMesh|v1.16.0|
@@ -192,13 +192,13 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 
 <br>
 
-> K-PaaS 컨테이너 플랫폼 클러스터 v1.6.2 릴리즈에서는 로드밸런서 컨트롤러 설치 시 ***`자동으로 로드밸런서 서비스를 생성 및 할당`*** 하며 MetalLB는 설치되지 않는다. (NHN 클라우드 환경만 해당)
+> K-PaaS 컨테이너 플랫폼 클러스터 v1.7.0 릴리즈에서는 로드밸런서 컨트롤러 설치 시 ***`자동으로 로드밸런서 서비스를 생성 및 할당`*** 하며 MetalLB는 설치되지 않는다. (NHN, Naver 클라우드 환경 해당)
 
 <br>
 
 |방식|설명|비고|
 |---|---|---|
-|로드밸런서 컨트롤러|Public IP가 할당된 로드밸런서 서비스 자동 생성|***`NHN 클라우드만 지원`***<br>***`MetalLB 미설치`***<br>로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
+|로드밸런서 컨트롤러|Public IP가 할당된 로드밸런서 서비스 자동 생성|***`NHN, Naver 클라우드 지원`***<br>***`MetalLB 미설치`***<br>로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
 
 <br>
 
@@ -251,7 +251,7 @@ Edge 노드의 환경이 `라즈베리파이`일 경우 다음 정보를 추가�
 
 K-PaaS 컨테이너 플랫폼 Edge 배포 설치경로로 이동한다. 이후 부터는 **Control Plane 노드**에서만 진행을 하면 된다.
 ```
-$ cd ~/cp-deployment/standalone
+$ cd ~/cp-deployment/edge
 ```
 
 <br>
@@ -278,13 +278,25 @@ $ vi cp-edge-vars.sh
 ```
 #!/bin/bash
 
-export CLOUDCORE_PRIVATE_IP=
-export CLOUDCORE_PUBLIC_IP=
+# --------------------------------------------------------------------
+# CloudCore 노드 설정
+# --------------------------------------------------------------------
 
-export EDGE_HOSTS=
+# # CloudCore 설치 노드 정보
+CLOUDCORE_PRIVATE_IP=
+CLOUDCORE_PUBLIC_IP=
 
-export EDGE1_NODE_HOSTNAME=
-export EDGE1_NODE_PUBLIC_IP=
+# --------------------------------------------------------------------
+# Edge 노드 설정
+# --------------------------------------------------------------------
+
+# Edge 노드 개수
+EDGE_HOSTS=
+
+# Edge 노드 정보
+# Edge 노드 개수에 맞춰 설정
+EDGE1_NODE_HOSTNAME=
+EDGE1_NODE_PUBLIC_IP=
 ```
 
 <br><br>
@@ -294,7 +306,7 @@ export EDGE1_NODE_PUBLIC_IP=
 쉘 스크립트를 통해 필요 패키지 설치, Edge 배포 환경변수 설정, Ansible playbook을 통한 K-PaaS 컨테이너 플랫폼 Edge 배포를 순차적으로 진행한다.
 
 ```
-$ source deploy-cp-edge.sh
+$ ./deploy-cp-edge.sh
 ```
 
 <br><br>
@@ -307,10 +319,10 @@ $ source deploy-cp-edge.sh
 $ kubectl get nodes
 NAME                 STATUS   ROLES                  AGE     VERSION
 cp-edge              Ready    agent,edge             5m40s   v1.30.7-kubeedge-v1.20.0
-cp-master            Ready    control-plane,master   39m     v1.31.4
-cp-worker-1          Ready    <none>                 38m     v1.31.4
-cp-worker-2          Ready    <none>                 38m     v1.31.4
-cp-worker-3          Ready    <none>                 38m     v1.31.4
+cp-master            Ready    control-plane,master   39m     v1.33.5
+cp-worker-1          Ready    <none>                 38m     v1.33.5
+cp-worker-2          Ready    <none>                 38m     v1.33.5
+cp-worker-3          Ready    <none>                 38m     v1.33.5
 
 $ kubectl get pods -n kube-system
 NAME                                       READY   STATUS    RESTARTS   AGE
@@ -357,7 +369,7 @@ edgemesh-agent-vzpdj           1/1     Running   0          87s
 ## <div id='3'> 3. K-PaaS 컨테이너 플랫폼 Edge 배포 삭제 (참고)
 쉘 스크립트를 통해 K-PaaS 컨테이너 플랫폼 Edge 배포 삭제를 진행한다.
 ```
-$ source reset-cp-edge.sh
+$ ./reset-cp-edge.sh
 ```
 
 <br><br>

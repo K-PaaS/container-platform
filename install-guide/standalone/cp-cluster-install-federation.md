@@ -78,39 +78,9 @@ K-PaaS 컨테이너 플랫폼 클러스터에 필요한 인스턴스 환경으�
 <summary>시스템 구성도</summary>
 <br>
 
-***[ 단일 Control Plane, NFS 스토리지 구성 ]***
+***[ 페더레이션 Host 클러스터, Member 클러스터 구성 ]***
 
-![image 001]
-
-<br><br>
-
-***[ 단일 Control Plane, Rook-Ceph 스토리지 구성 ]***
-
-![image 002]
-
-<br><br>
-
-***[ HA Control Plane, ETCD Stacked, NFS 스토리지 구성 ]***
-
-![image 003]
-
-<br><br>
-
-***[ HA Control Plane, ETCD External, NFS 스토리지 구성 ]***
-
-![image 004]
-
-<br><br>
-
-***[ HA Control Plane, ETCD Stacked, Rook-Ceph 스토리지 구성 ]***
-
-![image 005]
-
-<br><br>
-
-***[ HA Control Plane, ETCD External, Rook-Ceph 스토리지 구성 ]***
-
-![image 006]
+![image 008]
 
 </details>
 
@@ -210,22 +180,22 @@ The key's randomart image is:
 
 <br>
 
-인스턴스에 접근할 로컬 환경에 개인키를 복사한다.
+인스턴스에 접근할 로컬 PC 환경에 개인키를 복사한다.
 
 ```
-## 출력된 개인키 복사하여 로컬 환경에 파일 생성
+## 출력된 개인키 복사하여 로컬 PC 환경에 파일 생성
 
-$ sudo cat ~/.ssh/id_rsa
+$ cat ~/.ssh/id_rsa
 ```
 
 <br>
 
-공개키를 조회 및 복사한다.
+공개키를 조회, 클립보드에 복사한다.
 
 ```
-## 출력된 공개키 복사
+## 출력된 공개키 클립보드 복사
 
-$ sudo cat ~/.ssh/id_rsa.pub
+$ cat ~/.ssh/id_rsa.pub
 ```
 
 <br>
@@ -240,7 +210,7 @@ $ sudo useradd -m -s /bin/bash ubuntu
 $ echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
 
 $ sudo mkdir -p /home/ubuntu/.ssh
-$ echo "{{ 공개키 }}" | sudo tee -a /home/ubuntu/.ssh/authorized_keys
+$ echo "{{ 클립보드에 복사한 공개키 }}" | sudo tee -a /home/ubuntu/.ssh/authorized_keys
 $ sudo chown -R ubuntu:ubuntu /home/ubuntu/.ssh
 ```
 
@@ -393,17 +363,18 @@ K-PaaS 컨테이너 플랫폼 클러스터에서는 MetalLB를 통해 로드밸�
 
 <br>
 
-> K-PaaS 컨테이너 플랫폼 클러스터 v1.6.2 릴리즈에서는 로드밸런서 컨트롤러 설치 시 ***`자동으로 로드밸런서 서비스를 생성 및 할당`*** 하며 MetalLB는 설치되지 않는다. (NHN 클라우드 환경만 해당)
+> K-PaaS 컨테이너 플랫폼 클러스터 v1.7.0 릴리즈에서는 로드밸런서 컨트롤러 설치 시 ***`자동으로 로드밸런서 서비스를 생성 및 할당`*** 하며 MetalLB는 설치되지 않는다. (NHN, Naver 클라우드 환경 해당)
 
 <br>
 
 |방식|설명|비고|
 |---|---|---|
-|로드밸런서 컨트롤러|Public IP가 할당된 로드밸런서 서비스 자동 생성|***`NHN 클라우드만 지원`***<br>***`MetalLB 미설치`***<br>로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
+|로드밸런서 컨트롤러|Public IP가 할당된 로드밸런서 서비스 자동 생성|***`NHN, Naver 클라우드 지원`***<br>***`MetalLB 미설치`***<br>로드밸런서 서비스에 대한 비용 추가 발생<br>HA 구성에서 일부 Control Plane 노드 장애 발생시에도 Ingress Nginx 서비스 정상<br>운영 환경에서 권장|
 
 <br><br>
 
 ### <div id='2.1.6.1'> 2.1.6.1. Control Plane 노드 추가 인터페이스
+CSP별 Control Plane 노드에 인터페이스를 추가하는 방식은 다음과 같다.
 
 <br>
 
@@ -524,6 +495,9 @@ Naver 클라우드는 정책 상 1개의 인스턴스에 2개의 Public IP 할�
 <br><br>
 
 ### <div id='2.1.6.2'> 2.1.6.2. 클라우드 로드밸런서 서비스
+CSP별 로드밸런서 서비스를 생성하는 방식은 다음과 같다.
+
+> 클라우드 로드밸런서 서비스 생성 예시는 Istio Gateway 서비스 중 Ingress, Eastwest Gateway 포트 기준으로 작성되었다.<br>
 
 <br>
 
@@ -1248,7 +1222,7 @@ Control Plane
 |---|---|---|
 |KUBE_CONTROL_HOSTS|Control Plane 노드의 갯수||
 |MASTER1_NODE_HOSTNAME|Control Plane 1번 노드의 호스트명||
-|MASTER1_NODE_USER|Bastion 서버의 사용자 계정|기본값 : **`ubuntu`**|
+|MASTER1_NODE_USER|Control Plane 1번 서버의 사용자 계정|Bastion 서버 용도로 설정<br>기본값 : **`ubuntu`**|
 |MASTER1_NODE_PRIVATE_IP|Control Plane 1번 노드의 Private IP||
 |MASTER1_NODE_PUBLIC_IP|Control Plane 1번 노드의 Public IP|Control Plane 1번 노드만 Public IP 정보 필요|
 |MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
@@ -1453,7 +1427,7 @@ Control Plane
 |---|---|---|
 |KUBE_CONTROL_HOSTS|Control Plane 노드의 갯수||
 |MASTER1_NODE_HOSTNAME|Control Plane 1번 노드의 호스트명||
-|MASTER1_NODE_USER|Bastion 서버의 사용자 계정|기본값 : **`ubuntu`**|
+|MASTER1_NODE_USER|Control Plane 1번 서버의 사용자 계정|Bastion 서버 용도로 설정<br>기본값 : **`ubuntu`**|
 |MASTER1_NODE_PRIVATE_IP|Control Plane 1번 노드의 Private IP||
 |MASTER1_NODE_PUBLIC_IP|Control Plane 1번 노드의 Public IP|Control Plane 1번 노드만 Public IP 정보 필요|
 |MASTER{n}_NODE_HOSTNAME|Control Plane n번 노드의 호스트명|**`KUBE_CONTROL_HOSTS`** 값이 2 이상일 경우 설정<br>**`KUBE_CONTROL_HOSTS`** 값만큼 설정|
@@ -1690,14 +1664,14 @@ $ ./deploy-cp-cluster.sh
 구성에 따라 조회되는 노드 및 Pod의 정보는 다를 수 있으며 아래는 단일 Control Plane 구성으로 배포했을때의 조회 결과이다. 
 
 ```
-$ kubectl get nodes --context=host-cluster
+$ kubectl get nodes --context=cluster-host
 NAME                 STATUS   ROLES                  AGE   VERSION
 cp-host-master       Ready    control-plane          12m   v1.33.5
 cp-host-worker-1     Ready    <none>                 10m   v1.33.5
 cp-host-worker-2     Ready    <none>                 10m   v1.33.5
 cp-host-worker-3     Ready    <none>                 10m   v1.33.5
 
-$ kubectl get pods -n kube-system --context=host-cluster
+$ kubectl get pods -n kube-system --context=cluster-host
 NAME                                          READY   STATUS    RESTARTS      AGE
 calico-kube-controllers-b5f8f6849-hhbgh       1/1     Running   0             9m22s
 calico-node-d8sg6                             1/1     Running   0             9m22s
@@ -1872,13 +1846,7 @@ $ ./reset-cp-cluster.sh
 
 <br><br>
 
-[image 001]:images/kpaas-cp-cluster-1.png
-[image 002]:images/kpaas-cp-cluster-2.png
-[image 003]:images/kpaas-cp-cluster-3.png
-[image 004]:images/kpaas-cp-cluster-4.png
-[image 005]:images/kpaas-cp-cluster-5.png
-[image 006]:images/kpaas-cp-cluster-6.png
-[image 007]:images/kpaas-cp-cluster-7.png
+[image 008]:images/kpaas-cp-cluster-8.png
 
 [image if nhn 001]:images/kpaas-cp-cluster-if-nhn-01.png
 [image if nhn 002]:images/kpaas-cp-cluster-if-nhn-02.png
