@@ -266,6 +266,7 @@ K-PaaS 컨테이너 플랫폼 클러스터 설치에 필요한 주요 소프트�
 |Kubeflow|1.7.0|
 |Kyverno|1.15.2|
 |OpenBAO|2.2.0|
+|Karmada|1.15.2|
 
 <br><br>
 
